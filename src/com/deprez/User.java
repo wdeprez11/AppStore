@@ -43,4 +43,9 @@ public class User {
     public void setUserApps(List<Integer> userApps) {
         this.userApps = userApps;
     }
+
+    // TODO: equals method
+    // TODO: compareTo
+    // TODO: merge sort
+    // TODO: search
 }
