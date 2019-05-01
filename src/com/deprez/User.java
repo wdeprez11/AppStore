@@ -44,6 +44,15 @@ public class User {
         this.userApps = userApps;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userApps=" + userApps +
+                '}';
+    }
+
     // TODO: equals method
     // TODO: compareTo
     // TODO: merge sort
