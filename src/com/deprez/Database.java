@@ -56,9 +56,15 @@ public class Database {
      * @param types an array with the sql type of each column created (E.g. INTEGER)
      * @param args a two dimensional array, with each row being the list of arguments for the corresponding columnId index.
      */
-    void createTable(String tb_name, String[] columnIds, String[] types, String[][] args) {
-        if(columnIds.length != types.length || columnIds.length != args.length) {
-            // TODO: throw an error
+    void createTable(String tb_name, String[] columnIds, String[] types, String[][] args) throws DatabaseException {
+        if(columnIds.length != types.length) {
+            throw new DatabaseException("Cannot create table with unequal array set: " + "columnIds length: " + columnIds.length + ", types length: " + types.length);
+        }
+        if(columnIds.length != args.length) {
+            throw new DatabaseException("Cannot create table with unequal array set: " + "columnIds length: " + columnIds.length + ", args length: " + args.length);
+        }
+        if(types.length != args.length) {
+            throw new DatabaseException("Cannot create table with unequal array set: " + "types length: " + types.length + ", args length: " + args.length);
         }
         StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         sql.append(tb_name).append("(");
