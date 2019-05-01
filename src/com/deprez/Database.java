@@ -80,4 +80,21 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+
+    /**
+     * Drops a table from the database.
+     *
+     * @param tb_name the table to drop from the database
+     */
+    void dropTable(String tb_name) {
+        String sql = "DROP TABLE " + tb_name;
+        try {
+            Connection connection = DriverManager.getConnection(url);
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+            System.out.println("Dropped " + tb_name + " successfully.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
