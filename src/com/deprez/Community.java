@@ -26,17 +26,13 @@ public class Community {
     }
 
     public void addUser(User user) {
-        if(hasUser(user)) {
-            // do nothing
-        } else {
+        if (!hasUser(user)) {
             users.add(user);
         }
     }
 
     public void addUser(String userName) {
-        if(hasUser(userName)) {
-
-        } else {
+        if (!hasUser(userName)) {
             users.add(new User(users.size(), userName));
         }
     }
@@ -44,7 +40,7 @@ public class Community {
     public boolean hasUser(User user) {
         String userName = user.getUserName();
         for (User usr : users) {
-            if(usr.getUserName().equals(userName)) {
+            if (usr.getUserName().equals(userName)) {
                 return true;
             }
         }
@@ -53,7 +49,7 @@ public class Community {
 
     public boolean hasUser(String userName) {
         for (User usr : users) {
-            if(usr.getUserName().equals(userName)) {
+            if (usr.getUserName().equals(userName)) {
                 return true;
             }
         }
@@ -63,7 +59,7 @@ public class Community {
     public void removeUser(String userName) {
         int i = 0;
         for (User usr : users) {
-            if(usr.getUserName().equals(userName)) {
+            if (usr.getUserName().equals(userName)) {
                 users.remove(i);
                 break;
             }
