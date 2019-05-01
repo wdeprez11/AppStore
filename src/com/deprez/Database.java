@@ -95,55 +95,54 @@ public class Database {
         }
     }
 
-    /**
-     * Writes a list to table, essentially converts a List into a table.
-     * TODO: Learn how to implement and use generics properly.
-     *
-     * @param tb_name the name of the table to search for
-     * @param list    the list that will be written to the table
-     * @param <T>     the type of the list (E.g. App, User, etc...)
-     */
-    <T> void writeTable(String tb_name, List<T> list) {
-        dropTable(tb_name);
-        // createTable(tb_name);
-        Connection connection = null;
+    public void createUserTable() {
+        // SQL statement for creating a new table
+        String sql = "CREATE TABLE IF NOT EXISTS user_tb (\n"
+                + "userId INTEGER\n" +
+                "    primary key\n" +
+                "  autoincrement,\n"
+                + " userName varchar(50) NOT NULL\n"
+                + ");";
         try {
-            connection = DriverManager.getConnection(url);
-            // TODO: needs implementation.
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-
-    }
-
-    /**
-     * Formats and returns data as a list.
-     * TODO: Learn how to implement and use generics properly.
-     *
-     * @param tb_name the table name to look for in the database
-     * @param <T>     the type of list to request (E.g. App, User, etc...)
-     * @return returns table as a List
-     */
-    <T> List<T> getTable(String tb_name) {
-        Connection connection = null;
-        List<T> list = new ArrayList<>();
-        try {
-            connection = DriverManager.getConnection(url);
-            String sql = "SELECT * FROM " + tb_name;
+            Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
+            statement.execute(sql);
+            System.out.println("createUserTable done.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
-            while (resultSet.next()) {
-                // TODO: add queries based on class attribute that stores tables.
+    public void dropUserTable() {
+        // SQL statement for creating a new table
+        String sql = "DROP TABLE user_tb;";
+        try {
+            Connection connection = DriverManager.getConnection(url);
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+            System.out.println("dropUserTable done.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void saveUsers(List<User> users) {
+        dropUserTable();
+        createUserTable();
+        Connection connection = null;
+        try {
+            // db parameters
+            // create a connection to the database
+            connection = DriverManager.getConnection(url);
+
+            for(User user:users)
+            {
+                String sql = "INSERT INTO user_tb (userName) values ('"+user.getUserName()+"');";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
             }
+
+            System.out.println("Users saved.");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -156,6 +155,43 @@ public class Database {
                 System.out.println(ex.getMessage());
             }
         }
-        return list;
     }
+
+    public List<User> loadUsers() {
+
+        Connection connection = null;
+        List<User> users = new ArrayList<>();
+        try {
+            // db parameters
+            // create a connection to the database
+            connection = DriverManager.getConnection(url);
+
+
+            String sql = "SELECT * FROM user_tb;";
+            Statement statement = connection.createStatement();
+            ResultSet rs    = statement.executeQuery(sql);
+
+            // loop through the result set
+            while (rs.next()) {
+                System.out.println(rs.getInt("userId") +  "\t" +
+                        rs.getString("userName"));
+                users.add(new User(rs.getInt("userId"),rs.getString("userName")));
+            }
+
+            System.out.println("Users loaded.");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return users;
+    }
+
 }
