@@ -50,22 +50,12 @@ public class Database {
     /**
      * Builds an sql statement from user input and executes it, creating the table if it does not already exist.
      *
-     * TODO: Validate input, check if lengths of arrays are equal and throw something if incorrect
      * @param tb_name the name of the table created in the database (E.g. user_tb)
      * @param columnIds the id of each column created within the table.
      * @param types an array with the sql type of each column created (E.g. INTEGER)
      * @param args a two dimensional array, with each row being the list of arguments for the corresponding columnId index.
      */
-    void createTable(String tb_name, String[] columnIds, String[] types, String[][] args) throws DatabaseException {
-        if(columnIds.length != types.length) {
-            throw new DatabaseException("Cannot create table with unequal array set: " + "columnIds length: " + columnIds.length + ", types length: " + types.length);
-        }
-        if(columnIds.length != args.length) {
-            throw new DatabaseException("Cannot create table with unequal array set: " + "columnIds length: " + columnIds.length + ", args length: " + args.length);
-        }
-        if(types.length != args.length) {
-            throw new DatabaseException("Cannot create table with unequal array set: " + "types length: " + types.length + ", args length: " + args.length);
-        }
+    void createTable(String tb_name, String[] columnIds, String[] types, String[][] args) {
         StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         sql.append(tb_name).append("(");
         for(int j = 0; j < columnIds.length; j++) {
