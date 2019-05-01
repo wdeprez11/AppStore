@@ -4,7 +4,16 @@ import javax.swing.*;
 
 public class Driver extends JFrame {
     public static void main(String[] args) {
-        new Driver().setVisible(true);
+        // new Driver().setVisible(true);
+        Database database = new Database("jdbc:sqlite:appstore.db");
+        database.connect();
+        database.createTable("user_tb",
+                new String[]{ "userId", "userName" },
+                new String[]{ "INTEGER", "varchar(50)" },
+                new String[][] {
+                        { "primary key", "autoincrement" },
+                        { "NOT NULL" }
+                });
     }
 
     private Driver() {
