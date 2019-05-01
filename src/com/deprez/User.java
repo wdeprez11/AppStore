@@ -19,4 +19,28 @@ public class User {
         this.userName = userName;
         this.userApps = userApps;
     }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public List<Integer> getUserApps() {
+        return userApps;
+    }
+
+    public void setUserApps(List<Integer> userApps) {
+        this.userApps = userApps;
+    }
 }
