@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Database {
     private String url;
+    // TODO: Add class attribute in order to store the tables created.
 
     /**
      * Creates a database object.
@@ -136,7 +137,29 @@ public class Database {
      * @return returns table as a List
      */
     <T> List<T> getTable(String tb_name) {
-        // TODO: needs implementation.
-        return new ArrayList<>();
+        Connection connection = null;
+        List<T> list = new ArrayList<>();
+        try {
+            connection = DriverManager.getConnection(url);
+            String sql = "SELECT * FROM " + tb_name;
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                // TODO: add queries based on class attribute that stores tables.
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return list;
     }
 }
