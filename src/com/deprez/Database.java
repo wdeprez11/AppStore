@@ -50,18 +50,18 @@ public class Database {
     /**
      * Builds an sql statement from user input and executes it, creating the table if it does not already exist.
      *
-     * @param tb_name the name of the table created in the database (E.g. user_tb)
+     * @param tb_name   the name of the table created in the database (E.g. user_tb)
      * @param columnIds the id of each column created within the table.
-     * @param types an array with the sql type of each column created (E.g. INTEGER)
-     * @param args a two dimensional array, with each row being the list of arguments for the corresponding columnId index.
+     * @param types     an array with the sql type of each column created (E.g. INTEGER)
+     * @param args      a two dimensional array, with each row being the list of arguments for the corresponding columnId index.
      */
     void createTable(String tb_name, String[] columnIds, String[] types, String[][] args) {
         StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         sql.append(tb_name).append("(");
-        for(int j = 0; j < columnIds.length; j++) {
+        for (int j = 0; j < columnIds.length; j++) {
             sql.append(columnIds[j]).append(" ");
             sql.append(types[j]).append(" ");
-            for(int i = 0; i < args[j].length; i++) {
+            for (int i = 0; i < args[j].length; i++) {
                 sql.append(args[j][i]).append((i + 1 != args[j].length) ? " " : ((j + 1 != columnIds.length) ? ", " : ""));
             }
         }
@@ -100,8 +100,8 @@ public class Database {
      * TODO: Learn how to implement and use generics properly.
      *
      * @param tb_name the name of the table to search for
-     * @param list the list that will be written to the table
-     * @param <T> the type of the list (E.g. App, User, etc...)
+     * @param list    the list that will be written to the table
+     * @param <T>     the type of the list (E.g. App, User, etc...)
      */
     <T> void writeTable(String tb_name, List<T> list) {
         dropTable(tb_name);
@@ -114,7 +114,7 @@ public class Database {
             System.out.println(e.getMessage());
         } finally {
             try {
-                if(connection != null) {
+                if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
@@ -129,7 +129,7 @@ public class Database {
      * TODO: Learn how to implement and use generics properly.
      *
      * @param tb_name the table name to look for in the database
-     * @param <T> the type of list to request (E.g. App, User, etc...)
+     * @param <T>     the type of list to request (E.g. App, User, etc...)
      * @return returns table as a List
      */
     <T> List<T> getTable(String tb_name) {
