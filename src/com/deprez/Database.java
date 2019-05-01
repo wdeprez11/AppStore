@@ -60,12 +60,12 @@ public class Database {
             // TODO: throw an error
         }
         StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
-        sql.append(tb_name + "(");
+        sql.append(tb_name).append("(");
         for(int j = 0; j < columnIds.length; j++) {
-            sql.append(columnIds[j] + " ");
-            sql.append(types[j] + " ");
+            sql.append(columnIds[j]).append(" ");
+            sql.append(types[j]).append(" ");
             for(int i = 0; i < args[j].length; i++) {
-                sql.append(args[j][i] + ((i+1 != args[j].length) ? " " : ((j+1 != columnIds.length) ? ", " : "")));
+                sql.append(args[j][i]).append((i + 1 != args[j].length) ? " " : ((j + 1 != columnIds.length) ? ", " : ""));
             }
         }
         sql.append(");");
@@ -96,5 +96,47 @@ public class Database {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Writes a list to table, essentially converts a List into a table.
+     * TODO: Learn how to implement and use generics properly.
+     *
+     * @param tb_name the name of the table to search for
+     * @param list the list that will be written to the table
+     * @param <T> the type of the list (E.g. App, User, etc...)
+     */
+    <T> void writeTable(String tb_name, List<T> list) {
+        dropTable(tb_name);
+        // createTable(tb_name);
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+            // TODO: needs implementation.
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if(connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Formats and returns data as a list.
+     * TODO: Learn how to implement and use generics properly.
+     *
+     * @param tb_name the table name to look for in the database
+     * @param <T> the type of list to request (E.g. App, User, etc...)
+     * @return returns table as a List
+     */
+    <T> List<T> getTable(String tb_name) {
+        // TODO: needs implementation.
+        return new ArrayList<>();
     }
 }
