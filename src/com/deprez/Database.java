@@ -55,6 +55,7 @@ public class Database {
      * @param types     an array with the sql type of each column created (E.g. INTEGER)
      * @param args      a two dimensional array, with each row being the list of arguments for the corresponding columnId index.
      */
+    /*
     void createTable(String tb_name, String[] columnIds, String[] types, String[][] args) {
         StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         sql.append(tb_name).append("(");
@@ -77,6 +78,7 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+    */
 
     /**
      * Drops a table from the database.
@@ -95,14 +97,14 @@ public class Database {
         }
     }
 
+    /**
+     * Creates the user_tb through SQLite
+     */
     public void createUserTable() {
         // SQL statement for creating a new table
-        String sql = "CREATE TABLE IF NOT EXISTS user_tb (\n"
-                + "userId INTEGER\n" +
-                "    primary key\n" +
-                "  autoincrement,\n"
-                + " userName varchar(50) NOT NULL\n"
-                + ");";
+        String sql = "CREATE TABLE IF NOT EXISTS user_tb(" +
+                "userId INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "userName varchar(50) NOT NULL);";
         try {
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
@@ -113,31 +115,52 @@ public class Database {
         }
     }
 
-    public void dropUserTable() {
-        // SQL statement for creating a new table
-        String sql = "DROP TABLE user_tb;";
+    /**
+     * Creates the app_tb through SQLite
+     */
+    public void createAppTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS app_tb(" +
+                "appId INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "appName VARCHAR(64) NOT NULL UNIQUE, " +
+                "creatorId INTEGER);";
         try {
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
             statement.execute(sql);
-            System.out.println("dropUserTable done.");
+            System.out.println("createAppTable done.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * TODO: Check SQLite api to see about linking appId and userId to user_tb and app_tb
+     * Creates the userapp_tb through SQLite
+     */
+    public void createUserAppTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS userapp_tb(" +
+                "appId INTEGER," +
+                "userId INTEGER," +
+                "review VARCHAR(2000));";
+        try {
+            Connection connection = DriverManager.getConnection(url);
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+            System.out.println("createUserAppTable done.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void saveUsers(List<User> users) {
-        dropUserTable();
+        dropTable("user_tb");
         createUserTable();
         Connection connection = null;
         try {
-            // db parameters
-            // create a connection to the database
             connection = DriverManager.getConnection(url);
 
-            for(User user:users)
-            {
-                String sql = "INSERT INTO user_tb (userName) values ('"+user.getUserName()+"');";
+            for (User user : users) {
+                String sql = "INSERT INTO user_tb (userName) values ('" + user.getUserName() + "');";
                 Statement statement = connection.createStatement();
                 statement.execute(sql);
             }
@@ -169,13 +192,12 @@ public class Database {
 
             String sql = "SELECT * FROM user_tb;";
             Statement statement = connection.createStatement();
-            ResultSet rs    = statement.executeQuery(sql);
+            ResultSet rs = statement.executeQuery(sql);
 
             // loop through the result set
             while (rs.next()) {
-                System.out.println(rs.getInt("userId") +  "\t" +
-                        rs.getString("userName"));
-                users.add(new User(rs.getInt("userId"),rs.getString("userName")));
+                // System.out.println(rs.getInt("userId") +  "\t" + rs.getString("userName"));
+                users.add(new User(rs.getInt("userId"), rs.getString("userName")));
             }
 
             System.out.println("Users loaded.");
