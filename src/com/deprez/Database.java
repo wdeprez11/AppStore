@@ -214,7 +214,7 @@ public class Database {
         try {
             connection = DriverManager.getConnection(url);
 
-            String sql = "SELECT * FROM apps_tb";
+            String sql = "SELECT * FROM app_tb";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
