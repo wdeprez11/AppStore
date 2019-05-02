@@ -28,8 +28,7 @@
         </jar>
     </target>
 
-    <!-- Generate javadocs for current project into ${doc.dir} -->
-    <target name="doc" depends="init" description="generate documentation">
+    <target name="javadoc" depends="init" description="generate documentation">
         <javadoc sourcepath="${src.dir}" destdir="${doc.dir}/javadoc"/>
     </target>
 
