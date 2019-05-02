@@ -3,14 +3,15 @@
 ## TODO:
 
 * Merge sort in Community, User, Store, and App classes.
-* Generics in Database class.
+* ~~Generics in database class~~ Never mind
 * Advanced search in Community, User, Store, and App classes.
 * Update tex documentation.
 * Update javadoc.
 * Transcribe tex documentation to README.
 * Update menu in Driver class.
 * Add compareTo and equals methods in User and App classes.
-* Develop front-end.
+* Continue developing front-end.
+* Add license post merge, or learn how to resolve merge conflicts.
 
 ## Introduction
 This program will implement a database of Users, Apps, and Reviews to make up a social app store.
