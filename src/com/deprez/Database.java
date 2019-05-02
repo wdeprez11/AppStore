@@ -152,6 +152,34 @@ public class Database {
         }
     }
 
+    public void saveApps(List<App> apps) {
+        dropTable("app_tb");
+        createAppTable();
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+
+            for (App app : apps) {
+                String sql = "INSERT INTO app_tb (appName) values ('" + app.getAppName() + "');";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
+            }
+
+            System.out.println("Apps saved.");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
     public void saveUsers(List<User> users) {
         dropTable("user_tb");
         createUserTable();
@@ -180,24 +208,49 @@ public class Database {
         }
     }
 
+    public List<App> loadApps() {
+        Connection connection = null;
+        List<App> apps = new ArrayList<>();
+        try {
+            connection = DriverManager.getConnection(url);
+
+            String sql = "SELECT * FROM apps_tb";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                apps.add(new App(resultSet.getInt("appId"), resultSet.getString("appName")));
+            }
+
+            System.out.println("Apps loaded.");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return apps;
+    }
+
     public List<User> loadUsers() {
 
         Connection connection = null;
         List<User> users = new ArrayList<>();
         try {
-            // db parameters
-            // create a connection to the database
             connection = DriverManager.getConnection(url);
-
 
             String sql = "SELECT * FROM user_tb;";
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
 
-            // loop through the result set
-            while (rs.next()) {
-                // System.out.println(rs.getInt("userId") +  "\t" + rs.getString("userName"));
-                users.add(new User(rs.getInt("userId"), rs.getString("userName")));
+            while (resultSet.next()) {
+                users.add(new User(resultSet.getInt("userId"), resultSet.getString("userName")));
             }
 
             System.out.println("Users loaded.");
