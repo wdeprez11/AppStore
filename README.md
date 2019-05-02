@@ -9,7 +9,7 @@
 * Update javadoc.
 * Transcribe tex documentation to README.
 * Update menu in Driver class.
-* Add compareTo and equals methods in User and App classes.
+* ~~Add compareTo and equals methods in User and App classes.~~ Completed
 * Continue developing front-end.
 * Add license post merge, or learn how to resolve merge conflicts.
 

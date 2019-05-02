@@ -44,8 +44,16 @@ public class App {
         this.appOwners = appOwners;
     }
 
-    // TODO: equals method
-    // TODO: compareTo
+    public int compareTo(Object o) {
+        App other = (App) o;
+        return appId - other.appId + appName.compareTo(other.appName);
+    }
+
+    public boolean equals(Object o) {
+        App other = (App) o;
+        return appId == other.appId && appName.equals(other.appName);
+    }
+
     // TODO: merge sort
     // TODO: search
 }
