@@ -11,7 +11,7 @@
 * Update menu in Driver class.
 * ~~Add compareTo and equals methods in User and App classes.~~ Completed
 * Continue developing front-end.
-* Add license post merge, or learn how to resolve merge conflicts.
+* ~~Add license post merge, or learn how to resolve merge conflicts.~~ Figured it out... Just commit to master, then pull on the alternate branch.
 
 ## Introduction
 This program will implement a database of Users, Apps, and Reviews to make up a social app store.
