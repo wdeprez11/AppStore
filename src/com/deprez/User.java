@@ -6,7 +6,7 @@ import java.util.List;
 public class User {
     private int userId;
     private String userName;
-    private List<Integer> userApps;
+    private List<UserAppReview> userApps;
 
     /**
      * Creates a User object.
@@ -27,7 +27,7 @@ public class User {
      * @param userName the userName of the user. Unique to each user.
      * @param userApps the apps the user owns.
      */
-    public User(int userId, String userName, List<Integer> userApps) {
+    public User(int userId, String userName, List<UserAppReview> userApps) {
         this.userId = userId;
         this.userName = userName;
         this.userApps = userApps;
@@ -74,7 +74,7 @@ public class User {
      *
      * @return returns the indexes of appId
      */
-    public List<Integer> getUserApps() {
+    public List<UserAppReview> getUserApps() {
         return userApps;
     }
 
@@ -83,8 +83,12 @@ public class User {
      *
      * @param userApps the new userApps list
      */
-    public void setUserApps(List<Integer> userApps) {
+    public void setUserApps(List<UserAppReview> userApps) {
         this.userApps = userApps;
+    }
+
+    public void addAppReview(UserAppReview appReview) {
+        userApps.add(appReview);
     }
 
     /**
