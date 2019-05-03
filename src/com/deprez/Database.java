@@ -121,7 +121,7 @@ public class Database {
     public void createAppTable() {
         String sql = "CREATE TABLE IF NOT EXISTS app_tb(" +
                 "appId INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "appName VARCHAR(64) NOT NULL UNIQUE, " +
+                "appName VARCHAR(64) NOT NULL, " +
                 "creatorId INTEGER);";
         try {
             Connection connection = DriverManager.getConnection(url);
@@ -141,7 +141,8 @@ public class Database {
         String sql = "CREATE TABLE IF NOT EXISTS userapp_tb(" +
                 "appId INTEGER," +
                 "userId INTEGER," +
-                "review VARCHAR(2000));";
+                "reviewScore INTEGER," +
+                "reviewDetail VARCHAR(2000));";
         try {
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
@@ -208,6 +209,41 @@ public class Database {
         }
     }
 
+    public void saveUserAppReviews(List<User> users) {
+        dropTable("userapp_tb");
+        createUserAppTable();
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+
+            for (User user : users) {
+                for (UserAppReview appReview : user.getUserApps()) {
+                    String sql = "INSERT INTO userapp_tb(userId, appId, reviewScore, reviewDetail) values ("
+                            + user.getUserId() + ","
+                            + appReview.getAppId() + ","
+                            + appReview.getAppReviewScore() + ",'"
+                            + appReview.getAppReviewDetail() + "');";
+                    Statement statement = connection.createStatement();
+                    statement.execute(sql);
+
+                }
+            }
+
+            System.out.println("App reviews saved.");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
     public List<App> loadApps() {
         Connection connection = null;
         List<App> apps = new ArrayList<>();
@@ -238,6 +274,36 @@ public class Database {
         return apps;
     }
 
+    public List<UserAppReview> loadUserAppReviews() {
+        Connection connection = null;
+        List<UserAppReview> userAppReviews = new ArrayList<>();
+        try {
+            connection = DriverManager.getConnection(url);
+            String sql = "SELECT * FROM userapp_tb;";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                int userId = resultSet.getInt("userId");
+                int appId = resultSet.getInt("appId");
+                int reviewScore = resultSet.getInt("reviewScore");
+                String reviewDetail = resultSet.getString("reviewDetail");
+                userAppReviews.add(new UserAppReview(userId, appId, reviewScore, reviewDetail));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return userAppReviews;
+    }
+
     public List<User> loadUsers() {
 
         Connection connection = null;
@@ -255,6 +321,23 @@ public class Database {
 
             System.out.println("Users loaded.");
 
+            //userApps.add(new UserAppReview
+                /*
+                int userId = resultSet2.getInt("userId");
+                for (int i = 0; i < users.size(); i++) {
+                    User user = users.get(i);
+                    if(user.getUserId() == userId) {
+                        int appId = resultSet2.getInt("appId");
+                        int reviewScore = resultSet2.getInt("reviewScore");
+                        String reviewDetail = resultSet2.getString("reviewDetail");
+                        users.get(i).addAppReview(new UserAppReview(appId, reviewScore, reviewDetail));
+                        break;
+                    }
+                }
+            }*/
+
+            // System.out.println("AppReviews loaded.");
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -268,5 +351,6 @@ public class Database {
         }
         return users;
     }
+
 
 }
