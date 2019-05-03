@@ -3,6 +3,7 @@ package com.deprez;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Database {
     private String url;
@@ -33,16 +34,16 @@ public class Database {
         try {
             connection = DriverManager.getConnection(url);
 
-            System.out.println("Connection to SQLite established.");
+            Driver.LOGGER.log(Level.FINE, "Connection to SQLite established.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to open connection with database.", e);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                Driver.LOGGER.log(Level.FINE, "Error connecting to SQLite database, probably need to check your libraries...", ex);
             }
         }
     }
@@ -91,9 +92,9 @@ public class Database {
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
             statement.execute(sql);
-            System.out.println("Dropped " + tb_name + " successfully.");
+            Driver.LOGGER.log(Level.FINE, "Dropped " + tb_name + " successfully.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to drop table: " + tb_name, e);
         }
     }
 
@@ -109,9 +110,9 @@ public class Database {
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
             statement.execute(sql);
-            System.out.println("createUserTable done.");
+            Driver.LOGGER.log(Level.FINE, "createUserTable done.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to create user table...", e);
         }
     }
 
@@ -127,9 +128,9 @@ public class Database {
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
             statement.execute(sql);
-            System.out.println("createAppTable done.");
+            Driver.LOGGER.log(Level.FINE, "createAppTable done.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to create app table...", e);
         }
     }
 
@@ -147,9 +148,9 @@ public class Database {
             Connection connection = DriverManager.getConnection(url);
             Statement statement = connection.createStatement();
             statement.execute(sql);
-            System.out.println("createUserAppTable done.");
+            Driver.LOGGER.log(Level.FINE, "createUserAppTable done.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to create user app table...", e);
         }
     }
 
@@ -166,17 +167,16 @@ public class Database {
                 statement.execute(sql);
             }
 
-            System.out.println("Apps saved.");
-
+            Driver.LOGGER.log(Level.FINE, "Apps saved.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database", e);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection", ex);
             }
         }
     }
@@ -194,17 +194,17 @@ public class Database {
                 statement.execute(sql);
             }
 
-            System.out.println("Users saved.");
+            Driver.LOGGER.log(Level.FINE, "Users saved.");
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.SEVERE, "Failed to save users table!", e);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection to database...", ex);
             }
         }
     }
@@ -229,17 +229,16 @@ public class Database {
                 }
             }
 
-            System.out.println("App reviews saved.");
-
+            Driver.LOGGER.log(Level.FINE, "App reviews saved.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to save user app reviews table!", e);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection to database...", ex);
             }
         }
     }
@@ -258,17 +257,17 @@ public class Database {
                 apps.add(new App(resultSet.getInt("appId"), resultSet.getString("appName")));
             }
 
-            System.out.println("Apps loaded.");
+            Driver.LOGGER.log(Level.FINE, "Apps loaded.");
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database...", e);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection with database...", ex);
             }
         }
         return apps;
@@ -291,14 +290,14 @@ public class Database {
                 userAppReviews.add(new UserAppReview(userId, appId, reviewScore, reviewDetail));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database...", e);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection with database...", ex);
             }
         }
         return userAppReviews;
@@ -319,34 +318,17 @@ public class Database {
                 users.add(new User(resultSet.getInt("userId"), resultSet.getString("userName")));
             }
 
-            System.out.println("Users loaded.");
-
-            //userApps.add(new UserAppReview
-                /*
-                int userId = resultSet2.getInt("userId");
-                for (int i = 0; i < users.size(); i++) {
-                    User user = users.get(i);
-                    if(user.getUserId() == userId) {
-                        int appId = resultSet2.getInt("appId");
-                        int reviewScore = resultSet2.getInt("reviewScore");
-                        String reviewDetail = resultSet2.getString("reviewDetail");
-                        users.get(i).addAppReview(new UserAppReview(appId, reviewScore, reviewDetail));
-                        break;
-                    }
-                }
-            }*/
-
-            // System.out.println("AppReviews loaded.");
+            Driver.LOGGER.log(Level.FINE, "Users loaded.");
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Driver.LOGGER.log(Level.WARNING, "Failed to get users, couldn't connect to database...", e);
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection of database", ex);
             }
         }
         return users;

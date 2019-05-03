@@ -54,6 +54,15 @@ public class App {
         return appId == other.appId && appName.equals(other.appName);
     }
 
+    @Override
+    public String toString() {
+        return "App{" +
+                "appId=" + appId +
+                ", appName='" + appName + '\'' +
+                ", appOwners=" + appOwners +
+                '}';
+    }
+
     // TODO: merge sort
     // TODO: search
 }

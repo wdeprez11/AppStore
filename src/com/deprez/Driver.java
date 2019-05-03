@@ -1,5 +1,8 @@
 package com.deprez;
 
+import java.io.IOError;
+import java.io.IOException;
+import java.util.logging.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Driver {
+    public static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
     private Database database;
     private Community community;
     private Store store;
@@ -21,15 +25,18 @@ public class Driver {
         community = new Community(database.loadUsers());
         store = new Store(database.loadApps());
         userAppReviews = new UserAppReviews(database.loadUserAppReviews());
+        setupLogger();
+
+
 
         try {
-            User tmp = new User(3, "Bella");
+            User tmp = new User(2, "William");
             // tmp.addAppReview(new UserAppReview(1, 9, "Game sucks."));
             community.addUser(tmp);
             store.addApp(new App(store.size(), "Battlefield"));
             store.addApp(new App(store.size(), "Call of Duty"));
 
-            //loop through users->appreviews and add the user into the apps user list
+            //loop through users->appReviews and add the user into the apps user list
 
             //or create new class call UserApps which includes the Appreviews list
             //create methods to
@@ -38,7 +45,7 @@ public class Driver {
 
 
         } catch (AlreadyExistsException e) {
-            System.out.println(e);
+            LOGGER.log(Level.WARNING, "Attempted to add an existing item to list...", e);
         }
         System.out.println(store);
         System.out.println(community);
@@ -50,8 +57,28 @@ public class Driver {
         mainJFrame = new JFrame("Main Menu");
     }
 
+    private static void setupLogger() {
+        LogManager.getLogManager().reset();
+        LOGGER.setLevel(Level.ALL);
+        LOGGER.log(Level.INFO, "Driver Started.");
+
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.INFO);
+
+        LOGGER.addHandler(consoleHandler);
+
+        try {
+            FileHandler fileHandler = new FileHandler("appstore.log", true);
+            fileHandler.setFormatter(new SimpleFormatter());
+            LOGGER.addHandler(fileHandler);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to create log file", e);
+        }
+    }
+
     public static void main(String[] args) {
         Driver driver = new Driver();
+        // setupLogger();
         driver.save();
         // driver.createLoginWindow();
         // driver.createDatabase();
