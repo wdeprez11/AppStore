@@ -1,6 +1,8 @@
 package com.deprez;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Community {
@@ -43,6 +45,7 @@ public class Community {
     }
 
     public boolean hasUser(User user) {
+        // TODO: Implement binary search after sort is complete
         String userName = user.getUserName();
         for (User usr : users) {
             if (usr.getUserName().equals(userName)) {
@@ -53,19 +56,18 @@ public class Community {
     }
 
     public boolean hasUser(String userName) {
-
-        return false;
-        /*
-        for (User usr : users) {
-            if (usr.getUserName().equals(userName)) {
+        // TODO: Implement binary search after sort is complete
+        for (User user : users) {
+            if (user.getUserName().equals(userName)) {
                 return true;
             }
         }
         return false;
-         */
     }
 
-    public void mergeSortName() {
+    public void sortByName() {
+        Collections.sort(users, new SortUserByName());
+        /*
         if (!(users.size() <= 1)) {
 
             int midpoint = users.size() / 2;
@@ -77,7 +79,7 @@ public class Community {
 
             int leftPtr = 0, rightPtr = 0, resultPtr = 0;
 
-            while (leftPtr < left.size() + 1 || rightPtr < right.size() + 1) {
+            while (leftPtr < left.size() || rightPtr < right.size()) {
                 if (leftPtr < left.size() && rightPtr < right.size()) {
                     if (left.get(leftPtr).compareToName(right.get(rightPtr)) < 0) {
                         result.add(resultPtr++, left.get(leftPtr++));
@@ -93,6 +95,7 @@ public class Community {
 
             users = result;
         }
+         */
     }
 
 
@@ -112,5 +115,17 @@ public class Community {
         return "Community{" +
                 "users=" + users +
                 '}';
+    }
+
+    public int size() {
+        return users.size();
+    }
+}
+
+class SortUserByName implements Comparator<User> {
+
+    @Override
+    public int compare(User user, User t1) {
+        return user.compareToName(t1);
     }
 }
