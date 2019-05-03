@@ -11,7 +11,7 @@ public class Driver {
     private Database database;
     private Community community;
     private Store store;
-    private GridBagConstraints gridBagConstraints;
+    private UserAppReviews userAppReviews;
     private JFrame loginJFrame;
     private JFrame mainJFrame;
 
@@ -19,15 +19,41 @@ public class Driver {
         database = new Database("jdbc:sqlite:appstore.db");
         database.connect();
         community = new Community(database.loadUsers());
-        // store = new Store(database.loadApps());
+        store = new Store(database.loadApps());
+        userAppReviews = new UserAppReviews(database.loadUserAppReviews());
 
+        try {
+            User tmp = new User(3, "Bella");
+            // tmp.addAppReview(new UserAppReview(1, 9, "Game sucks."));
+            community.addUser(tmp);
+            store.addApp(new App(store.size(), "Battlefield"));
+            store.addApp(new App(store.size(), "Call of Duty"));
+
+            //loop through users->appreviews and add the user into the apps user list
+
+            //or create new class call UserApps which includes the Appreviews list
+            //create methods to
+            // getUsersOfApp(appId)
+            // getAppsOfUser(userId)
+
+
+        } catch (AlreadyExistsException e) {
+            System.out.println(e);
+        }
+        System.out.println(store);
+        System.out.println(community);
+        community.sortByName();
+
+        System.out.println(community);
+        // System.out.println(store);
         loginJFrame = new JFrame("Login");
         mainJFrame = new JFrame("Main Menu");
     }
 
     public static void main(String[] args) {
         Driver driver = new Driver();
-        driver.createLoginWindow();
+        driver.save();
+        // driver.createLoginWindow();
         // driver.createDatabase();
         // driver.createWindow();
     }
@@ -61,12 +87,9 @@ public class Driver {
         loginJFrame.add(loginJButton);
 
         JButton quitJButton = new JButton("Quit");
-        quitJButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                System.out.println("Quitting ...");
-                quit(loginJFrame);
-            }
+        quitJButton.addActionListener(actionEvent -> {
+            System.out.println("Quitting ...");
+            quit(loginJFrame);
         });
         loginJFrame.add(quitJButton);
 
@@ -128,10 +151,17 @@ public class Driver {
                 });*/
     }
 
-    private void quit(JFrame jFrame) {
+    private void save() {
         database.saveUsers(community.getUsers());
-        jFrame.dispose();
+        database.saveApps(store.getApps());
+        database.saveUserAppReviews(community.getUsers());
         // database.saveApps(store.getApps());
+        // database.saveUserApp(user);
+    }
+
+    private void quit(JFrame jFrame) {
+        save();
+        jFrame.dispose();
         System.out.println("die");
         System.exit(0);
     }
