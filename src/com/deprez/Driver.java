@@ -74,6 +74,8 @@ public class Driver {
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Failed to create log file", e);
         }
+
+        LOGGER.log(Level.FINEST, "\nNEW INSTANCE!\n");
     }
 
     public static void main(String[] args) {
@@ -189,7 +191,7 @@ public class Driver {
     private void quit(JFrame jFrame) {
         save();
         jFrame.dispose();
-        System.out.println("die");
+        LOGGER.log(Level.FINEST, "Cleaning up graphics...\n");
         System.exit(0);
     }
 }
