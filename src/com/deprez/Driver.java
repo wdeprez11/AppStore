@@ -53,6 +53,9 @@ public class Driver {
         mainJFrame = new JFrame("Main Menu");
     }
 
+    // TODO: Setup elements method
+    // TODO: Visibility switcher (E.g. switching from login -> main menu makes login invisible and main menu visible...)
+
     private static void setupLogger() {
         LogManager.getLogManager().reset();
         LOGGER.setLevel(Level.ALL);
@@ -71,7 +74,7 @@ public class Driver {
             LOGGER.log(Level.WARNING, "Failed to create log file", e);
         }
 
-        LOGGER.log(Level.FINEST, "\nNEW INSTANCE!\n");
+        LOGGER.log(Level.FINEST, "NEW INSTANCE!");
     }
 
     public static void main(String[] args) {
@@ -195,9 +198,9 @@ public class Driver {
     private void quit(JFrame jFrame) {
         save();
         jFrame.dispose();
-        LOGGER.log(Level.FINEST, "Cleaning up graphics...\n");
-        LOGGER.log(Level.INFO, '\n' + "Final Community Appearance: " + community.toString() + "\nFinal Store Appearance: " + store.toString() + '\n');
-        LOGGER.log(Level.INFO, "\n\nDONE\n");
+        LOGGER.log(Level.INFO, Community.class.getName() + " list\n" + community.toString());
+        LOGGER.log(Level.INFO, Store.class.getName() + " list\n" + store.toString());
+        LOGGER.log(Level.INFO, "\nDONE\nDONE\nDONE\n");
         System.exit(0);
     }
 }
