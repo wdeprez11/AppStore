@@ -137,7 +137,7 @@ public class User {
     }
 
     /**
-     * Sorts the list.
+     * Sorts the list in order of appId.
      *
      * TODO: Implement as merge sort, temporarily using Collections because focusing on more important things.
      */

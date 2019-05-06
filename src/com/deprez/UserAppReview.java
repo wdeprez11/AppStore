@@ -77,17 +77,18 @@ public class UserAppReview {
      * Returns the difference of a UserAppReview object's attributes.
      *
      * @param o the other object.
-     * @return return the sum of the difference of the implicit appId and the parameters appId, the difference of the implicit appReviewScore and the parameters appReviewScore, and the implicit appReviewDetail compared to the parameters appReviewDetail.
+     * @return return the difference of two UserAppReview object's appIds
      */
     public int compareTo(Object o) {
         UserAppReview other = (UserAppReview) o;
-        return (appId - other.appId) + (appReviewScore - other.appReviewScore) + (appReviewDetail.compareTo(other.appReviewDetail));
+        return (appId - other.appId);
     }
 
     /**
      * Checks if two reviews are equal to each other.
-     * @param o
-     * @return
+     *
+     * @param o the other object.
+     * @return return if the implicit appId, appReviewScore, and appReviewDetail and the same as the parameters.
      */
     public boolean equals(Object o) {
         UserAppReview other = (UserAppReview) o;

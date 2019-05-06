@@ -1,9 +1,12 @@
 package com.deprez;
 
+import jdk.nashorn.internal.ir.FunctionCall;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.IntToDoubleFunction;
 
 public class Community {
     private List<User> users;
@@ -55,14 +58,45 @@ public class Community {
         return false;
     }
 
-    public boolean hasUser(String userName) {
+    /**
+     *
+     * @param <I> functional interface type.
+     */
+    public class Recursive<I> {
+        public I func;
+    }
+
+    public interface MyFunctionalInterface {
+        public int myfunc(int l, int r);
+    }
+
+    /**
+     * Assumes the list is sorted, and uses a binary search to search for the userName.
+     *
+     * @param userName the userName to search for.
+     * @return returns the index if found, otherwise returns -1.
+     */
+    public int hasUser(String userName) {
         // TODO: Implement binary search after sort is complete
-        for (User user : users) {
-            if (user.getUserName().equals(userName)) {
-                return true;
+
+        Recursive<MyFunctionalInterface> binarySearch = new Recursive<>();
+        binarySearch.func = (int l, int r) -> {
+            if (r >= 1) {
+                int mid = l + (r - l) / 2;
+
+                if (users.get(mid).getUserName().equals(userName))
+                    return mid;
+
+                if (users.get(mid).getUserName().compareTo(userName) > 0)
+                    return binarySearch.func.myfunc(l, r);
+
+                return binarySearch.func.myfunc(mid + 1, r);
+
             }
-        }
-        return false;
+
+            return -1;
+        };
+        return -1;
     }
 
     public void sortByName() {
@@ -99,6 +133,13 @@ public class Community {
     }
 
 
+    /**
+     * Removes a user with a matching userName from the list.
+     *
+     * TODO: Implement a binary search.
+     *
+     * @param userName the userName of the User object to remove.
+     */
     public void removeUser(String userName) {
         int i = 0;
         for (User usr : users) {
@@ -110,6 +151,11 @@ public class Community {
         }
     }
 
+    /**
+     * Returns the list of users as a String.
+     *
+     * @return return the users list as a String.
+     */
     @Override
     public String toString() {
         return "Community{" +
@@ -117,10 +163,18 @@ public class Community {
                 '}';
     }
 
+    /**
+     * Clears the users implicit parameter.
+     */
     public void clear() {
         users.clear();
     }
 
+    /**
+     * Returns the size of the implicit users list.
+     *
+     * @return returns the users list length.
+     */
     public int size() {
         return users.size();
     }
