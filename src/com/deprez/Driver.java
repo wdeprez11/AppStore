@@ -27,30 +27,15 @@ public class Driver {
         store = new Store(database.loadApps());
         userAppReviews = new UserAppReviews(database.loadUserAppReviews());
         setupLogger();
-
-        /*
-        try {
-            // User tmp = new User(2, "William");
-            // tmp.addAppReview(new UserAppReview(1, 9, "Game sucks."));
-            // community.addUser(tmp);
-            // store.addApp(new App(store.size(), "Battlefield"));
-            // store.addApp(new App(store.size(), "Call of Duty"));
-
-            //loop through users->appReviews and add the user into the apps user list
-
-            //or create new class call UserApps which includes the Appreviews list
-            //create methods to
-            // getUsersOfApp(appId)
-            // getAppsOfUser(userId)
-
-
-        } catch (AlreadyExistsException e) {
-            LOGGER.log(Level.WARNING, "Attempted to add an existing item to list...", e);
-        }
-         */
         loginJFrame = new JFrame("Login");
-        createLoginWindow();
+        setupLogin();
         mainJFrame = new JFrame("Main Menu");
+        setupMM();
+        // storeJFrame = new JFrame("Store");
+        // setupStore();
+        // communityJFrame = new JFrame("Community");
+        // setupComm();
+        loginJFrame.setVisible(true);
     }
 
     // TODO: Setup elements method
@@ -86,7 +71,7 @@ public class Driver {
         // driver.createWindow();
     }
 
-    private void createLoginWindow() {
+    private void setupLogin() {
         loginJFrame.setSize(400, 320);
         loginJFrame.setLayout(new GridLayout(10, 10, 10, 10));
         loginJFrame.setLocationRelativeTo(null);
@@ -108,16 +93,18 @@ public class Driver {
 
         JButton loginJButton = new JButton("Login");
         loginJButton.addActionListener(actionEvent -> {
-            System.out.println("Action: " + actionEvent);
+            // System.out.println("Action: " + actionEvent);
             if (userJTextField.getText().matches(".*\\w.*")) {
-                loginJFrame.dispose();
+                loginJFrame.setVisible(false);
                 try {
                     community.addUser(userJTextField.getText());
                 } catch (AlreadyExistsException e) {
                     LOGGER.log(Level.FINE, "User already exists, settings 'currentUserName' to the field...", e);
                 }
                 currentUserName = userJTextField.getText();
-                createMainMenuWindow();
+                // createMainMenuWindow();
+                mainJFrame.setVisible(true);
+                // TODO: Change label in main menu
             }
         });
         loginJFrame.add(loginJButton);
@@ -127,11 +114,9 @@ public class Driver {
             quit(loginJFrame);
         });
         loginJFrame.add(quitJButton);
-
-        loginJFrame.setVisible(true);
     }
 
-    private void createMainMenuWindow() {
+    private void setupMM() {
         mainJFrame.setSize(600, 400);
         mainJFrame.setLayout(new GridLayout(10, 10, 10, 10));
         mainJFrame.setLocationRelativeTo(null);
@@ -144,17 +129,27 @@ public class Driver {
             }
         });
 
+        JLabel username = new JLabel("Username: " + currentUserName);
+        mainJFrame.add(username);
+
+        JButton communityJButton = new JButton("Community");
+        mainJFrame.add(communityJButton);
+
+        JButton storeJButton = new JButton("Store");
+        mainJFrame.add(storeJButton);
+
+        JButton reportJButton = new JButton("Report");
+        mainJFrame.add(reportJButton);
+
         JButton backJButton = new JButton("Logout");
         backJButton.addActionListener(actionEvent -> {
             // System.out.println("Action" + actionEvent);
-            mainJFrame.dispose();
+            mainJFrame.setVisible(false);
             currentUserName = null;
-            createLoginWindow();
+            // createLoginWindow();
+            loginJFrame.setVisible(true);
         });
         mainJFrame.add(backJButton);
-
-        mainJFrame.setVisible(true);
-
     }
 
     private void createDatabase() {
