@@ -66,7 +66,7 @@ public class Community {
     }
 
     public void sortByName() {
-        Collections.sort(users, new UserComparator());
+        Collections.sort(users, User::compareToName);
         /*
         if (!(users.size() <= 1)) {
 
@@ -123,13 +123,5 @@ public class Community {
 
     public int size() {
         return users.size();
-    }
-}
-
-class UserComparator implements Comparator<User> {
-
-    @Override
-    public int compare(User user, User t1) {
-        return user.compareToName(t1);
     }
 }

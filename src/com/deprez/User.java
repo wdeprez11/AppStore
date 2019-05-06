@@ -1,6 +1,7 @@
 package com.deprez;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class User {
@@ -135,6 +136,15 @@ public class User {
         return userName.equals(((User) o).userName);
     }
 
-    // TODO: merge sort
+    /**
+     * Sorts the list.
+     *
+     * TODO: Implement as merge sort, temporarily using Collections because focusing on more important things.
+     */
+    public void sort() {
+        Collections.sort(userApps, UserAppReview::compareTo);
+    }
+
     // TODO: search
 }
+

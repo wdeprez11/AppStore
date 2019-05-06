@@ -2,7 +2,6 @@ package com.deprez;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class Store {
@@ -34,7 +33,7 @@ public class Store {
     }
 
     public void sort() {
-        Collections.sort(apps, new AppComparator());
+        Collections.sort(apps, App::compareTo);
     }
 
     public boolean hasApp(App app) {
@@ -63,11 +62,4 @@ public class Store {
 
     // TODO: merge sort
     // TODO: search
-}
-
-class AppComparator implements Comparator<App> {
-    @Override
-    public int compare(App app, App t1) {
-        return app.compareTo(t1);
-    }
 }

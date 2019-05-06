@@ -1,6 +1,7 @@
 package com.deprez;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class App {
@@ -123,6 +124,18 @@ public class App {
                 ", appName='" + appName + '\'' +
                 ", appOwners=" + appOwners +
                 '}';
+    }
+
+    public void sort() {
+        Collections.sort(appOwners);
+    }
+
+    public int size() {
+        return appOwners.size();
+    }
+
+    public void clear() {
+        appOwners.clear();
     }
 
     // TODO: merge sort
