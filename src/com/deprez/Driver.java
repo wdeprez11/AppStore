@@ -18,6 +18,7 @@ public class Driver {
     private UserAppReviews userAppReviews;
     private JFrame loginJFrame;
     private JFrame mainJFrame;
+    private String currentUserName;
 
     private Driver() {
         database = new Database("jdbc:sqlite:appstore.db");
@@ -27,14 +28,13 @@ public class Driver {
         userAppReviews = new UserAppReviews(database.loadUserAppReviews());
         setupLogger();
 
-
-
+        /*
         try {
-            User tmp = new User(2, "William");
+            // User tmp = new User(2, "William");
             // tmp.addAppReview(new UserAppReview(1, 9, "Game sucks."));
-            community.addUser(tmp);
-            store.addApp(new App(store.size(), "Battlefield"));
-            store.addApp(new App(store.size(), "Call of Duty"));
+            // community.addUser(tmp);
+            // store.addApp(new App(store.size(), "Battlefield"));
+            // store.addApp(new App(store.size(), "Call of Duty"));
 
             //loop through users->appReviews and add the user into the apps user list
 
@@ -47,13 +47,9 @@ public class Driver {
         } catch (AlreadyExistsException e) {
             LOGGER.log(Level.WARNING, "Attempted to add an existing item to list...", e);
         }
-        System.out.println(store);
-        System.out.println(community);
-        community.sortByName();
-
-        System.out.println(community);
-        // System.out.println(store);
+         */
         loginJFrame = new JFrame("Login");
+        createLoginWindow();
         mainJFrame = new JFrame("Main Menu");
     }
 
@@ -110,14 +106,21 @@ public class Driver {
         JButton loginJButton = new JButton("Login");
         loginJButton.addActionListener(actionEvent -> {
             System.out.println("Action: " + actionEvent);
-            loginJFrame.dispose();
-            createMainMenuWindow();
+            if (userJTextField.getText().matches(".*\\w.*")) {
+                loginJFrame.dispose();
+                try {
+                    community.addUser(userJTextField.getText());
+                } catch (AlreadyExistsException e) {
+                    LOGGER.log(Level.FINE, "User already exists, settings 'currentUserName' to the field...", e);
+                }
+                currentUserName = userJTextField.getText();
+                createMainMenuWindow();
+            }
         });
         loginJFrame.add(loginJButton);
 
         JButton quitJButton = new JButton("Quit");
         quitJButton.addActionListener(actionEvent -> {
-            System.out.println("Quitting ...");
             quit(loginJFrame);
         });
         loginJFrame.add(quitJButton);
@@ -140,8 +143,9 @@ public class Driver {
 
         JButton backJButton = new JButton("Logout");
         backJButton.addActionListener(actionEvent -> {
-            System.out.println("Action" + actionEvent);
+            // System.out.println("Action" + actionEvent);
             mainJFrame.dispose();
+            currentUserName = null;
             createLoginWindow();
         });
         mainJFrame.add(backJButton);
@@ -192,6 +196,8 @@ public class Driver {
         save();
         jFrame.dispose();
         LOGGER.log(Level.FINEST, "Cleaning up graphics...\n");
+        LOGGER.log(Level.INFO, '\n' + "Final Community Appearance: " + community.toString() + "\nFinal Store Appearance: " + store.toString() + '\n');
+        LOGGER.log(Level.INFO, "\n\nDONE\n");
         System.exit(0);
     }
 }
