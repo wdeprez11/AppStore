@@ -30,7 +30,7 @@ public class Community {
 
     public void addUser(User user) throws AlreadyExistsException {
         if (hasUser(user.getUserName())) {
-            throw new AlreadyExistsException("User with same userName '" + user.getUserName() + "' was found in Community");
+            throw new AlreadyExistsException("User with same userName '" + user.getUserName() + "' was found in " + this.getClass().getName());
         } else {
             users.add(user);
         }
@@ -38,7 +38,7 @@ public class Community {
 
     public void addUser(String userName) throws AlreadyExistsException {
         if (hasUser(userName)) {
-            throw new AlreadyExistsException("User with same userName '" + userName + "' was found in Community");
+            throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
             users.add(new User(users.size(), userName));
         }
@@ -115,6 +115,10 @@ public class Community {
         return "Community{" +
                 "users=" + users +
                 '}';
+    }
+
+    public void clear() {
+        users.clear();
     }
 
     public int size() {

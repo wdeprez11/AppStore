@@ -26,7 +26,7 @@ public class Store {
 
     public void addApp(App app) throws AlreadyExistsException { // TODO
         if (hasApp(app)) {
-            throw new AlreadyExistsException("App with same appId and appName already exists");
+            throw new AlreadyExistsException("App with same appId and appName already exists in " + this.getClass().getName());
         } else {
             apps.add(app);
         }
@@ -46,15 +46,19 @@ public class Store {
         return false;
     }
 
-    public int size() {
-        return apps.size();
-    }
-
     @Override
     public String toString() {
         return "Store{" +
                 "apps=" + apps +
                 '}';
+    }
+
+    public void clear() {
+        apps.clear();
+    }
+
+    public int size() {
+        return apps.size();
     }
 
     // TODO: merge sort
