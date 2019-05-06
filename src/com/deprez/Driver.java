@@ -19,6 +19,9 @@ public class Driver {
     private UserAppReviews userAppReviews;
     private JFrame loginJFrame;
     private JFrame mainJFrame;
+    private JFrame storeJFrame;
+    private JFrame communityJFrame;
+    private JFrame logJFrame;
     private String currentUserName;
 
     private Driver() {
@@ -32,8 +35,8 @@ public class Driver {
         setupLogin();
         mainJFrame = new JFrame("Main Menu");
         setupMM();
-        // storeJFrame = new JFrame("Store");
-        // setupStore();
+        storeJFrame = new JFrame("Store");
+        setupStore();
         // communityJFrame = new JFrame("Community");
         // setupComm();
         loginJFrame.setVisible(true);
@@ -106,6 +109,8 @@ public class Driver {
                 // createMainMenuWindow();
                 mainJFrame.setVisible(true);
                 // TODO: Change label in main menu
+            } else {
+                JOptionPane.showMessageDialog(null, "Please input a username that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         loginJFrame.add(loginJButton);
@@ -142,6 +147,12 @@ public class Driver {
         JButton reportJButton = new JButton("Report");
         mainJFrame.add(reportJButton);
 
+        JButton helpJButton = new JButton("Help");
+        mainJFrame.add(helpJButton);
+
+        JButton logJButton = new JButton("Log");
+        mainJFrame.add(logJButton);
+
         JButton backJButton = new JButton("Logout");
         backJButton.addActionListener(actionEvent -> {
             // System.out.println("Action" + actionEvent);
@@ -151,6 +162,9 @@ public class Driver {
             loginJFrame.setVisible(true);
         });
         mainJFrame.add(backJButton);
+    }
+
+    private void setupStore() {
     }
 
     private void createDatabase() {
