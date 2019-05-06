@@ -1,15 +1,16 @@
 package com.deprez;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.logging.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * @author wd
+ * May 17, 2019
+ */
 public class Driver {
     public static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
     private Database database;
