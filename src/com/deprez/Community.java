@@ -1,16 +1,15 @@
 package com.deprez;
 
-import jdk.nashorn.internal.ir.FunctionCall;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.IntToDoubleFunction;
 
+/**
+ *
+ */
 public class Community {
+
     private List<User> users;
-    private List<Integer> sorted;
     // TODO: Javadoc
     // TODO: Fast Search
     // TODO: Sort (Merge)
@@ -32,7 +31,7 @@ public class Community {
     }
 
     public void addUser(User user) throws AlreadyExistsException {
-        if (hasUser(user.getUserName())) {
+        if (hasUser(user.getUserName()) > 0) {
             throw new AlreadyExistsException("User with same userName '" + user.getUserName() + "' was found in " + this.getClass().getName());
         } else {
             users.add(user);
@@ -40,7 +39,7 @@ public class Community {
     }
 
     public void addUser(String userName) throws AlreadyExistsException {
-        if (hasUser(userName)) {
+        if (hasUser(userName) > 0) {
             throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
             users.add(new User(users.size(), userName));
@@ -59,43 +58,32 @@ public class Community {
     }
 
     /**
-     *
-     * @param <I> functional interface type.
-     */
-    public class Recursive<I> {
-        public I func;
-    }
-
-    public interface MyFunctionalInterface {
-        public int myfunc(int l, int r);
-    }
-
-    /**
      * Assumes the list is sorted, and uses a binary search to search for the userName.
      *
      * @param userName the userName to search for.
      * @return returns the index if found, otherwise returns -1.
      */
     public int hasUser(String userName) {
-        // TODO: Implement binary search after sort is complete
+        // TODO: Implement binary search after sort is completed
 
-        Recursive<MyFunctionalInterface> binarySearch = new Recursive<>();
-        binarySearch.func = (int l, int r) -> {
-            if (r >= 1) {
-                int mid = l + (r - l) / 2;
+        return binarySearch(0, users.size(), userName);
+    }
 
-                if (users.get(mid).getUserName().equals(userName))
-                    return mid;
+    private int binarySearch(int l, int r, String userName) {
+        if (r >= 1) {
+            int mid = l + (r - l) / 2;
 
-                if (users.get(mid).getUserName().compareTo(userName) > 0)
-                    return binarySearch.func.myfunc(l, r);
-
-                return binarySearch.func.myfunc(mid + 1, r);
-
+            if (users.get(mid).getUserName().equals(userName)) {
+                return mid;
             }
 
-            return -1;
-        };
+            if (users.get(mid).getUserName().compareTo(userName) > 0) {
+                return binarySearch(l, mid - 1, userName);
+            }
+
+            return binarySearch(mid + 1, r, userName);
+        }
+
         return -1;
     }
 
