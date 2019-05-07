@@ -8,12 +8,14 @@ import java.util.*;
 public class Community {
 
     private List<User> users;
+    private TreeSet<User> userTreeSet;
     // TODO: Javadoc
     // TODO: Fast Search
     // TODO: Sort (Merge)
 
     public Community() {
-        users = new TreeSet<>();
+        users = new ArrayList<>();
+        userTreeSet = new TreeSet<>();
         // users = new ArrayList<>();
     }
 
@@ -36,14 +38,6 @@ public class Community {
      * @throws AlreadyExistsException if the userName was not found in the list of users
      */
     public void addUser(String userName) throws AlreadyExistsException {
-
-        int i = 0;
-        for (User user : users) {
-            if(user.getUserName().equals(userName))
-                break;
-            i++;
-        }
-
         if (hasUser(userName) >= 1) {
             throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
@@ -67,7 +61,8 @@ public class Community {
             }
             i++;
         }
-        return (binarySearch(userName) >= 0);
+        return -1;
+        // return (binarySearch(userName) >= 0);
     }
 
     /**
@@ -195,3 +190,9 @@ public class Community {
     }
 }
 
+class UserComparator implements Comparator<User> {
+    @Override
+    public int compare(User o1, User o2) {
+        return o1.compareToName(o2);
+    }
+}
