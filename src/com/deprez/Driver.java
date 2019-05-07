@@ -2,8 +2,12 @@ package com.deprez;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.*;
 
@@ -16,7 +20,7 @@ public class Driver {
 
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
     private LoginJFrame loginJFrame;
-    private MMJFrame mmjFrame;
+    private MMJFrame mmJFrame;
     private CommunityJFrame communityJFrame;
     // private JFrame loginJFrame;
     private JFrame storeJFrame;
@@ -96,17 +100,24 @@ public class Driver {
                 }
             });
 
-            loginJButton.addActionListener(actionEvent -> {
-                if (userJTextField.getText().matches(".*\\w.*")) {
-                    loginJFrame.setVisible(false);
-                    try {
-                        community.addUser(userJTextField.getText());
-                    } catch (AlreadyExistsException e) {
-                        LOGGER.log(Level.INFO, "User already exists, setting 'currentUser' to the text field...", e);
+            loginJButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    if (userJTextField.getText().matches(".*\\w.*")) {
+                        loginJFrame.setVisible(false);
+                        try {
+                            community.addUser(userJTextField.getText());
+                        } catch (AlreadyExistsException e) {
+                            LOGGER.log(Level.INFO, "User already exists, setting 'currentUser' to the text field...", e);
+                        }
+                        currentUser = userJTextField.getText();
+                        mmJFrame = new MMJFrame("Main Menu: " + currentUser, currentUser);
+                        communityJFrame = new CommunityJFrame("Community: " + currentUser);
+                        storeJFrame = new StoreJFrame("Store: " + currentUser);
+                        mmJFrame.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(LoginJFrame.this, "Please input a username that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                    currentUser = userJTextField.getText();
-                    mmjFrame = new MMJFrame("Main Menu: " + currentUser, currentUser);
-                    mmjFrame.setVisible(true);
                 }
             });
 
@@ -132,12 +143,37 @@ public class Driver {
     private UserAppReviews userAppReviews;
 
     private class CommunityJFrame extends JFrame {
+        JLabel jLabel;
+
         public CommunityJFrame(String header) {
             super(header);
+
+            jLabel = new JLabel();
+
+            setFrameRules();
+
+            addListeners();
+
+            addComponents();
+        }
+
+        private void setFrameRules() {
+            this.setSize(400, 320);
+            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLocationRelativeTo(null);
+            this.setResizable(false);
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
+
+        private void addListeners() {
+
+        }
+
+        private void addComponents() {
+            add(jLabel);
         }
     }
 
-    private JFrame logJFrame;
 
     /**
      * Manages the elements of the MMJFrame.
@@ -146,12 +182,11 @@ public class Driver {
         JLabel usernameJLabel;
         JButton communityJButton;
         JButton storeJButton;
-        JButton reportJButton;
         JButton helpJButton;
         JButton logJButton;
         JButton backJButton;
 
-        public MMJFrame(String header, String userName) {
+        MMJFrame(String header, String userName) {
             super(header);
 
             LOGGER.log(Level.FINE, "New Main Menu instantiation.");
@@ -161,7 +196,6 @@ public class Driver {
             usernameJLabel = new JLabel("Username: " + userName);
             communityJButton = new JButton("Community");
             storeJButton = new JButton("Store");
-            reportJButton = new JButton("Report");
             helpJButton = new JButton("Help");
             logJButton = new JButton("Log");
             backJButton = new JButton("Logout");
@@ -194,6 +228,48 @@ public class Driver {
                 }
             });
 
+            communityJButton.addActionListener(actionEvent -> {
+                this.setVisible(false);
+                communityJFrame.setVisible(true);
+            });
+
+            storeJButton.addActionListener(actionEvent -> {
+                this.setVisible(false);
+                storeJFrame.setVisible(true);
+            });
+
+            /*
+            helpJButton.addActionListener(actionEvent -> {
+                this.setVisible(false);
+                helpJFrame.setVisible(true);
+            });*/
+
+            logJButton.addActionListener(actionEvent -> {
+                // this.setVisible(false);
+                String line;
+                StringBuilder stringBuilder = new StringBuilder();
+
+                try {
+                    String filename = "appstore.log";
+                    FileReader fileReader = new FileReader(filename);
+                    BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line + '\n');
+                    }
+
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    LOGGER.log(Level.FINE, "", ex);
+                }
+                JTextArea tempJTextField = new JTextArea(25, 80);
+                tempJTextField.setText(stringBuilder.toString());
+                tempJTextField.setSize(new Dimension(1000, 300));
+                tempJTextField.setPreferredSize(new Dimension(1000, tempJTextField.getPreferredSize().height));
+                JScrollPane jScrollPane = new JScrollPane(tempJTextField);
+                JOptionPane.showMessageDialog(this, jScrollPane);
+            });
+
             backJButton.addActionListener(actionEvent -> {
                 // System.out.println("Action" + actionEvent);
                 this.setVisible(false);
@@ -209,7 +285,6 @@ public class Driver {
             this.add(usernameJLabel);
             this.add(communityJButton);
             this.add(storeJButton);
-            this.add(reportJButton);
             this.add(helpJButton);
             this.add(logJButton);
             this.add(backJButton);
@@ -219,7 +294,7 @@ public class Driver {
     // TODO: Add other inner classes for JFrame windows.
 
     private class StoreJFrame extends JFrame {
-        public StoreJFrame(String header) {
+        StoreJFrame(String header) {
             super(header);
         }
     }
