@@ -14,17 +14,57 @@ import java.util.logging.*;
 /**
  * @author William Deprez
  * @version 1.0
+ *
  * May 17, 2019
  */
 public class Driver {
 
+    /**
+     * The static logger for the package.
+     */
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
-    private LoginJFrame loginJFrame;
-    private MMJFrame mmJFrame;
-    private CommunityJFrame communityJFrame;
-    // private JFrame loginJFrame;
-    private JFrame storeJFrame;
 
+    /**
+     * The member declaration of the inner LoginJFrame class.
+     */
+    private LoginJFrame loginJFrame;
+
+    /**
+     * The member declaration of the inner MMJFrame class.
+     */
+    private MMJFrame mmJFrame;
+
+    /**
+     * The member declaration of the inner CommunityJFrame class.
+     */
+    private CommunityJFrame communityJFrame;
+
+    /**
+     * The member declaration of the inner StoreJFrame class.
+     */
+    private StoreJFrame storeJFrame;
+
+    /**
+     * The current User object declared within the LoginJFrame class.
+     */
+    private String currentUser;
+
+    // TODO: Move database to inner class.
+    private Database database;
+
+    /**
+     * The list of users.
+     */
+    private Community community;
+
+    /**
+     * The list of apps.
+     */
+    private Store store;
+
+    /**
+     * Creates a Driver object.
+     */
     private Driver() {
         database = new Database("jdbc:sqlite:appstore.db");
         database.connect();
@@ -34,13 +74,12 @@ public class Driver {
         setupLogger();
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
-        storeJFrame = new JFrame("Store");
+        storeJFrame = new StoreJFrame("Store");
         setupStore();
         // communityJFrame = new JFrame("Community");
         // setupComm();
     }
 
-    private String currentUser;
 
     // private StoreJFrame storeJFrame;
 
@@ -137,9 +176,6 @@ public class Driver {
         }
     }
 
-    private Database database;
-    private Community community;
-    private Store store;
     private UserAppReviews userAppReviews;
 
     private class CommunityJFrame extends JFrame {
