@@ -14,7 +14,7 @@ import java.util.logging.*;
 /**
  * @author William Deprez
  * @version 1.0
- *
+ * <p>
  * May 17, 2019
  */
 public class Driver {
@@ -63,6 +63,12 @@ public class Driver {
     private Store store;
 
     /**
+     * The list of userAppReviews
+     */
+    private UserAppReviews userAppReviews;
+
+
+    /**
      * Creates a Driver object.
      */
     private Driver() {
@@ -75,13 +81,7 @@ public class Driver {
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
         storeJFrame = new StoreJFrame("Store");
-        setupStore();
-        // communityJFrame = new JFrame("Community");
-        // setupComm();
     }
-
-
-    // private StoreJFrame storeJFrame;
 
     /**
      * Manages the elements of the LoginJFrame.
@@ -134,7 +134,6 @@ public class Driver {
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent windowEvent) {
-                    // super.windowClosing(windowEvent);
                     loginJFrame.dispose();
                 }
             });
@@ -175,41 +174,6 @@ public class Driver {
             this.add(quitJButton);
         }
     }
-
-    private UserAppReviews userAppReviews;
-
-    private class CommunityJFrame extends JFrame {
-        JLabel jLabel;
-
-        public CommunityJFrame(String header) {
-            super(header);
-
-            jLabel = new JLabel();
-
-            setFrameRules();
-
-            addListeners();
-
-            addComponents();
-        }
-
-        private void setFrameRules() {
-            this.setSize(400, 320);
-            this.setLayout(new GridLayout(10, 10, 10, 10));
-            this.setLocationRelativeTo(null);
-            this.setResizable(false);
-            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        }
-
-        private void addListeners() {
-
-        }
-
-        private void addComponents() {
-            add(jLabel);
-        }
-    }
-
 
     /**
      * Manages the elements of the MMJFrame.
@@ -307,7 +271,6 @@ public class Driver {
             });
 
             backJButton.addActionListener(actionEvent -> {
-                // System.out.println("Action" + actionEvent);
                 this.setVisible(false);
                 currentUser = null;
                 loginJFrame.setVisible(true);
@@ -327,11 +290,103 @@ public class Driver {
         }
     }
 
+    private class CommunityJFrame extends JFrame {
+        JLabel jLabel;
+        JButton backJButton;
+        JComboBox<User> userJComboBox;
+
+        CommunityJFrame(String header) {
+            super(header);
+
+            setFrameRules();
+
+            jLabel = new JLabel("Community");
+            backJButton = new JButton("BACK");
+            userJComboBox = new JComboBox<>();
+
+            for (User user : community.getUsers()) {
+                userJComboBox.addItem(user);
+            }
+
+            addListeners();
+
+            addComponents();
+        }
+
+        private void setFrameRules() {
+            this.setSize(1024, 768);
+            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLocationRelativeTo(null);
+            this.setResizable(false);
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
+
+        private void addListeners() {
+            backJButton.addActionListener(actionEvent -> {
+                this.setVisible(false);
+                mmJFrame.setVisible(true);
+            });
+        }
+
+        private void addComponents() {
+            this.add(jLabel);
+            this.add(backJButton);
+            this.add(userJComboBox);
+        }
+    }
+
+
     // TODO: Add other inner classes for JFrame windows.
 
     private class StoreJFrame extends JFrame {
+        JLabel jLabel;
+        JButton backJButton;
+        JComboBox<App> appJComboBox;
+        JButton addAppJButton;
+
         StoreJFrame(String header) {
             super(header);
+
+            setFrameRules();
+
+            jLabel = new JLabel("Store");
+            backJButton = new JButton("BACK");
+            appJComboBox = new JComboBox<>();
+            for (App app : store.getApps()) {
+                appJComboBox.addItem(app);
+            }
+            addAppJButton = new JButton("New Application");
+
+            addListeners();
+
+            addComponents();
+        }
+
+        private void setFrameRules() {
+            this.setSize(1024, 768);
+            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLocationRelativeTo(null);
+            this.setResizable(false);
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
+
+        private void addListeners() {
+            backJButton.addActionListener(actionEvent -> {
+                this.setVisible(false);
+                mmJFrame.setVisible(true);
+            });
+
+            addAppJButton.addActionListener(actionEvent -> {
+                JButton tempJButton = new JButton("Hello, World");
+                JOptionPane.showMessageDialog(this, tempJButton);
+            });
+        }
+
+        private void addComponents() {
+            this.add(jLabel);
+            this.add(backJButton);
+            this.add(appJComboBox);
+            this.add(addAppJButton);
         }
     }
 
@@ -358,53 +413,14 @@ public class Driver {
 
     public static void main(String[] args) {
         Driver driver = new Driver();
-        // setupLogger();
         driver.save();
-        // driver.createLoginWindow();
-        // driver.createDatabase();
-        // driver.createWindow();
     }
 
-
-    private void setupStore() {
-    }
-
-    private void createDatabase() {
-        database.createUserTable();
-        // database.createAppTable(); TODO: Finish user table then will get to doing app table.
-        // database.createUserAppTable(); TODO: Link tables together
-        /*
-        database.createTable("user_tb",
-                new String[]{"userId", "userName"},
-                new String[]{"INTEGER", "VARCHAR(50)"},
-                new String[][]{
-                        {"PRIMARY KEY", "AUTOINCREMENT"},
-                        {"NOT NULL"}
-                });
-        database.createTable("app_tb",
-                new String[]{"appId", "appName", "creatorId"},
-                new String[]{"INTEGER", "VARCHAR(64)", "INTEGER"},
-                new String[][]{
-                        {"PRIMARY KEY", "AUTOINCREMENT"},
-                        {"NOT NULL"},
-                        {}
-                });
-        database.createTable("userapp_tb",
-                new String[]{"appId", "userId", "review"},
-                new String[]{"INTEGER", "INTEGER", "VARCHAR(2000)"},
-                new String[][]{
-                        {},
-                        {},
-                        {}
-                });*/
-    }
 
     private void save() {
         database.saveUsers(community.getUsers());
         database.saveApps(store.getApps());
         database.saveUserAppReviews(community.getUsers());
-        // database.saveApps(store.getApps());
-        // database.saveUserApp(user);
     }
 
     private void quit(JFrame jFrame) {
