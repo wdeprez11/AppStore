@@ -1,8 +1,6 @@
 package com.deprez;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -15,7 +13,8 @@ public class Community {
     // TODO: Sort (Merge)
 
     public Community() {
-        users = new ArrayList<>();
+        users = new TreeSet<>();
+        // users = new ArrayList<>();
     }
 
     public Community(List<User> users) {
@@ -30,14 +29,6 @@ public class Community {
         this.users = users;
     }
 
-    public void addUser(User user) throws AlreadyExistsException {
-        if (hasUser(user.getUserName()) > 0) {
-            throw new AlreadyExistsException("User with same userName '" + user.getUserName() + "' was found in " + this.getClass().getName());
-        } else {
-            users.add(user);
-        }
-    }
-
     /**
      * Adds a new user to the list of users.
      *
@@ -45,7 +36,15 @@ public class Community {
      * @throws AlreadyExistsException if the userName was not found in the list of users
      */
     public void addUser(String userName) throws AlreadyExistsException {
-        if (hasUser(userName) != -1) {
+
+        int i = 0;
+        for (User user : users) {
+            if(user.getUserName().equals(userName))
+                break;
+            i++;
+        }
+
+        if (hasUser(userName) >= 1) {
             throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
             users.add(new User(users.size() + 1, userName));
@@ -61,18 +60,14 @@ public class Community {
     public int hasUser(String userName) {
         // TODO: Implement binary search after sort is completed
         sortByName();
-        return binarySearch(userName);
-        /*
         int i = 0;
         for (User user : users) {
             if(user.getUserName().equals(userName)) {
                 return i;
-            } else {
-                i++;
             }
+            i++;
         }
-        return -1;
-         */
+        return (binarySearch(userName) >= 0);
     }
 
     /**
@@ -199,3 +194,4 @@ public class Community {
         return users.size();
     }
 }
+
