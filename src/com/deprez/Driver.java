@@ -8,21 +8,18 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * @author wd
+ * @author William Deprez
+ * @version 1.0
  * May 17, 2019
  */
 public class Driver {
-    public static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
-    private Database database;
-    private Community community;
-    private Store store;
-    private UserAppReviews userAppReviews;
-    private JFrame loginJFrame;
-    private JFrame mainJFrame;
+
+    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+    private LoginJFrame loginJFrame;
+    private MMJFrame mmjFrame;
+    private CommunityJFrame communityJFrame;
+    // private JFrame loginJFrame;
     private JFrame storeJFrame;
-    private JFrame communityJFrame;
-    private JFrame logJFrame;
-    private String currentUserName;
 
     private Driver() {
         database = new Database("jdbc:sqlite:appstore.db");
@@ -31,15 +28,114 @@ public class Driver {
         store = new Store(database.loadApps());
         userAppReviews = new UserAppReviews(database.loadUserAppReviews());
         setupLogger();
-        loginJFrame = new JFrame("Login");
-        setupLogin();
+        loginJFrame = new LoginJFrame("Login");
+        loginJFrame.setVisible(true);
         mainJFrame = new JFrame("Main Menu");
         setupMM();
         storeJFrame = new JFrame("Store");
         setupStore();
         // communityJFrame = new JFrame("Community");
         // setupComm();
-        loginJFrame.setVisible(true);
+    }
+
+    /**
+     * Manages the elements of the LoginJFrame.
+     */
+    private class LoginJFrame extends JFrame {
+        JLabel userJLabel;
+        JTextField userJTextField;
+        JButton loginJButton;
+        JButton quitJButton;
+
+        LoginJFrame(String header) {
+            super(header);
+
+            LOGGER.log(Level.FINE, "LoginJFrame instantiated.");
+
+            setFrameRules();
+
+            userJLabel = new JLabel("Username");
+            userJTextField = new JTextField("", 30);
+            loginJButton = new JButton("Login");
+            quitJButton = new JButton("Quit");
+
+            userJTextField.setToolTipText("Enter Username");
+
+            addListeners();
+
+            addComponents();
+
+            this.setVisible(true);
+        }
+
+        private void addListeners() {
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent windowEvent) {
+                    // super.windowClosing(windowEvent);
+                    loginJFrame.dispose();
+                }
+            });
+
+            loginJButton.addActionListener(actionEvent -> {
+                if (userJTextField.getText().matches(".*\\w.*")) {
+                    loginJFrame.setVisible(false);
+                    try {
+                        community.addUser(userJTextField.getText());
+                    } catch (AlreadyExistsException e) {
+                        LOGGER.log(Level.INFO, "User already exists, setting 'currentUserName' to the text field...", e);
+                    }
+                    currentUserName = userJTextField.getText();
+                    mainJFrame.setVisible(true);
+                }
+            });
+
+            quitJButton.addActionListener(actionEvent -> {
+                quit(this);
+            });
+        }
+
+        private void setFrameRules() {
+            this.setSize(400, 320);
+            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLocationRelativeTo(null);
+            this.setResizable(false);
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
+
+        private void addComponents() {
+            this.add(userJLabel);
+            this.add(userJTextField);
+            this.add(loginJButton);
+            this.add(quitJButton);
+        }
+    }
+
+    // private StoreJFrame storeJFrame;
+
+    private class MMJFrame extends JFrame {
+        public MMJFrame(String header) {
+            super(header);
+        }
+    }
+    private Database database;
+    private Community community;
+    private Store store;
+    private UserAppReviews userAppReviews;
+    private JFrame mainJFrame;
+
+    private class CommunityJFrame extends JFrame {
+        public CommunityJFrame(String header) {
+            super(header);
+        }
+    }
+    private JFrame logJFrame;
+    private String currentUserName;
+
+    private class StoreJFrame extends JFrame {
+        public StoreJFrame(String header) {
+            super(header);
+        }
     }
 
     // TODO: Setup elements method
@@ -73,53 +169,6 @@ public class Driver {
         // driver.createLoginWindow();
         // driver.createDatabase();
         // driver.createWindow();
-    }
-
-    private void setupLogin() {
-        loginJFrame.setSize(400, 320);
-        loginJFrame.setLayout(new GridLayout(10, 10, 10, 10));
-        loginJFrame.setLocationRelativeTo(null);
-        loginJFrame.setResizable(false);
-        loginJFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        loginJFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                loginJFrame.dispose();
-            }
-        });
-
-        JLabel userJLabel = new JLabel("Username");
-        loginJFrame.add(userJLabel);
-
-        JTextField userJTextField = new JTextField("", 30);
-        userJTextField.setToolTipText("Enter Username: ");
-        loginJFrame.add(userJTextField);
-
-        JButton loginJButton = new JButton("Login");
-        loginJButton.addActionListener(actionEvent -> {
-            // System.out.println("Action: " + actionEvent);
-            if (userJTextField.getText().matches(".*\\w.*")) {
-                loginJFrame.setVisible(false);
-                try {
-                    community.addUser(userJTextField.getText());
-                } catch (AlreadyExistsException e) {
-                    LOGGER.log(Level.FINE, "User already exists, settings 'currentUserName' to the field...", e);
-                }
-                currentUserName = userJTextField.getText();
-                // createMainMenuWindow();
-                mainJFrame.setVisible(true);
-                // TODO: Change label in main menu
-            } else {
-                JOptionPane.showMessageDialog(null, "Please input a username that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        loginJFrame.add(loginJButton);
-
-        JButton quitJButton = new JButton("Quit");
-        quitJButton.addActionListener(actionEvent -> {
-            quit(loginJFrame);
-        });
-        loginJFrame.add(quitJButton);
     }
 
     private void setupMM() {
