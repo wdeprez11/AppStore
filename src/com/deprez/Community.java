@@ -25,7 +25,6 @@ public class Community {
     public List<User> getUsers() {
         return users;
     }
-
     public void setUsers(List<User> users) {
         this.users = users;
     }
@@ -38,23 +37,18 @@ public class Community {
         }
     }
 
+    /**
+     * Adds a new user to the list of users.
+     *
+     * @param userName the userName to create a new user with.
+     * @throws AlreadyExistsException if the userName was not found in the list of users
+     */
     public void addUser(String userName) throws AlreadyExistsException {
-        if (hasUser(userName) > 0) {
+        if (hasUser(userName) != -1) {
             throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
             users.add(new User(users.size(), userName));
         }
-    }
-
-    public boolean hasUser(User user) {
-        // TODO: Implement binary search after sort is complete
-        String userName = user.getUserName();
-        for (User usr : users) {
-            if (usr.getUserName().equals(userName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -65,23 +59,43 @@ public class Community {
      */
     public int hasUser(String userName) {
         // TODO: Implement binary search after sort is completed
-
-        return binarySearch(0, users.size(), userName);
+        sortByName();
+        return binarySearch(0, users.size() - 1, userName);
+        /*
+        int i = 0;
+        for (User user : users) {
+            if(user.getUserName().equals(userName)) {
+                return i;
+            } else {
+                i++;
+            }
+        }
+        return -1;
+         */
     }
 
-    private int binarySearch(int l, int r, String userName) {
-        if (r >= 1) {
-            int mid = l + (r - l) / 2;
+    /**
+     * Searches the list with a binary search.
+     * Assumes the list is sorted by name.
+     *
+     * @param left     the left side of the split
+     * @param right    the right side of the split
+     * @param userName the username that is searched for
+     * @return The index of the username, which should correspond to the userId as well. Returns <code>-1</code> if not found.
+     */
+    private int binarySearch(int left, int right, String userName) {
+        if (right >= 1) {
+            int mid = left + (right - left) / 2;
 
             if (users.get(mid).getUserName().equals(userName)) {
                 return mid;
             }
 
-            if (users.get(mid).getUserName().compareTo(userName) > 0) {
-                return binarySearch(l, mid - 1, userName);
+            if (users.get(mid).getUserName().compareTo(userName) > 0) { // TODO: Check this expression.
+                return binarySearch(left, mid - 1, userName);
             }
 
-            return binarySearch(mid + 1, r, userName);
+            return binarySearch(mid + 1, right, userName);
         }
 
         return -1;
@@ -123,7 +137,7 @@ public class Community {
 
     /**
      * Removes a user with a matching userName from the list.
-     *
+     * <p>
      * TODO: Implement a binary search.
      *
      * @param userName the userName of the User object to remove.
