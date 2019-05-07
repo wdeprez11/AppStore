@@ -184,6 +184,7 @@ public class Driver {
 
         /**
          * Adds the window listeners for the buttons on the MMJFrame.
+         * TODO: Add listeners for Community, Store, Report, Help, and Log
          */
         private void addListeners() {
             this.addWindowListener(new WindowAdapter() {
@@ -197,7 +198,6 @@ public class Driver {
                 // System.out.println("Action" + actionEvent);
                 this.setVisible(false);
                 currentUser = null;
-                // createLoginWindow();
                 loginJFrame.setVisible(true);
             });
         }
@@ -216,14 +216,13 @@ public class Driver {
         }
     }
 
+    // TODO: Add other inner classes for JFrame windows.
+
     private class StoreJFrame extends JFrame {
         public StoreJFrame(String header) {
             super(header);
         }
     }
-
-    // TODO: Setup elements method
-    // TODO: Visibility switcher (E.g. switching from login -> main menu makes login invisible and main menu visible...)
 
     private static void setupLogger() {
         LogManager.getLogManager().reset();

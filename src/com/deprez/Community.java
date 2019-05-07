@@ -25,6 +25,7 @@ public class Community {
     public List<User> getUsers() {
         return users;
     }
+
     public void setUsers(List<User> users) {
         this.users = users;
     }
@@ -47,7 +48,7 @@ public class Community {
         if (hasUser(userName) != -1) {
             throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
-            users.add(new User(users.size(), userName));
+            users.add(new User(users.size() + 1, userName));
         }
     }
 
@@ -60,7 +61,7 @@ public class Community {
     public int hasUser(String userName) {
         // TODO: Implement binary search after sort is completed
         sortByName();
-        return binarySearch(0, users.size() - 1, userName);
+        return binarySearch(userName);
         /*
         int i = 0;
         for (User user : users) {
@@ -77,13 +78,29 @@ public class Community {
     /**
      * Searches the list with a binary search.
      * Assumes the list is sorted by name.
-     *
-     * @param left     the left side of the split
-     * @param right    the right side of the split
+     * TODO: FIX DIS!
      * @param userName the username that is searched for
      * @return The index of the username, which should correspond to the userId as well. Returns <code>-1</code> if not found.
      */
-    private int binarySearch(int left, int right, String userName) {
+    private int binarySearch(String userName) {
+        int left = 0, right = users.size() - 1, mid;
+
+        while (1 <= right) {
+            mid = left + (right - left) / 2;
+
+            if (users.get(mid).getUserName().equals(userName)) {
+                return mid;
+            } else if (users.get(mid).getUserName().compareTo(userName) > 0) {
+                right = mid - 1;
+            } else if (mid != users.size() - 1) {
+                left = mid + 1;
+            } else if (left == right) {
+                break;
+            }
+        }
+
+
+        /*
         if (right >= 1) {
             int mid = left + (right - left) / 2;
 
@@ -91,12 +108,13 @@ public class Community {
                 return mid;
             }
 
-            if (users.get(mid).getUserName().compareTo(userName) > 0) { // TODO: Check this expression.
+            if (users.get(mid).getUserName().compareTo(userName) >= 0) { // TODO: Check this expression.
                 return binarySearch(left, mid - 1, userName);
             }
 
             return binarySearch(mid + 1, right, userName);
         }
+         */
 
         return -1;
     }
