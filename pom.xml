@@ -36,11 +36,11 @@
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-base -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
             <version>13-ea+6</version>
-        </dependency>
+        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>
