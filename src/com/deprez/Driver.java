@@ -1,11 +1,11 @@
 package com.deprez;
 
-import java.io.IOException;
-import java.util.logging.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.logging.*;
 
 /**
  * @author William Deprez
@@ -30,13 +30,15 @@ public class Driver {
         setupLogger();
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
-        mainJFrame = new JFrame("Main Menu");
-        setupMM();
         storeJFrame = new JFrame("Store");
         setupStore();
         // communityJFrame = new JFrame("Community");
         // setupComm();
     }
+
+    private String currentUser;
+
+    // private StoreJFrame storeJFrame;
 
     /**
      * Manages the elements of the LoginJFrame.
@@ -47,6 +49,11 @@ public class Driver {
         JButton loginJButton;
         JButton quitJButton;
 
+        /**
+         * Creates a LoginJFrame object.
+         *
+         * @param header the header to give to the JFrame constructor.
+         */
         LoginJFrame(String header) {
             super(header);
 
@@ -64,10 +71,22 @@ public class Driver {
             addListeners();
 
             addComponents();
-
-            this.setVisible(true);
         }
 
+        /**
+         * Declares the frame rules for the LoginJFrame.
+         */
+        private void setFrameRules() {
+            this.setSize(400, 320);
+            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLocationRelativeTo(null);
+            this.setResizable(false);
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
+
+        /**
+         * Adds the window listeners for the buttons on the LoginJFrame.
+         */
         private void addListeners() {
             addWindowListener(new WindowAdapter() {
                 @Override
@@ -83,10 +102,11 @@ public class Driver {
                     try {
                         community.addUser(userJTextField.getText());
                     } catch (AlreadyExistsException e) {
-                        LOGGER.log(Level.INFO, "User already exists, setting 'currentUserName' to the text field...", e);
+                        LOGGER.log(Level.INFO, "User already exists, setting 'currentUser' to the text field...", e);
                     }
-                    currentUserName = userJTextField.getText();
-                    mainJFrame.setVisible(true);
+                    currentUser = userJTextField.getText();
+                    mmjFrame = new MMJFrame("Main Menu: " + currentUser, currentUser);
+                    mmjFrame.setVisible(true);
                 }
             });
 
@@ -95,14 +115,9 @@ public class Driver {
             });
         }
 
-        private void setFrameRules() {
-            this.setSize(400, 320);
-            this.setLayout(new GridLayout(10, 10, 10, 10));
-            this.setLocationRelativeTo(null);
-            this.setResizable(false);
-            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        }
-
+        /**
+         * Adds the components to the LoginJFrame.
+         */
         private void addComponents() {
             this.add(userJLabel);
             this.add(userJTextField);
@@ -111,26 +126,95 @@ public class Driver {
         }
     }
 
-    // private StoreJFrame storeJFrame;
-
-    private class MMJFrame extends JFrame {
-        public MMJFrame(String header) {
-            super(header);
-        }
-    }
     private Database database;
     private Community community;
     private Store store;
     private UserAppReviews userAppReviews;
-    private JFrame mainJFrame;
 
     private class CommunityJFrame extends JFrame {
         public CommunityJFrame(String header) {
             super(header);
         }
     }
+
     private JFrame logJFrame;
-    private String currentUserName;
+
+    /**
+     * Manages the elements of the MMJFrame.
+     */
+    private class MMJFrame extends JFrame {
+        JLabel usernameJLabel;
+        JButton communityJButton;
+        JButton storeJButton;
+        JButton reportJButton;
+        JButton helpJButton;
+        JButton logJButton;
+        JButton backJButton;
+
+        public MMJFrame(String header, String userName) {
+            super(header);
+
+            LOGGER.log(Level.FINE, "New Main Menu instantiation.");
+
+            setFrameRules();
+
+            usernameJLabel = new JLabel("Username: " + userName);
+            communityJButton = new JButton("Community");
+            storeJButton = new JButton("Store");
+            reportJButton = new JButton("Report");
+            helpJButton = new JButton("Help");
+            logJButton = new JButton("Log");
+            backJButton = new JButton("Logout");
+
+            addListeners();
+
+            addComponents();
+        }
+
+        /**
+         * Declares the frame rules for the MMJFrame.
+         */
+        private void setFrameRules() {
+            this.setSize(600, 400);
+            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLocationRelativeTo(null);
+            this.setResizable(false);
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
+
+        /**
+         * Adds the window listeners for the buttons on the MMJFrame.
+         */
+        private void addListeners() {
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent windowEvent) {
+                    super.windowClosing(windowEvent);
+                }
+            });
+
+            backJButton.addActionListener(actionEvent -> {
+                // System.out.println("Action" + actionEvent);
+                this.setVisible(false);
+                currentUser = null;
+                // createLoginWindow();
+                loginJFrame.setVisible(true);
+            });
+        }
+
+        /**
+         * Adds the components to the MMJFrame.
+         */
+        private void addComponents() {
+            this.add(usernameJLabel);
+            this.add(communityJButton);
+            this.add(storeJButton);
+            this.add(reportJButton);
+            this.add(helpJButton);
+            this.add(logJButton);
+            this.add(backJButton);
+        }
+    }
 
     private class StoreJFrame extends JFrame {
         public StoreJFrame(String header) {
@@ -171,47 +255,6 @@ public class Driver {
         // driver.createWindow();
     }
 
-    private void setupMM() {
-        mainJFrame.setSize(600, 400);
-        mainJFrame.setLayout(new GridLayout(10, 10, 10, 10));
-        mainJFrame.setLocationRelativeTo(null);
-        mainJFrame.setResizable(false);
-        mainJFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        mainJFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                mainJFrame.dispose();
-            }
-        });
-
-        JLabel username = new JLabel("Username: " + currentUserName);
-        mainJFrame.add(username);
-
-        JButton communityJButton = new JButton("Community");
-        mainJFrame.add(communityJButton);
-
-        JButton storeJButton = new JButton("Store");
-        mainJFrame.add(storeJButton);
-
-        JButton reportJButton = new JButton("Report");
-        mainJFrame.add(reportJButton);
-
-        JButton helpJButton = new JButton("Help");
-        mainJFrame.add(helpJButton);
-
-        JButton logJButton = new JButton("Log");
-        mainJFrame.add(logJButton);
-
-        JButton backJButton = new JButton("Logout");
-        backJButton.addActionListener(actionEvent -> {
-            // System.out.println("Action" + actionEvent);
-            mainJFrame.setVisible(false);
-            currentUserName = null;
-            // createLoginWindow();
-            loginJFrame.setVisible(true);
-        });
-        mainJFrame.add(backJButton);
-    }
 
     private void setupStore() {
     }
