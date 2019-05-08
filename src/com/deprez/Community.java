@@ -38,7 +38,7 @@ public class Community {
      * @throws AlreadyExistsException if the userName was not found in the list of users
      */
     public void addUser(String userName) throws AlreadyExistsException {
-        if (hasUser(userName) >= 1) {
+        if (hasUser(userName) >= 0) {
             throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
             users.add(new User(users.size() + 1, userName));
