@@ -377,8 +377,8 @@ public class Driver {
             });
 
             addAppJButton.addActionListener(actionEvent -> {
-                JButton tempJButton = new JButton("Hello, World");
-                JOptionPane.showMessageDialog(this, tempJButton);
+                JTextField appNameJTextField = new JTextField("", 30);
+                JOptionPane.showMessageDialog(this, appNameJTextField);
             });
         }
 
