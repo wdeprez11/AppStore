@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.util.logging.*;
 
 /**
- * @author William Deprez
- * @version 1.0
  * <p>
  * The main class of the project.
  * Accesses and writes the database.
  * Manages the user interface.
  * </p>
+ * @author William Deprez
+ * @version 1.0
  */
 public class Driver {
 
