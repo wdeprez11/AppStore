@@ -15,7 +15,10 @@ import java.util.logging.*;
  * @author William Deprez
  * @version 1.0
  * <p>
- * May 17, 2019
+ * The main class of the project.
+ * Accesses and writes the database.
+ * Manages the user interface.
+ * </p>
  */
 public class Driver {
 
@@ -290,6 +293,66 @@ public class Driver {
         }
     }
 
+    /**
+     * Initializes the logging system.
+     */
+    private static void setupLogger() {
+        LogManager.getLogManager().reset();
+        LOGGER.setLevel(Level.ALL);
+        LOGGER.log(Level.INFO, "Driver Started.");
+
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.INFO);
+
+        LOGGER.addHandler(consoleHandler);
+
+        try {
+            FileHandler fileHandler = new FileHandler("appstore.log", true);
+            fileHandler.setFormatter(new SimpleFormatter());
+            LOGGER.addHandler(fileHandler);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to create log file", e);
+        }
+
+        LOGGER.log(Level.FINEST, "NEW INSTANCE!");
+    }
+
+    /**
+     * Initializes the program.
+     *
+     * @param args command line arguments.
+     */
+    public static void main(String[] args) {
+        Driver driver = new Driver();
+        driver.save();
+    }
+
+    /**
+     * Calls the methods of the Database class which write the active lists to the tables.
+     */
+    private void save() {
+        database.saveUsers(community.getUsers());
+        database.saveApps(store.getApps());
+        database.saveUserAppReviews(community.getUsers());
+    }
+
+    /**
+     * Calls methods to avoid repeated code.
+     *
+     * @param jFrame the JFrame to destroy, instead of duplicate code.
+     */
+    private void quit(JFrame jFrame) {
+        save();
+        jFrame.dispose();
+        LOGGER.log(Level.INFO, Community.class.getName() + " list\n" + community.toString());
+        LOGGER.log(Level.INFO, Store.class.getName() + " list\n" + store.toString());
+        LOGGER.log(Level.INFO, "\nDONE\nDONE\nDONE\n");
+        System.exit(0);
+    }
+
+    /**
+     * Manages the elements of the CommunityJFrame.
+     */
     private class CommunityJFrame extends JFrame {
         JLabel jLabel;
         JButton backJButton;
@@ -335,9 +398,9 @@ public class Driver {
         }
     }
 
-
-    // TODO: Add other inner classes for JFrame windows.
-
+    /**
+     * Manages the elements of the StoreJFrame.
+     */
     private class StoreJFrame extends JFrame {
         JLabel jLabel;
         JButton backJButton;
@@ -390,45 +453,4 @@ public class Driver {
         }
     }
 
-    private static void setupLogger() {
-        LogManager.getLogManager().reset();
-        LOGGER.setLevel(Level.ALL);
-        LOGGER.log(Level.INFO, "Driver Started.");
-
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.INFO);
-
-        LOGGER.addHandler(consoleHandler);
-
-        try {
-            FileHandler fileHandler = new FileHandler("appstore.log", true);
-            fileHandler.setFormatter(new SimpleFormatter());
-            LOGGER.addHandler(fileHandler);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to create log file", e);
-        }
-
-        LOGGER.log(Level.FINEST, "NEW INSTANCE!");
-    }
-
-    public static void main(String[] args) {
-        Driver driver = new Driver();
-        driver.save();
-    }
-
-
-    private void save() {
-        database.saveUsers(community.getUsers());
-        database.saveApps(store.getApps());
-        database.saveUserAppReviews(community.getUsers());
-    }
-
-    private void quit(JFrame jFrame) {
-        save();
-        jFrame.dispose();
-        LOGGER.log(Level.INFO, Community.class.getName() + " list\n" + community.toString());
-        LOGGER.log(Level.INFO, Store.class.getName() + " list\n" + store.toString());
-        LOGGER.log(Level.INFO, "\nDONE\nDONE\nDONE\n");
-        System.exit(0);
-    }
 }

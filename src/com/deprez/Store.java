@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Test Description
+ */
 public class Store {
     private List<App> apps;
 

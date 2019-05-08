@@ -3,7 +3,7 @@ package com.deprez;
 import java.util.*;
 
 /**
- *
+ * Test Description
  */
 public class Community {
 
