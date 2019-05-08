@@ -146,11 +146,7 @@ public class Driver {
                 public void actionPerformed(ActionEvent actionEvent) {
                     if (userJTextField.getText().matches(".*\\w.*")) {
                         loginJFrame.setVisible(false);
-                        try {
-                            community.addUser(userJTextField.getText());
-                        } catch (AlreadyExistsException e) {
-                            LOGGER.log(Level.INFO, "User already exists, setting 'currentUser' to the text field...", e);
-                        }
+                        community.addUser(userJTextField.getText());
                         currentUser = userJTextField.getText();
                         mmJFrame = new MMJFrame("Main Menu: " + currentUser, currentUser);
                         communityJFrame = new CommunityJFrame("Community: " + currentUser);

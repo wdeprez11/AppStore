@@ -1,6 +1,7 @@
 package com.deprez;
 
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Test Description
@@ -35,11 +36,10 @@ public class Community {
      * Adds a new user to the list of users.
      *
      * @param userName the userName to create a new user with.
-     * @throws AlreadyExistsException if the userName was not found in the list of users
      */
-    public void addUser(String userName) throws AlreadyExistsException {
+    public void addUser(String userName) {
         if (hasUser(userName) >= 0) {
-            throw new AlreadyExistsException("User with same userName '" + userName + "' was found in " + this.getClass().getName());
+            Driver.LOGGER.log(Level.FINE, "User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
             users.add(new User(users.size() + 1, userName));
         }

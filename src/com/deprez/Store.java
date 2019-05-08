@@ -3,6 +3,7 @@ package com.deprez;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Test Description
@@ -26,13 +27,12 @@ public class Store {
         this.apps = apps;
     }
 
-    public void addApp(String appName) throws AlreadyExistsException { // TODO
+    public void addApp(String appName) {
         if (hasApp(appName) >= 0) {
-            throw new AlreadyExistsException("App with the same appName '" + appName + "'already exists in " + this.getClass().getName());
+            Driver.LOGGER.log(Level.FINE, "App with the same appName '" + "' already exists in " + this.getClass().getName());
         } else {
             apps.add(new App(apps.size() + 1, appName));
         }
-
     }
 
     public void sort() {
