@@ -10,6 +10,7 @@
  * Diagrams ***WILL BE*** included alongside this package description.
  * </p>
  * @version 1.0
+ *
  * @since 1.0
  * @see java.awt
  * @see javax.swing
