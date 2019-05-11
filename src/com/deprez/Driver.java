@@ -87,6 +87,63 @@ public class Driver {
     }
 
     /**
+     * Initializes the logging system.
+     */
+    private static void setupLogger() {
+        LogManager.getLogManager().reset();
+        LOGGER.setLevel(Level.ALL);
+        LOGGER.log(Level.INFO, "Driver Started.");
+
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.INFO);
+
+        LOGGER.addHandler(consoleHandler);
+
+        try {
+            FileHandler fileHandler = new FileHandler("appstore.log", true);
+            fileHandler.setFormatter(new SimpleFormatter());
+            LOGGER.addHandler(fileHandler);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to create log file", e);
+        }
+
+        LOGGER.log(Level.FINEST, "NEW INSTANCE!");
+    }
+
+    /**
+     * Initializes the program.
+     *
+     * @param args command line arguments.
+     */
+    public static void main(String[] args) {
+        Driver driver = new Driver();
+        driver.save();
+    }
+
+    /**
+     * Calls the methods of the Database class which write the active lists to the tables.
+     */
+    private void save() {
+        database.saveUsers(community.getUsers());
+        database.saveApps(store.getApps());
+        database.saveUserAppReviews(community.getUsers());
+    }
+
+    /**
+     * Calls methods to avoid repeated code.
+     *
+     * @param jFrame the JFrame to destroy, instead of duplicate code.
+     */
+    private void quit(JFrame jFrame) {
+        save();
+        jFrame.dispose();
+        LOGGER.log(Level.INFO, Community.class.getName() + " list\n" + community.toString());
+        LOGGER.log(Level.INFO, Store.class.getName() + " list\n" + store.toString());
+        LOGGER.log(Level.INFO, "\nDONE\nDONE\nDONE\n");
+        System.exit(0);
+    }
+
+    /**
      * Manages the elements of the LoginJFrame.
      */
     private class LoginJFrame extends JFrame {
@@ -124,7 +181,7 @@ public class Driver {
          */
         private void setFrameRules() {
             this.setSize(400, 320);
-            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
             this.setResizable(false);
             this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -167,10 +224,25 @@ public class Driver {
          * Adds the components to the LoginJFrame.
          */
         private void addComponents() {
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+            gridBagConstraints.fill = GridBagConstraints.BOTH;
+            gridBagConstraints.weightx = 1.0;
+            // this.add(userJLabel, gridBagConstraints);
             this.add(userJLabel);
+
+            gridBagConstraints.fill = GridBagConstraints.REMAINDER;
+            // this.add(userJTextField, gridBagConstraints);
             this.add(userJTextField);
+
+            gridBagConstraints.weightx = 0.0;
+            // this.add(loginJButton, gridBagConstraints);
             this.add(loginJButton);
+
+            gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
+            // this.add(quitJButton, gridBagConstraints);
             this.add(quitJButton);
+
         }
     }
 
@@ -209,7 +281,7 @@ public class Driver {
          */
         private void setFrameRules() {
             this.setSize(600, 400);
-            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
             this.setResizable(false);
             this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -289,61 +361,40 @@ public class Driver {
         }
     }
 
-    /**
-     * Initializes the logging system.
-     */
-    private static void setupLogger() {
-        LogManager.getLogManager().reset();
-        LOGGER.setLevel(Level.ALL);
-        LOGGER.log(Level.INFO, "Driver Started.");
+    private class ProfileJFrame extends JFrame {
+        JLabel usernameJLabel;
+        JButton closeJButton;
 
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.INFO);
+        ProfileJFrame(String header) {
+            super("Profile: " + header);
 
-        LOGGER.addHandler(consoleHandler);
+            setFrameRules();
 
-        try {
-            FileHandler fileHandler = new FileHandler("appstore.log", true);
-            fileHandler.setFormatter(new SimpleFormatter());
-            LOGGER.addHandler(fileHandler);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to create log file", e);
+            // instantiate class members
+            usernameJLabel = new JLabel(header);
+            closeJButton = new JButton("close");
+
+            addListeners();
+
+            addComponents();
         }
 
-        LOGGER.log(Level.FINEST, "NEW INSTANCE!");
-    }
+        private void setFrameRules() {
+            this.setSize(1024, 768);
+            this.setLayout(new GridBagLayout());
+            this.setLocationRelativeTo(null);
+            this.setResizable(false);
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
 
-    /**
-     * Initializes the program.
-     *
-     * @param args command line arguments.
-     */
-    public static void main(String[] args) {
-        Driver driver = new Driver();
-        driver.save();
-    }
+        private void addListeners() {
 
-    /**
-     * Calls the methods of the Database class which write the active lists to the tables.
-     */
-    private void save() {
-        database.saveUsers(community.getUsers());
-        database.saveApps(store.getApps());
-        database.saveUserAppReviews(community.getUsers());
-    }
+        }
 
-    /**
-     * Calls methods to avoid repeated code.
-     *
-     * @param jFrame the JFrame to destroy, instead of duplicate code.
-     */
-    private void quit(JFrame jFrame) {
-        save();
-        jFrame.dispose();
-        LOGGER.log(Level.INFO, Community.class.getName() + " list\n" + community.toString());
-        LOGGER.log(Level.INFO, Store.class.getName() + " list\n" + store.toString());
-        LOGGER.log(Level.INFO, "\nDONE\nDONE\nDONE\n");
-        System.exit(0);
+        private void addComponents() {
+            this.add(usernameJLabel);
+            this.add(closeJButton);
+        }
     }
 
     /**
@@ -374,7 +425,7 @@ public class Driver {
 
         private void setFrameRules() {
             this.setSize(1024, 768);
-            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
             this.setResizable(false);
             this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -423,7 +474,7 @@ public class Driver {
 
         private void setFrameRules() {
             this.setSize(1024, 768);
-            this.setLayout(new GridLayout(10, 10, 10, 10));
+            this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
             this.setResizable(false);
             this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
