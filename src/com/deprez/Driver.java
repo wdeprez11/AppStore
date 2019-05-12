@@ -1,15 +1,15 @@
 package com.deprez;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -194,24 +194,24 @@ public class Driver {
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent windowEvent) {
-                    loginJFrame.dispose();
+                    quit(loginJFrame);
                 }
+            });
+
+            userJTextField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        login();
+                    }
+                }
+
             });
 
             loginJButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    if (userJTextField.getText().matches(".*\\w.*")) {
-                        loginJFrame.setVisible(false);
-                        community.addUser(userJTextField.getText());
-                        currentUser = userJTextField.getText();
-                        mmJFrame = new MMJFrame("Main Menu: " + currentUser, currentUser);
-                        communityJFrame = new CommunityJFrame("Community: " + currentUser);
-                        storeJFrame = new StoreJFrame("Store: " + currentUser);
-                        mmJFrame.setVisible(true);
-                    } else {
-                        JOptionPane.showMessageDialog(LoginJFrame.this, "Please input a username that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    login();
                 }
             });
 
@@ -220,28 +220,51 @@ public class Driver {
             });
         }
 
+        private void login() {
+            if (userJTextField.getText().trim().matches(".*\\w.*")) {
+                loginJFrame.setVisible(false);
+                community.addUser(userJTextField.getText());
+                currentUser = userJTextField.getText();
+                mmJFrame = new MMJFrame("Main Menu: " + currentUser, currentUser);
+                communityJFrame = new CommunityJFrame("Community: " + currentUser);
+                storeJFrame = new StoreJFrame("Store: " + currentUser);
+                mmJFrame.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(LoginJFrame.this, "Please input a username that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+
         /**
          * Adds the components to the LoginJFrame.
          */
         private void addComponents() {
+
+            //Container container = this.getContentPane();
+
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
-            gridBagConstraints.fill = GridBagConstraints.BOTH;
-            gridBagConstraints.weightx = 1.0;
-            // this.add(userJLabel, gridBagConstraints);
-            this.add(userJLabel);
 
-            gridBagConstraints.fill = GridBagConstraints.REMAINDER;
-            // this.add(userJTextField, gridBagConstraints);
-            this.add(userJTextField);
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            //gridBagConstraints.weightx = 1.0;
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            this.add(userJLabel, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 1;
+            this.add(userJTextField, gridBagConstraints);
 
             gridBagConstraints.weightx = 0.0;
-            // this.add(loginJButton, gridBagConstraints);
-            this.add(loginJButton);
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 2;
+            this.add(loginJButton, gridBagConstraints);
 
-            gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
-            // this.add(quitJButton, gridBagConstraints);
-            this.add(quitJButton);
+            gridBagConstraints.weightx = 0.0;
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 3;
+            this.add(quitJButton, gridBagConstraints);
 
         }
     }
@@ -264,7 +287,7 @@ public class Driver {
 
             setFrameRules();
 
-            usernameJLabel = new JLabel("Username: " + userName);
+            usernameJLabel = new JLabel("Welcome " + userName);
             communityJButton = new JButton("Community");
             storeJButton = new JButton("Store");
             helpJButton = new JButton("Help");
@@ -295,7 +318,8 @@ public class Driver {
             this.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent windowEvent) {
-                    super.windowClosing(windowEvent);
+                    //mmJFrame.dispose();
+                    quit(mmJFrame);
                 }
             });
 
@@ -352,12 +376,35 @@ public class Driver {
          * Adds the components to the MMJFrame.
          */
         private void addComponents() {
-            this.add(usernameJLabel);
-            this.add(communityJButton);
-            this.add(storeJButton);
-            this.add(helpJButton);
-            this.add(logJButton);
-            this.add(backJButton);
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            //gridBagConstraints.weightx = 1.0;
+
+            gridBagConstraints.anchor = GridBagConstraints.CENTER;
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            this.add(usernameJLabel, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 1;
+            this.add(communityJButton, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 2;
+            this.add(storeJButton, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 3;
+            this.add(helpJButton, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 4;
+            this.add(logJButton, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 5;
+            this.add(backJButton, gridBagConstraints);
         }
     }
 
@@ -403,7 +450,9 @@ public class Driver {
     private class CommunityJFrame extends JFrame {
         JLabel jLabel;
         JButton backJButton;
-        JComboBox<User> userJComboBox;
+        // JComboBox<User> userJComboBox;
+        JList userJList;
+        JList appJList;
 
         CommunityJFrame(String header) {
             super(header);
@@ -412,11 +461,15 @@ public class Driver {
 
             jLabel = new JLabel("Community");
             backJButton = new JButton("BACK");
-            userJComboBox = new JComboBox<>();
+            // userJComboBox = new JComboBox<>();
+            userJList = new JList(community.getUsers().stream().map(user -> user.getUserName()).collect(Collectors.toList()).toArray());
+            appJList = new JList(new Object[]{new App(1, "Hello, World!")});
 
+            /*
             for (User user : community.getUsers()) {
                 userJComboBox.addItem(user);
             }
+            */
 
             addListeners();
 
@@ -436,12 +489,51 @@ public class Driver {
                 this.setVisible(false);
                 mmJFrame.setVisible(true);
             });
+
+            userJList.addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    // System.out.println(userJList.getSelectedIndex());
+                    //`appJList.remove
+                    appJList.setListData(
+                            community.getUsers().get(userJList.getSelectedIndex()).getUserApps().toArray().length == 0 ?
+                                    new Object[]{"This user has no apps"}
+                                    :
+                                    community.getUsers().get(userJList.getSelectedIndex()).getUserApps().toArray()
+                    );
+
+                }
+            });
         }
 
         private void addComponents() {
-            this.add(jLabel);
-            this.add(backJButton);
-            this.add(userJComboBox);
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 1;
+            this.add(jLabel, gridBagConstraints);
+
+            /*
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 2;
+            this.add(userJComboBox, gridBagConstraints);
+            */
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 3;
+            this.add(userJList, gridBagConstraints);
+
+            gridBagConstraints.gridx = 1;
+            gridBagConstraints.gridy = 3;
+            this.add(appJList, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 4;
+            gridBagConstraints.anchor = GridBagConstraints.PAGE_END;
+            this.add(backJButton, gridBagConstraints);
+
         }
     }
 
@@ -452,20 +544,27 @@ public class Driver {
         JLabel jLabel;
         JButton backJButton;
         JComboBox<App> appJComboBox;
+        JButton createAppJButton;
         JButton addAppJButton;
+        JList appJList;
 
         StoreJFrame(String header) {
-            super(header);
+            super("Store: " + header);
 
             setFrameRules();
 
-            jLabel = new JLabel("Store");
+            jLabel = new JLabel("Store: " + currentUser);
             backJButton = new JButton("BACK");
             appJComboBox = new JComboBox<>();
             for (App app : store.getApps()) {
                 appJComboBox.addItem(app);
             }
-            addAppJButton = new JButton("New Application");
+
+            appJList = new JList(store.getApps().stream().map(app -> app.getAppName()).collect(Collectors.toList()).toArray());
+
+            createAppJButton = new JButton("New Application");
+
+            addAppJButton = new JButton("Add to Account");
 
             addListeners();
 
@@ -486,17 +585,58 @@ public class Driver {
                 mmJFrame.setVisible(true);
             });
 
-            addAppJButton.addActionListener(actionEvent -> {
+
+            appJList.addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    // System.out.println(userJList.getSelectedIndex());
+                    //`appJList.remove
+                }
+            });
+
+            createAppJButton.addActionListener(actionEvent -> {
                 JTextField appNameJTextField = new JTextField("", 30);
-                JOptionPane.showMessageDialog(this, appNameJTextField);
+                //JOptionPane.showMessageDialog(this, appNameJTextField);
+
+                String appName = JOptionPane.showInputDialog(this, "Input app name: ");
+                if (appName.matches(".*\\w.*")) {
+                    store.addApp(appName);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please input an app name that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+            });
+
+            addAppJButton.addActionListener(actionEvent -> {
+                System.out.println(appJList.getSelectedValue());
+
             });
         }
 
         private void addComponents() {
-            this.add(jLabel);
-            this.add(backJButton);
-            this.add(appJComboBox);
-            this.add(addAppJButton);
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+
+            gridBagConstraints.anchor = GridBagConstraints.CENTER;
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            this.add(jLabel, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 1;
+            this.add(backJButton, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 2;
+            this.add(appJList, gridBagConstraints);
+
+            gridBagConstraints.gridx = 1;
+            this.add(addAppJButton, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 3;
+            this.add(createAppJButton, gridBagConstraints);
         }
     }
 
