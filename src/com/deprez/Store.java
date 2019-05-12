@@ -42,7 +42,7 @@ public class Store {
     public int hasApp(String appName) {
         int i = 0;
         for (App app : apps) {
-            if (app.equals(appName)) {
+            if (app.getAppName().equals(appName)) {
                 return i;
             }
             i++;

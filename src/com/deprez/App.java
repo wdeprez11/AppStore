@@ -112,7 +112,7 @@ public class App {
      */
     public boolean equals(Object o) {
         App other = (App) o;
-        return appId == other.appId && appName.equals(other.appName);
+        return appName.equals(other.appName);
     }
 
     /**
