@@ -333,11 +333,13 @@ public class Driver {
                 storeJFrame.setVisible(true);
             });
 
-            /*
+
             helpJButton.addActionListener(actionEvent -> {
-                this.setVisible(false);
-                helpJFrame.setVisible(true);
-            });*/
+                JOptionPane.showMessageDialog(this, "This program will implement a database of Users, Apps, and Reviews to make up a social app store.\n " +
+                        "It tracks a user’s owned apps, existing apps, and reviews of that app.\n" +
+                        "This creates a useful store and essentially it’s own digital marketplace where anyone can create their own applications.\n" +
+                        "My list of apps will be contained within a store object, while my users are contained within my community object.");
+            });
 
             logJButton.addActionListener(actionEvent -> {
                 // this.setVisible(false);
@@ -475,6 +477,7 @@ public class Driver {
 
             addComponents();
         }
+
 
         private void setFrameRules() {
             this.setSize(1024, 768);
