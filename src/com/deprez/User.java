@@ -148,6 +148,14 @@ public class User {
         Collections.sort(userApps, UserAppReview::compareTo);
     }
 
+    public void addUserAppReview(String userName, String appName, int reviewScore, String reviewDetail) {
+        userApps.add(new UserAppReview(userName, appName, reviewScore, reviewDetail));
+    }
+
+    public void addApp(App app) {
+        /* TODO */
+    }
+
     // TODO: search
 }
 

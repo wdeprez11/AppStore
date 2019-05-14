@@ -7,7 +7,6 @@ import java.util.logging.Level;
 
 public class Database {
     private String url;
-    // TODO: Add class attribute in order to store the tables created.
 
     /**
      * Creates a database object.

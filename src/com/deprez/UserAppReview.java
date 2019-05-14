@@ -2,14 +2,21 @@ package com.deprez;
 
 public class UserAppReview {
     private int userId;
+    private String userName;
+    private String appName;
     private int appId;
     private int appReviewScore;
     private String appReviewDetail;
 
-    public UserAppReview() {
-
+    // TODO
+    public UserAppReview(String userName, String appName, int appReviewScore, String appReviewDetail) {
+        this.userName = userName;
+        this.appName = appName;
+        this.appReviewScore = appReviewScore;
+        this.appReviewDetail = appReviewDetail;
     }
 
+    // TODO: Delete dis
     public UserAppReview(int userId, int appId, int appReviewScore, String appReviewDetail) {
         this.userId = userId;
         this.appId = appId;

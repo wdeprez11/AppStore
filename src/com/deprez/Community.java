@@ -188,6 +188,42 @@ public class Community {
     public int size() {
         return users.size();
     }
+
+    /**
+     * Returns a User object based on userName, otherwise returns null
+     *
+     * @param userName the userName to search for
+     * @return the `User` object with a matching user
+     */
+    public User getUser(String userName) {
+        int tmp = hasUser(userName);
+        if (tmp >= 0) {
+            return users.get(tmp);
+        }
+        return null;
+    }
+
+    public void addUserApp(String userName, App app) {
+        int tmp = hasUser(userName);
+        if (tmp >= 0) {
+            users.get(tmp).addApp(app);
+        }
+    }
+
+    public void addUserAppReviewToUser(String userName, String appName, int reviewScore, String reviewDetail) {
+        int tmp = hasUser(userName);
+        if (tmp  >= 0) {
+            // TODO
+            users.get(tmp).addUserAppReview(userName, appName, reviewScore, reviewDetail);
+        }
+    }
+
+    public List<App> getUserAppReviews(String userName) {
+        // TODO
+        return null;
+    }
+
+
 }
 
 class UserComparator implements Comparator<User> {

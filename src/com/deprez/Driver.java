@@ -52,7 +52,6 @@ public class Driver {
      */
     private String currentUser;
 
-    // TODO: Move database to inner class.
     private Database database;
 
     /**
@@ -66,12 +65,6 @@ public class Driver {
     private Store store;
 
     /**
-     * The list of userAppReviews
-     */
-    private UserAppReviews userAppReviews;
-
-
-    /**
      * Creates a Driver object.
      */
     private Driver() {
@@ -79,7 +72,7 @@ public class Driver {
         database.connect();
         community = new Community(database.loadUsers());
         store = new Store(database.loadApps());
-        userAppReviews = new UserAppReviews(database.loadUserAppReviews());
+        // userAppReviews = new UserAppReviews(database.loadUserAppReviews()); TODO
         setupLogger();
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
@@ -312,7 +305,6 @@ public class Driver {
 
         /**
          * Adds the window listeners for the buttons on the MMJFrame.
-         * TODO: Add listeners for Community, Store, Report, Help, and Log
          */
         private void addListeners() {
             this.addWindowListener(new WindowAdapter() {
