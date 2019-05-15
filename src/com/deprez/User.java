@@ -10,7 +10,6 @@ import java.util.List;
 public class User {
     private int userId;
     private String userName;
-    private List<UserAppReview> userApps;
 
     /**
      * Creates a User object.
@@ -21,20 +20,6 @@ public class User {
     public User(int userId, String userName) {
         this.userId = userId;
         this.userName = userName;
-        userApps = new ArrayList<>();
-    }
-
-    /**
-     * Creates a User object.
-     *
-     * @param userId   the userId of the user in the table. User identifier is chosen by the order of creation in Community class.
-     * @param userName the userName of the user. Unique to each user.
-     * @param userApps the apps the user owns.
-     */
-    public User(int userId, String userName, List<UserAppReview> userApps) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userApps = userApps;
     }
 
     /**
@@ -74,28 +59,6 @@ public class User {
     }
 
     /**
-     * Returns the indexes of appIds within the Store class' apps list.
-     *
-     * @return returns the indexes of appId
-     */
-    public List<UserAppReview> getUserApps() {
-        return userApps;
-    }
-
-    /**
-     * Replaces the existing userApps list
-     *
-     * @param userApps the new userApps list
-     */
-    public void setUserApps(List<UserAppReview> userApps) {
-        this.userApps = userApps;
-    }
-
-    public void addAppReview(UserAppReview appReview) {
-        userApps.add(appReview);
-    }
-
-    /**
      * Returns a String of the class attributes.
      *
      * @return Returns String of class attributes
@@ -105,7 +68,6 @@ public class User {
         return "User{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
-                ", userApps=" + userApps +
                 '}';
     }
 
@@ -137,31 +99,6 @@ public class User {
      */
     public boolean equals(Object o) {
         return userName.equals(((User) o).userName);
-    }
-
-    /**
-     * Sorts the list in order of appId.
-     *
-     * TODO: Implement as merge sort, temporarily using Collections because focusing on more important things.
-     */
-    public void sort() {
-        Collections.sort(userApps, UserAppReview::compareTo);
-    }
-
-    public void addUserAppReview(String userName, String appName, int reviewScore, String reviewDetail) {
-        // TODO userApps.add(new UserAppReview(userName, appName, reviewScore, reviewDetail));
-    }
-
-    public void updateUserAppReview(String userName, String appName, int reviewScore, String reviewDetail) {
-        for (UserAppReview review : userApps) {
-
-        }
-
-        // TODO userApps.add(new UserAppReview(userName, appName, reviewScore, reviewDetail));
-    }
-
-    public void addUserApp() {
-
     }
 
     // TODO: search

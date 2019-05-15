@@ -75,7 +75,8 @@ public class Driver {
         database.connect();
         community = new Community(database.loadUsers());
         store = new Store(database.loadApps());
-        userAppReviews = new UserAppReviews(database.loadUserAppReviews());
+        //userAppReviews = new UserAppReviews(database.loadUserAppReviews());
+        userAppReviews = new UserAppReviews();
         setupLogger();
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
@@ -493,12 +494,24 @@ public class Driver {
                 public void valueChanged(ListSelectionEvent e) {
                     // System.out.println(userJList.getSelectedIndex());
                     //`appJList.remove
+                    /*
+                    TODO!!!
                     appJList.setListData(
                             community.getUsers().get(userJList.getSelectedIndex()).getUserApps().toArray().length == 0 ?
                                     new Object[]{"This user has no apps"}
                                     :
                                     community.getUsers().get(userJList.getSelectedIndex()).getUserApps().toArray()
                     );
+                     */
+                    // TODO System.out.println(userAppReviews.getAppsOfUser(community.getUserId(currentUser)));
+                    Object[] users = userAppReviews.getAppsOfUser(community.getUserId(userJList.getSelectedValue().toString())).toArray();
+                    String[] appNames = new String[users.length];
+                    for (int i = 0; i < appNames.length; i++) {
+                        appNames[i] = store.getApp(i);
+                    }
+                    //System.out.println(appNames);
+
+                    appJList.setListData(users.length == 0 ? new Object[]{"null"} : appNames);
 
                 }
             });
@@ -612,14 +625,16 @@ public class Driver {
                 System.out.println(appJList.getSelectedValue()); */
                 int userId = community.getUser(currentUser).getUserId();
                 int appId = store.getApp(appJList.getSelectedValue().toString()).getAppId();
-                System.out.println("Adding (" + userId + "," + appId + ")");
+                // System.out.println("Adding (" + userId + "," + appId + ")");
 
-                userAppReviews.addUserAppReview(userId, appId);
-
-                for (UserAppReview r : userAppReviews.getAppReviews()) {
-                    System.out.println(">>" + r.toString());
+                if (userAppReviews.userHasApp(userId, appId)) {
+                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' wasn't able to be added to: '" + currentUser + "',\n" + currentUser + " already owns " + appJList.getSelectedValue(), "App failed to add", JOptionPane.ERROR_MESSAGE);
+                    LOGGER.log(Level.WARNING, "Failed to add app : '" + store.getApps().get(appId - 1).toString() + "' to " + currentUser + ",\n" + currentUser + " already owns the app.");
+                } else {
+                    userAppReviews.addUserAppReview(userId, appId);
+                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' was successfully added to: '" + currentUser + "'", "App Added", JOptionPane.INFORMATION_MESSAGE);
+                    LOGGER.log(Level.INFO, "App '" + store.getApps().get(appId - 1).toString() + "' added to " + currentUser + ".");
                 }
-
             });
         }
 

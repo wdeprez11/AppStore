@@ -209,12 +209,14 @@ public class Database {
     }
 
     public void saveUserAppReviews(List<User> users) {
+        /*
         dropTable("userapp_tb");
         createUserAppTable();
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url);
 
+            // TODO: refactor this for new UserAppReviews setup
             for (User user : users) {
                 for (UserAppReview appReview : user.getUserApps()) {
                     String sql = "INSERT INTO userapp_tb(userId, appId, reviewScore, reviewDetail) values ("
@@ -240,6 +242,7 @@ public class Database {
                 Driver.LOGGER.log(Level.WARNING, "Failed to close connection to database...", ex);
             }
         }
+        */
     }
 
     public List<App> loadApps() {
@@ -273,6 +276,8 @@ public class Database {
     }
 
     public List<UserAppReview> loadUserAppReviews() {
+        // TODO: refactor for new setup
+        /*
         Connection connection = null;
         List<UserAppReview> userAppReviews = new ArrayList<>();
         try {
@@ -300,6 +305,8 @@ public class Database {
             }
         }
         return userAppReviews;
+         */
+        return new ArrayList<UserAppReview>();
     }
 
     public List<User> loadUsers() {

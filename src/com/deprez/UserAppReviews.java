@@ -4,31 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserAppReviews {
-    private List<UserAppReview> appReviews;
+    private List<UserAppReview> userAppReviews;
 
     public UserAppReviews() {
-        appReviews = new ArrayList<>();
+        userAppReviews = new ArrayList<>();
     }
 
-    public UserAppReviews(List<UserAppReview> appReviews) {
-        this.appReviews = appReviews;
+    public UserAppReviews(List<UserAppReview> userAppReviews) {
+        this.userAppReviews = userAppReviews;
     }
 
-    public List<UserAppReview> getAppReviews() {
-        return appReviews;
+    public List<UserAppReview> getUserAppReviews() {
+        return userAppReviews;
     }
 
-    public void setAppReviews(List<UserAppReview> appReviews) {
-        this.appReviews = appReviews;
+    public void setAppReviews(List<UserAppReview> userAppReviews) {
+        this.userAppReviews = userAppReviews;
     }
 
-    public void addAppReview(UserAppReview appReview) {
-        appReviews.add(appReview);
+    public void addAppReview(UserAppReview userAppReview) {
+        userAppReviews.add(userAppReview);
     }
 
     public List<Integer> getUsersOfApp(int appId) {
         List<Integer> users = new ArrayList<>();
-        for (UserAppReview appReview : appReviews) {
+        for (UserAppReview appReview : userAppReviews) {
             if (appReview.getAppId() == appId) {
                 users.add(appReview.getUserId());
             }
@@ -38,7 +38,7 @@ public class UserAppReviews {
 
     public List<Integer> getAppsOfUser(int userId) {
         List<Integer> apps = new ArrayList<>();
-        for (UserAppReview appReview : appReviews) {
+        for (UserAppReview appReview : userAppReviews) {
             if (appReview.getUserId() == userId) {
                 apps.add(appReview.getAppId());
             }
@@ -46,30 +46,45 @@ public class UserAppReviews {
         return apps;
     }
 
+    /**
+     * Adds a new `UserAppReview` object to the class list
+     * @param userId
+     * @param appId
+     */
     public void addUserAppReview(int userId, int appId) {
-        System.out.println("addUserAppReview()...");
         addUserAppReview(new UserAppReview(userId, appId));
-        System.out.println("addUserAppReview()...completed");
     }
 
+    /**
+     * Adds a new `UserAppReview` object to the class list
+     *
+     * @param userAppReview the userAppReview object
+     */
     public void addUserAppReview(UserAppReview userAppReview) {
-        System.out.println("  addUserAppReview()...");
-        appReviews.add(userAppReview);
-        System.out.println("  addUserAppReview()...completed");
+        userAppReviews.add(userAppReview);
     }
 
     /*
-    public boolean hasAppReview(UserAppReview appReview) {
+    public boolean hasAppReview(UserAppReview userAppReview) {
         for(UserAppReview ar : appReviews) {
             if()
         }
     }
      */
 
+    public boolean userHasApp(int userId, int appId) {
+        for (UserAppReview review : userAppReviews) {
+            if (review.getUserId() == userId && review.getAppId() == appId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "UserAppReviews{" +
-                "appReviews=" + appReviews +
+                "appReviews=" + userAppReviews +
                 '}';
     }
 }

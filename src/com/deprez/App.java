@@ -10,7 +10,6 @@ import java.util.List;
 public class App {
     private int appId;
     private String appName;
-    private List<Integer> appOwners;
 
     /**
      * Constructs an App object.
@@ -22,21 +21,6 @@ public class App {
     public App(int appId, String appName) {
         this.appId = appId;
         this.appName = appName;
-        appOwners = new ArrayList<>();
-    }
-
-    /**
-     * Constructs an App object, with an initial list.
-     * Mainly for use when reading in an existing list of owners.
-     *
-     * @param appId the appId of the app
-     * @param appName the name of the app
-     * @param appOwners the list of app owners.
-     */
-    public App(int appId, String appName, List<Integer> appOwners) {
-        this.appId = appId;
-        this.appName = appName;
-        this.appOwners = appOwners;
     }
 
     /**
@@ -76,24 +60,6 @@ public class App {
     }
 
     /**
-     * Gets the list of app ids of the owners
-     *
-     * @return returns the list appId's of owners as Integers.
-     */
-    public List<Integer> getAppOwners() {
-        return appOwners;
-    }
-
-    /**
-     * Sets the object's appOwners.
-     *
-     * @param appOwners the new list of app owners.
-     */
-    public void setAppOwners(List<Integer> appOwners) {
-        this.appOwners = appOwners;
-    }
-
-    /**
      * Compares the appId and appName difference of two apps.
      *
      * @param o the other App object
@@ -125,20 +91,7 @@ public class App {
         return "App{" +
                 "appId=" + appId +
                 ", appName='" + appName + '\'' +
-                ", appOwners=" + appOwners +
                 '}';
-    }
-
-    public void sort() {
-        Collections.sort(appOwners);
-    }
-
-    public int size() {
-        return appOwners.size();
-    }
-
-    public void clear() {
-        appOwners.clear();
     }
 
     // TODO: merge sort

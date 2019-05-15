@@ -211,11 +211,14 @@ public class Community {
     }
 
     public void addUserAppReviewToUser(String userName, String appName, int reviewScore, String reviewDetail) {
+        /*
+        TODO
         int tmp = hasUser(userName);
         if (tmp  >= 0) {
             // TODO
             users.get(tmp).addUserAppReview(userName, appName, reviewScore, reviewDetail);
         }
+        */
     }
 
     public List<App> getUserAppReviews(String userName) {
@@ -223,7 +226,13 @@ public class Community {
         return null;
     }
 
+    public String getUserName(int userId) {
+        return users.get(userId).getUserName();
+    }
 
+    public int getUserId(String userName) {
+        return getUser(userName).getUserId();
+    }
 }
 
 class UserComparator implements Comparator<User> {
