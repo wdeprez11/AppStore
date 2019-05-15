@@ -1,8 +1,13 @@
 package com.deprez;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
+/**
+ * Test Description
+ */
 public class Store {
     private List<App> apps;
 
@@ -22,26 +27,27 @@ public class Store {
         this.apps = apps;
     }
 
-    public void addApp(App app) throws AlreadyExistsException { // TODO
-        if (hasApp(app)) {
-            throw new AlreadyExistsException("App with same appId and appName already exists");
+    public void addApp(String appName) {
+        if (hasApp(appName) >= 0) {
+            Driver.LOGGER.log(Level.FINE, "App with the same appName '" + "' already exists in " + this.getClass().getName());
         } else {
-            apps.add(app);
+            apps.add(new App(apps.size() + 1, appName));
         }
-
     }
 
-    public boolean hasApp(App app) {
-        for (App ap : apps) {
-            if (ap.equals(app)) {
-                return true;
+    public void sort() {
+        Collections.sort(apps, App::compareTo);
+    }
+
+    public int hasApp(String appName) {
+        int i = 0;
+        for (App app : apps) {
+            if (app.getAppName().equals(appName)) {
+                return i;
             }
+            i++;
         }
-        return false;
-    }
-
-    public int size() {
-        return apps.size();
+        return -1;
     }
 
     @Override
@@ -49,6 +55,14 @@ public class Store {
         return "Store{" +
                 "apps=" + apps +
                 '}';
+    }
+
+    public void clear() {
+        apps.clear();
+    }
+
+    public int size() {
+        return apps.size();
     }
 
     // TODO: merge sort

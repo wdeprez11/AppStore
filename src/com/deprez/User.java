@@ -1,8 +1,12 @@
 package com.deprez;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+/**
+ * Test Description
+ */
 public class User {
     private int userId;
     private String userName;
@@ -135,6 +139,23 @@ public class User {
         return userName.equals(((User) o).userName);
     }
 
-    // TODO: merge sort
+    /**
+     * Sorts the list in order of appId.
+     *
+     * TODO: Implement as merge sort, temporarily using Collections because focusing on more important things.
+     */
+    public void sort() {
+        Collections.sort(userApps, UserAppReview::compareTo);
+    }
+
+    public void addUserAppReview(String userName, String appName, int reviewScore, String reviewDetail) {
+        userApps.add(new UserAppReview(userName, appName, reviewScore, reviewDetail));
+    }
+
+    public void addApp(App app) {
+        /* TODO */
+    }
+
     // TODO: search
 }
+
