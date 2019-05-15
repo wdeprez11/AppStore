@@ -149,11 +149,19 @@ public class User {
     }
 
     public void addUserAppReview(String userName, String appName, int reviewScore, String reviewDetail) {
-        userApps.add(new UserAppReview(userName, appName, reviewScore, reviewDetail));
+        // TODO userApps.add(new UserAppReview(userName, appName, reviewScore, reviewDetail));
     }
 
-    public void addApp(App app) {
-        /* TODO */
+    public void updateUserAppReview(String userName, String appName, int reviewScore, String reviewDetail) {
+        for (UserAppReview review : userApps) {
+
+        }
+
+        // TODO userApps.add(new UserAppReview(userName, appName, reviewScore, reviewDetail));
+    }
+
+    public void addUserApp() {
+
     }
 
     // TODO: search

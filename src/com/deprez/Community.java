@@ -1,6 +1,9 @@
 package com.deprez;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -9,14 +12,12 @@ import java.util.logging.Level;
 public class Community {
 
     private List<User> users;
-    private TreeSet<User> userTreeSet;
     // TODO: Javadoc
     // TODO: Fast Search
     // TODO: Sort (Merge)
 
     public Community() {
         users = new ArrayList<>();
-        userTreeSet = new TreeSet<>();
         // users = new ArrayList<>();
     }
 
@@ -25,6 +26,7 @@ public class Community {
     }
 
     public List<User> getUsers() {
+        Collections.sort(users, User::compareToId);
         return users;
     }
 
@@ -109,8 +111,9 @@ public class Community {
         return -1;
     }
 
-    public void sortByName() {
+    private void sortByName() {
         Collections.sort(users, User::compareToName);
+
         /*
         if (!(users.size() <= 1)) {
 
@@ -196,17 +199,14 @@ public class Community {
      * @return the `User` object with a matching user
      */
     public User getUser(String userName) {
-        int tmp = hasUser(userName);
-        if (tmp >= 0) {
-            return users.get(tmp);
-        }
-        return null;
+        int temp = hasUser(userName);
+        return (temp >= 0) ? users.get(temp) : null;
     }
 
     public void addUserApp(String userName, App app) {
-        int tmp = hasUser(userName);
-        if (tmp >= 0) {
-            users.get(tmp).addApp(app);
+        int temp = hasUser(userName);
+        if (temp >= 0) {
+            // TODO users.get(temp).addApp(app);
         }
     }
 

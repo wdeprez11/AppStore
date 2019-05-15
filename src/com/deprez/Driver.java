@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * Accesses and writes the database.
  * Manages the user interface.
  * </p>
+ *
  * @author William Deprez
  * @version 1.0
  */
@@ -64,6 +65,8 @@ public class Driver {
      */
     private Store store;
 
+    private UserAppReviews userAppReviews;
+
     /**
      * Creates a Driver object.
      */
@@ -72,7 +75,7 @@ public class Driver {
         database.connect();
         community = new Community(database.loadUsers());
         store = new Store(database.loadApps());
-        // userAppReviews = new UserAppReviews(database.loadUserAppReviews()); TODO
+        userAppReviews = new UserAppReviews(database.loadUserAppReviews());
         setupLogger();
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
@@ -592,18 +595,30 @@ public class Driver {
             createAppJButton.addActionListener(actionEvent -> {
                 JTextField appNameJTextField = new JTextField("", 30);
                 //JOptionPane.showMessageDialog(this, appNameJTextField);
-
-                String appName = JOptionPane.showInputDialog(this, "Input app name: ");
-                if (appName.matches(".*\\w.*")) {
-                    store.addApp(appName);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Please input an app name that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
+                while (true) {
+                    String appName = JOptionPane.showInputDialog(this, "Input app name: ");
+                    if (appName != null && appName.matches(".*\\w.*") && !(store.hasApp(appName) >= 0)) {
+                        store.addApp(appName);
+                        break;
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Please input an app name that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
 
             });
 
             addAppJButton.addActionListener(actionEvent -> {
-                System.out.println(appJList.getSelectedValue());
+                /* community.getUser(currentUser).addUserApp(appJList.getSelectedValue());
+                System.out.println(appJList.getSelectedValue()); */
+                int userId = community.getUser(currentUser).getUserId();
+                int appId = store.getApp(appJList.getSelectedValue().toString()).getAppId();
+                System.out.println("Adding (" + userId + "," + appId + ")");
+
+                userAppReviews.addUserAppReview(userId, appId);
+
+                for (UserAppReview r : userAppReviews.getAppReviews()) {
+                    System.out.println(">>" + r.toString());
+                }
 
             });
         }

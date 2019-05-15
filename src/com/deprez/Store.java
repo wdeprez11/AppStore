@@ -65,6 +65,11 @@ public class Store {
         return apps.size();
     }
 
+    public App getApp(String appName) {
+        int tmp = hasApp(appName);
+        return (tmp >= 0) ? apps.get(tmp) : null;
+    }
+
     // TODO: merge sort
     // TODO: search
 }

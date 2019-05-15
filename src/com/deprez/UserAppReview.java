@@ -8,15 +8,19 @@ public class UserAppReview {
     private int appReviewScore;
     private String appReviewDetail;
 
-    // TODO
+    /* TODO
     public UserAppReview(String userName, String appName, int appReviewScore, String appReviewDetail) {
         this.userName = userName;
         this.appName = appName;
         this.appReviewScore = appReviewScore;
         this.appReviewDetail = appReviewDetail;
+    } */
+
+    public UserAppReview(int userId, int appId) {
+        this.userId = userId;
+        this.appId = appId;
     }
 
-    // TODO: Delete dis
     public UserAppReview(int userId, int appId, int appReviewScore, String appReviewDetail) {
         this.userId = userId;
         this.appId = appId;
@@ -74,7 +78,8 @@ public class UserAppReview {
     @Override
     public String toString() {
         return "UserAppReview{" +
-                "appId=" + appId +
+                "userId=" + userId +
+                ", appId=" + appId +
                 ", appReviewScore=" + appReviewScore +
                 ", appReviewDetail='" + appReviewDetail + '\'' +
                 '}';
