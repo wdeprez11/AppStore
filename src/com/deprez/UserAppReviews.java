@@ -46,6 +46,18 @@ public class UserAppReviews {
         return apps;
     }
 
+    public void addUserAppReview(int userId, int appId) {
+        System.out.println("addUserAppReview()...");
+        addUserAppReview(new UserAppReview(userId, appId));
+        System.out.println("addUserAppReview()...completed");
+    }
+
+    public void addUserAppReview(UserAppReview userAppReview) {
+        System.out.println("  addUserAppReview()...");
+        appReviews.add(userAppReview);
+        System.out.println("  addUserAppReview()...completed");
+    }
+
     /*
     public boolean hasAppReview(UserAppReview appReview) {
         for(UserAppReview ar : appReviews) {
