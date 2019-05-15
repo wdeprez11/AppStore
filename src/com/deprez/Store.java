@@ -70,6 +70,10 @@ public class Store {
         return (tmp >= 0) ? apps.get(tmp) : null;
     }
 
+    public String getApp(int i) {
+        return apps.get(i).getAppName();
+    }
+
     // TODO: merge sort
     // TODO: search
 }
