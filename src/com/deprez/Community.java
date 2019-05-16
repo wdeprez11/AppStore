@@ -2,7 +2,6 @@ package com.deprez;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -236,12 +235,5 @@ public class Community {
 
     public int getUserId(String userName) {
         return getUser(userName).getUserId();
-    }
-}
-
-class UserComparator implements Comparator<User> {
-    @Override
-    public int compare(User o1, User o2) {
-        return o1.compareToName(o2);
     }
 }
