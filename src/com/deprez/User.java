@@ -1,7 +1,10 @@
 package com.deprez;
 
 /**
- * Test Description
+ * The plain java object of 'User'
+ * Contains {@link com.deprez.User#userId} and {@link com.deprez.User#userName}.
+ *
+ * @see com.deprez.Community
  */
 public class User {
     private int userId;

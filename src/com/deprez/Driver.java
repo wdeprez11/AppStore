@@ -4,7 +4,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,64 +23,117 @@ import java.util.stream.Collectors;
  *
  * @author William Deprez
  * @version 1.0
+ * @see com.deprez.User
+ * @see com.deprez.Community
+ * @see com.deprez.App
+ * @see com.deprez.Store
+ * @see com.deprez.UserAppReview
+ * @see com.deprez.UserAppReviews
+ * @see com.deprez.Database
  */
 public class Driver {
 
     /**
      * The static logger for the package.
+     *
+     * @see java.util.logging
      */
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     /**
      * The member declaration of the inner LoginJFrame class.
+     *
+     * @see com.deprez.User
+     * @see com.deprez.Driver.MMJFrame
      */
     private LoginJFrame loginJFrame;
 
     /**
      * The member declaration of the inner MMJFrame class.
+     *
+     * @see com.deprez.Driver.CommunityJFrame
+     * @see com.deprez.Driver.StoreJFrame
+     * @see com.deprez.Driver.LoginJFrame
      */
     private MMJFrame mmJFrame;
 
     /**
      * The member declaration of the inner CommunityJFrame class.
+     *
+     * @see com.deprez.User
+     * @see com.deprez.App
      */
     private CommunityJFrame communityJFrame;
 
     /**
      * The member declaration of the inner StoreJFrame class.
+     *
+     * @see com.deprez.App
      */
     private StoreJFrame storeJFrame;
 
     /**
      * The current User object declared within the LoginJFrame class.
+     *
+     * @see com.deprez.User
      */
     private String currentUser;
 
+    /**
+     * The Database instance.
+     *
+     * @see java.sql
+     */
     private Database database;
 
     /**
      * The list of users.
+     *
+     * @see com.deprez.User
      */
     private Community community;
 
     /**
      * The list of apps.
+     *
+     * @see com.deprez.App
      */
     private Store store;
 
+    /**
+     * The Many-to-Many relationship pair of userId and appIds<br>
+     * This helps manage the Users, Apps, and the Review score and detail associated with those pairs.<br>
+     * For example:
+     * userId = 1 adds app with appId = 5 to their account
+     * In order to manage this pair of identifiers without the UserAppReview list,
+     * It would be necessary to add the appId or userId to each {@link com.deprez.App} object
+     * and {@link com.deprez.User} object. Obviously this would become incredibly inefficient,
+     * especially when attempting to remove either of those objects from {@link com.deprez.Store}
+     * or {@link com.deprez.Community}
+     *
+     * @see com.deprez.Database
+     * @see com.deprez.App
+     * @see com.deprez.User
+     * @see com.deprez.UserAppReview
+     * @see com.deprez.Store
+     * @see com.deprez.Community
+     * @see com.deprez.UserAppReviews
+     */
     private UserAppReviews userAppReviews;
 
     /**
      * Creates a Driver object.
+     *
+     * @see com.deprez.Database
+     * @see com.deprez.Driver.LoginJFrame
      */
     private Driver() {
+        setupLogger();
         database = new Database("jdbc:sqlite:appstore.db");
         database.connect();
         community = new Community(database.loadUsers());
         store = new Store(database.loadApps());
         userAppReviews = new UserAppReviews(database.loadUserAppReviews());
-        //userAppReviews = new UserAppReviews(database.loadUserAppReviews());
-        setupLogger();
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
         storeJFrame = new StoreJFrame("Store");
@@ -85,6 +141,11 @@ public class Driver {
 
     /**
      * Initializes the logging system.
+     *
+     * @see java.util.logging
+     * @see java.util.logging.ConsoleHandler
+     * @see java.io.FileReader
+     * @see java.io.IOException
      */
     private static void setupLogger() {
         LogManager.getLogManager().reset();
@@ -119,6 +180,11 @@ public class Driver {
 
     /**
      * Calls the methods of the Database class which write the active lists to the tables.
+     *
+     * @see com.deprez.Database
+     * @see com.deprez.Community
+     * @see com.deprez.Store
+     * @see com.deprez.UserAppReviews
      */
     private void save() {
         database.saveUsers(community.getUsers());
@@ -130,6 +196,13 @@ public class Driver {
      * Calls methods to avoid repeated code.
      *
      * @param jFrame the JFrame to destroy, instead of duplicate code.
+     *
+     * @see com.deprez.Community
+     * @see com.deprez.Store
+     * @see com.deprez.UserAppReviews
+     * @see Driver#setupLogger()
+     * @see Driver#save()
+     * @see Window#dispose()
      */
     private void quit(JFrame jFrame) {
         save();
@@ -143,11 +216,34 @@ public class Driver {
 
     /**
      * Manages the elements of the LoginJFrame.
+     *
+     * @see com.deprez.Driver.MMJFrame
+     * @see com.deprez.Community
      */
     private class LoginJFrame extends JFrame {
+        /**
+         * The label asking for the username.
+         */
         JLabel userJLabel;
+
+        /**
+         * The text field to input a username.
+         *
+         * @see com.deprez.User
+         */
         JTextField userJTextField;
+
+        /**
+         * The button that logs the user in
+         */
         JButton loginJButton;
+
+        /**
+         * The button that quits the program
+         *
+         * @see Driver#save()
+         * @see Driver#quit(JFrame)
+         */
         JButton quitJButton;
 
         /**
@@ -203,21 +299,24 @@ public class Driver {
                         login();
                     }
                 }
-
             });
 
-            loginJButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    login();
-                }
-            });
+            loginJButton.addActionListener(actionEvent -> login());
 
-            quitJButton.addActionListener(actionEvent -> {
-                quit(this);
-            });
+            quitJButton.addActionListener(actionEvent -> quit(this));
         }
 
+        /**
+         * Logs the user into the program,
+         * sets {@link Driver#currentUser} to the username given in {@link Driver.LoginJFrame#userJTextField}
+         * Creates the other JFrames specified for the input user.
+         *
+         * @see com.deprez.User
+         * @see com.deprez.Driver.LoginJFrame
+         * @see com.deprez.Driver.MMJFrame
+         * @see com.deprez.Driver.CommunityJFrame
+         * @see com.deprez.Driver.StoreJFrame
+         */
         private void login() {
             if (userJTextField.getText().trim().matches(".*\\w.*")) {
                 loginJFrame.setVisible(false);
@@ -232,19 +331,13 @@ public class Driver {
             }
         }
 
-
         /**
          * Adds the components to the LoginJFrame.
          */
         private void addComponents() {
-
-            //Container container = this.getContentPane();
-
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
-
             gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-            //gridBagConstraints.weightx = 1.0;
 
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
@@ -263,22 +356,73 @@ public class Driver {
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 3;
             this.add(quitJButton, gridBagConstraints);
-
         }
     }
 
     /**
      * Manages the elements of the MMJFrame.
+     * essentially a wrapper class to contain a JFrame instance
+     *
+     * @see com.deprez.Driver.LoginJFrame
+     * @see com.deprez.Driver.CommunityJFrame
+     * @see com.deprez.Driver.StoreJFrame
      */
     private class MMJFrame extends JFrame {
+        /**
+         * The username label of the {@link com.deprez.Driver#currentUser}
+         */
         JLabel usernameJLabel;
+
+        /**
+         * The button that changes window visibility to the CommunityJFrame
+         *
+         * @see com.deprez.Community
+         * @see com.deprez.Driver.CommunityJFrame
+         */
         JButton communityJButton;
+
+        /**
+         * The button that changes window visibility to the StoreJFrame
+         *
+         * @see com.deprez.Store
+         * @see com.deprez.Driver.StoreJFrame
+         */
         JButton storeJButton;
+
+        /**
+         * Shows all data in the database.
+         *
+         * @see com.deprez.Community
+         * @see com.deprez.Store
+         * @see com.deprez.Database
+         */
         JButton showAllJButton;
+
+        /**
+         * Shows help for the user
+         */
         JButton helpJButton;
+
+        /**
+         * Shows the entire log of the current machines runtime, as long as appstore.log was never deleted.
+         */
         JButton logJButton;
+
+        /**
+         * Returns the view to the login splash, and sets {@link com.deprez.Driver#currentUser} to null.
+         *
+         * @see com.deprez.Driver.LoginJFrame
+         */
         JButton backJButton;
 
+        /**
+         * Creates an instance of a MMJFrame,
+         *
+         * @param header   the window header
+         * @param userName the userName of the user
+         *                 <p>
+         *                 TODO: Pass an actual User object
+         */
         MMJFrame(String header, String userName) {
             super(header);
 
@@ -317,7 +461,6 @@ public class Driver {
             this.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent windowEvent) {
-                    //mmJFrame.dispose();
                     quit(mmJFrame);
                 }
             });
@@ -341,7 +484,6 @@ public class Driver {
             });
 
             logJButton.addActionListener(actionEvent -> {
-                // this.setVisible(false);
                 String line;
                 StringBuilder stringBuilder = new StringBuilder();
 
@@ -415,29 +557,74 @@ public class Driver {
 
     /**
      * Manages the elements of the CommunityJFrame.
+     *
+     * @see com.deprez.Community
+     * @see com.deprez.Driver.MMJFrame
      */
     private class CommunityJFrame extends JFrame {
-        JLabel jLabel;
+
+        /**
+         * The label indicating the {@link com.deprez.Driver#currentUser}
+         */
+        JLabel communityJLabel;
+
+        /**
+         * The button which returns to the {@link com.deprez.Driver.MMJFrame}
+         */
         JButton backJButton;
-        // JComboBox<User> userJComboBox;
-        //JList userJList;
+
+        /**
+         * The list of users containing {@link com.deprez.Community}
+         *
+         * @see com.deprez.User
+         * @see com.deprez.Community
+         */
         JList<User> userJList;
+
+        /**
+         * The list model for {@link com.deprez.Driver.CommunityJFrame#userJList}
+         */
         DefaultListModel<User> defaultListModel;
+
+        /**
+         * The list of apps for the selected {@link com.deprez.User} from {@link com.deprez.Driver.CommunityJFrame#userJList}
+         */
         JList appJList;
+
+        /**
+         * The split pane including {@link com.deprez.Driver.CommunityJFrame#userJList}, {@link com.deprez.Driver.CommunityJFrame#deleteUserJButton}, and {@link com.deprez.Driver.CommunityJFrame#userJTextArea}
+         */
         JSplitPane jSplitPane;
+
+        /**
+         * The button to delete a user from {@link com.deprez.Driver.CommunityJFrame#userJList} and {@link com.deprez.Community}
+         *
+         * @see com.deprez.User
+         * @see com.deprez.Community
+         */
         JButton deleteUserJButton;
+
+        /**
+         * Displays the information about the user selected in {@link com.deprez.Driver.CommunityJFrame#userJList}
+         *
+         * @see com.deprez.User
+         * @see com.deprez.Community
+         */
         JTextArea userJTextArea;
 
+        /**
+         * Creates a CommunityJFrame object.
+         *
+         * @param header the window's header
+         */
         CommunityJFrame(String header) {
             super(header);
 
             setFrameRules();
 
-            jLabel = new JLabel("Community");
+            communityJLabel = new JLabel("Community: " + header);
             backJButton = new JButton("BACK");
-            // userJComboBox = new JComboBox<>();
-            //userJList = new JList(community.getUsers().stream().map(user -> user.getUserName()).collect(Collectors.toList()).toArray());
-            userJList = new JList<>();//community.getUsers()
+            userJList = new JList<>();
             defaultListModel = new DefaultListModel<>();
             userJList.setModel(defaultListModel);
             community.getUsers().forEach(user -> defaultListModel.addElement(user));
@@ -460,20 +647,15 @@ public class Driver {
             jPanel.add(deleteUserJButton, gridBagConstraints);
             jSplitPane.setRightComponent(new JScrollPane(jPanel));
 
-            /*
-            for (User user : community.getUsers()) {
-                userJComboBox.addItem(user);
-            }
-            */
-
             addListeners();
 
             addComponents();
         }
 
-
+        /**
+         * Sets the frame rules for {@link com.deprez.Driver.CommunityJFrame}
+         */
         private void setFrameRules() {
-            // this.setSize(1024, 768);
             this.setSize(600, 400);
             this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
@@ -481,36 +663,20 @@ public class Driver {
             this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         }
 
+        /**
+         * Adds listeners to components of {@link com.deprez.Driver.CommunityJFrame}
+         */
         private void addListeners() {
             backJButton.addActionListener(actionEvent -> {
                 this.setVisible(false);
                 mmJFrame.setVisible(true);
             });
 
-            userJList.addListSelectionListener(new ListSelectionListener() {
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    // System.out.println(userJList.getSelectedIndex());
-                    //`appJList.remove
-                    /*
-                    TODO!!!
-                    appJList.setListData(
-                            community.getUsers().get(userJList.getSelectedIndex()).getUserApps().toArray().length == 0 ?
-                                    new Object[]{"This user has no apps"}
-                                    :
-                                    community.getUsers().get(userJList.getSelectedIndex()).getUserApps().toArray()
-                    );
-                     */
-                    // TODO System.out.println(userAppReviews.getAppsOfUser(community.getUserId(currentUser)));
-                    Object[] users = userAppReviews.getAppsOfUser(community.getUserId(userJList.getSelectedValue().toString())).toArray();
-                    String[] appNames = new String[users.length];
-                    for (int i = 0; i < appNames.length; i++) {
-                        appNames[i] = store.getApp(i);
-                    }
-                    //System.out.println(appNames);
-
-                    appJList.setListData(users.length == 0 ? new Object[]{"null"} : appNames);
-
+            userJList.addListSelectionListener(e -> {
+                Object[] users = userAppReviews.getAppsOfUser(community.getUserId(userJList.getSelectedValue().toString())).toArray();
+                String[] appNames = new String[users.length];
+                for (int i = 0; i < appNames.length; i++) {
+                    appNames[i] = store.getApp(i);
                 }
             });
 
@@ -522,6 +688,9 @@ public class Driver {
             });
         }
 
+        /**
+         * Adds the components to the {@link com.deprez.Driver.CommunityJFrame}
+         */
         private void addComponents() {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
@@ -529,27 +698,11 @@ public class Driver {
 
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
-            this.add(jLabel, gridBagConstraints);
+            this.add(communityJLabel, gridBagConstraints);
 
-            /*
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 2;
-            this.add(userJComboBox, gridBagConstraints);
-            */
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 2;
             this.add(jSplitPane, gridBagConstraints);
-
-            /*
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 3;
-            this.add(userJList, gridBagConstraints);
-
-
-            gridBagConstraints.gridx = 1;
-            gridBagConstraints.gridy = 3;
-            this.add(appJList, gridBagConstraints);
-             */
 
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 3;
@@ -561,21 +714,39 @@ public class Driver {
 
     /**
      * Manages the elements of the StoreJFrame.
+     * @see com.deprez.Store
+     * @see com.deprez.Driver.MMJFrame
      */
     private class StoreJFrame extends JFrame {
-        JLabel jLabel;
+
+        /**
+         * The label indicating the {@link com.deprez.Driver#currentUser}
+         */
+        JLabel storeJLabel;
+
+        /**
+         * The button which changes the visibility to {@link com.deprez.Driver.MMJFrame}
+         *
+         * @see com.deprez.Driver.MMJFrame
+         */
         JButton backJButton;
+
         JComboBox<App> appJComboBox;
         JButton createAppJButton;
         JButton addAppJButton;
         JList appJList;
 
+        /**
+         * Creates an object of {@link com.deprez.Driver.StoreJFrame}
+         *
+         * @param header the window's header
+         */
         StoreJFrame(String header) {
             super("Store: " + header);
 
             setFrameRules();
 
-            jLabel = new JLabel("Store: " + currentUser);
+            storeJLabel = new JLabel("Store: " + currentUser);
             backJButton = new JButton("BACK");
             appJComboBox = new JComboBox<>();
             for (App app : store.getApps()) {
@@ -594,7 +765,6 @@ public class Driver {
         }
 
         private void setFrameRules() {
-            // this.setSize(1024, 768);
             this.setSize(600, 400);
             this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
@@ -650,6 +820,9 @@ public class Driver {
             });
         }
 
+        /**
+         * Adds the components to {@link com.deprez.Driver.StoreJFrame}
+         */
         private void addComponents() {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
@@ -658,7 +831,7 @@ public class Driver {
             gridBagConstraints.anchor = GridBagConstraints.CENTER;
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
-            this.add(jLabel, gridBagConstraints);
+            this.add(storeJLabel, gridBagConstraints);
 
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;

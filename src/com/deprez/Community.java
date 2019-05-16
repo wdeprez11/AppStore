@@ -6,24 +6,42 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * Test Description
+ * The Community class manages the list of {@link com.deprez.User}
+ * plain java objects. It can sort the list and change anything about the list.
+ *
+ * @see com.deprez.User
  */
 public class Community {
 
+    /**
+     * The {@link java.util.List} attribute used to manage the list.
+     */
     private List<User> users;
     // TODO: Javadoc
     // TODO: Fast Search
     // TODO: Sort (Merge)
 
+    /**
+     * Creates a {@link com.deprez.Community} object.
+     */
     public Community() {
         users = new ArrayList<>();
-        // users = new ArrayList<>();
     }
 
+    /**
+     * Creates a {@link com.deprez.Community} object.
+     *
+     * @param users an existing list of users
+     */
     public Community(List<User> users) {
         this.users = users;
     }
 
+    /**
+     * Returns the list of users
+     *
+     * @return the {@link java.util.List} of users, sorted by userId
+     */
     public List<User> getUsers() {
         Collections.sort(users, User::compareToId);
         return users;

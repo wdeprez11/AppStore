@@ -1,11 +1,9 @@
 package com.deprez;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * The App class is a simple plain java object that manages appIds and appNames
+ *
+ * @see com.deprez.Community
  */
 public class App {
     private int appId;

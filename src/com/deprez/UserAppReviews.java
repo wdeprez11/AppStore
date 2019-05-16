@@ -3,6 +3,12 @@ package com.deprez;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@link com.deprez.UserAppReviews} class manages the list of {@link com.deprez.UserAppReview}
+ * plain java objects. It can sort the list and change anything about the list.
+ *
+ * @see com.deprez.UserAppReviews
+ */
 public class UserAppReviews {
     private List<UserAppReview> userAppReviews;
 

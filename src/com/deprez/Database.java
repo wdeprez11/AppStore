@@ -5,7 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * The database class that is used for read/write within the App Store project.
+ *
+ * @see com.deprez.Community
+ * @see com.deprez.Store
+ * @see com.deprez.UserAppReviews
+ */
 public class Database {
+
+    /**
+     * the url of the sql instance.
+     * is used in every method within the {@link com.deprez.Database} class
+     */
     private String url;
 
     /**
@@ -48,39 +60,6 @@ public class Database {
     }
 
     /**
-     * Builds an sql statement from user input and executes it, creating the table if it does not already exist.
-     *
-     * @param tb_name   the name of the table created in the database (E.g. user_tb)
-     * @param columnIds the id of each column created within the table.
-     * @param types     an array with the sql type of each column created (E.g. INTEGER)
-     * @param args      a two dimensional array, with each row being the list of arguments for the corresponding columnId index.
-     */
-    /*
-    void createTable(String tb_name, String[] columnIds, String[] types, String[][] args) {
-        StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
-        sql.append(tb_name).append("(");
-        for (int j = 0; j < columnIds.length; j++) {
-            sql.append(columnIds[j]).append(" ");
-            sql.append(types[j]).append(" ");
-            for (int i = 0; i < args[j].length; i++) {
-                sql.append(args[j][i]).append((i + 1 != args[j].length) ? " " : ((j + 1 != columnIds.length) ? ", " : ""));
-            }
-        }
-        sql.append(");");
-        System.out.println(sql);
-
-        try {
-            Connection connection = DriverManager.getConnection(url);
-            Statement statement = connection.createStatement();
-            statement.execute(sql.toString());
-            System.out.println("Created " + tb_name + " successfully.");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    */
-
-    /**
      * Drops a table from the database.
      *
      * @param tb_name the table to drop from the database
@@ -99,8 +78,13 @@ public class Database {
 
     /**
      * Creates the user_tb through SQLite
+     *
+     * @see Database#connect()
+     * @see Database#saveUsers(List)
+     * @see Database#loadUsers()
+     * @see java.sql
      */
-    public void createUserTable() {
+    void createUserTable() {
         // SQL statement for creating a new table
         String sql = "CREATE TABLE IF NOT EXISTS user_tb(" +
                 "userId INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -117,8 +101,13 @@ public class Database {
 
     /**
      * Creates the app_tb through SQLite
+     *
+     * @see Database#connect()
+     * @see Database#saveApps(List)
+     * @see Database#loadApps()
+     * @see java.sql
      */
-    public void createAppTable() {
+    void createAppTable() {
         String sql = "CREATE TABLE IF NOT EXISTS app_tb(" +
                 "appId INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "appName VARCHAR(64) NOT NULL, " +
@@ -136,8 +125,13 @@ public class Database {
     /**
      * TODO: Check SQLite api to see about linking appId and userId to user_tb and app_tb
      * Creates the userapp_tb through SQLite
+     *
+     * @see Database#connect()
+     * @see Database#saveUserAppReviews(List)
+     * @see Database#loadUserAppReviews()
+     * @see java.sql
      */
-    public void createUserAppTable() {
+    void createUserAppTable() {
         String sql = "CREATE TABLE IF NOT EXISTS userapp_tb(" +
                 "appId INTEGER," +
                 "userId INTEGER," +
@@ -153,34 +147,18 @@ public class Database {
         }
     }
 
-    public void saveApps(List<App> apps) {
-        dropTable("app_tb");
-        createAppTable();
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(url);
 
-            for (App app : apps) {
-                String sql = "INSERT INTO app_tb (appName) values ('" + app.getAppName() + "');";
-                Statement statement = connection.createStatement();
-                statement.execute(sql);
-            }
-
-            Driver.LOGGER.log(Level.FINE, "Apps saved.");
-        } catch (SQLException e) {
-            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database", e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                Driver.LOGGER.log(Level.WARNING, "Failed to close connection", ex);
-            }
-        }
-    }
-
-    public void saveUsers(List<User> users) {
+    /**
+     * Drops the old user_tb and replaces it with
+     * the list of {@link com.deprez.User}
+     *
+     * @param users the list of {@link com.deprez.User}
+     * @see Database#dropTable(String)
+     * @see Database#createUserTable()
+     * @see com.deprez.User
+     * @see com.deprez.Community
+     */
+    void saveUsers(List<User> users) {
         dropTable("user_tb");
         createUserTable();
         Connection connection = null;
@@ -208,7 +186,55 @@ public class Database {
         }
     }
 
-    public void saveUserAppReviews(List<UserAppReview> userAppReviews) {
+    /**
+     * Drops the old app_tb and replaces it with
+     * the list of {@link com.deprez.App}
+     *
+     * @param apps the list of {@link com.deprez.App}
+     *
+     * @see Database#dropTable(String)
+     * @see Database#createAppTable()
+     * @see com.deprez.App
+     * @see com.deprez.Store
+     */
+    void saveApps(List<App> apps) {
+        dropTable("app_tb");
+        createAppTable();
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+
+            for (App app : apps) {
+                String sql = "INSERT INTO app_tb (appName) values ('" + app.getAppName() + "');";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
+            }
+
+            Driver.LOGGER.log(Level.FINE, "Apps saved.");
+        } catch (SQLException e) {
+            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection", ex);
+            }
+        }
+    }
+
+    /**
+     * Drops the old userapp_tb and replaces it with
+     * the list of {@link com.deprez.UserAppReview}
+     *
+     * @param userAppReviews the list of {@link com.deprez.UserAppReview}
+     * @see Database#dropTable(String)
+     * @see Database#createUserAppTable()
+     * @see com.deprez.UserAppReview
+     * @see com.deprez.UserAppReviews
+     */
+    void saveUserAppReviews(List<UserAppReview> userAppReviews) {
         dropTable("userapp_tb");
         createUserAppTable();
         Connection connection = null;
@@ -238,69 +264,16 @@ public class Database {
         }
     }
 
-    public List<App> loadApps() {
-        Connection connection = null;
-        List<App> apps = new ArrayList<>();
-        try {
-            connection = DriverManager.getConnection(url);
-
-            String sql = "SELECT * FROM app_tb";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()) {
-                apps.add(new App(resultSet.getInt("appId"), resultSet.getString("appName")));
-            }
-
-            Driver.LOGGER.log(Level.FINE, "Apps loaded.");
-
-        } catch (SQLException e) {
-            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database...", e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                Driver.LOGGER.log(Level.WARNING, "Failed to close connection with database...", ex);
-            }
-        }
-        return apps;
-    }
-
-    public List<UserAppReview> loadUserAppReviews() {
-        Connection connection = null;
-        List<UserAppReview> userAppReviews = new ArrayList<>();
-        try {
-            connection = DriverManager.getConnection(url);
-            String sql = "SELECT * FROM userapp_tb;";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()) {
-                int userId = resultSet.getInt("userId");
-                int appId = resultSet.getInt("appId");
-                int reviewScore = resultSet.getInt("reviewScore");
-                String reviewDetail = resultSet.getString("reviewDetail");
-                userAppReviews.add(new UserAppReview(userId, appId, reviewScore, reviewDetail));
-            }
-
-            Driver.LOGGER.log(Level.FINE, "Loaded UserAppReviews successfully.");
-        } catch (SQLException e) {
-            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database...", e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                Driver.LOGGER.log(Level.WARNING, "Failed to close connection with database...", ex);
-            }
-        }
-        return userAppReviews;
-    }
-
-    public List<User> loadUsers() {
+    /**
+     * Reads the users from the current user_tb
+     * and returns them as a List of {@link com.deprez.User}
+     *
+     * @return a new list of {@link com.deprez.User}
+     *
+     * @see com.deprez.User
+     * @see com.deprez.Community
+     */
+    List<User> loadUsers() {
 
         Connection connection = null;
         List<User> users = new ArrayList<>();
@@ -331,5 +304,82 @@ public class Database {
         return users;
     }
 
+    /**
+     * Reads the apps from the current app_tb
+     * and returns them as a List of {@link com.deprez.App}
+     *
+     * @return a new list of {@link com.deprez.App}
+     * @see com.deprez.App
+     * @see com.deprez.Store
+     */
+    List<App> loadApps() {
+        Connection connection = null;
+        List<App> apps = new ArrayList<>();
+        try {
+            connection = DriverManager.getConnection(url);
 
+            String sql = "SELECT * FROM app_tb";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                apps.add(new App(resultSet.getInt("appId"), resultSet.getString("appName")));
+            }
+
+            Driver.LOGGER.log(Level.FINE, "Apps loaded.");
+
+        } catch (SQLException e) {
+            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database...", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection with database...", ex);
+            }
+        }
+        return apps;
+    }
+
+    /**
+     * Reads the apps from the current userapp_tb
+     * and returns them as a List of {@link com.deprez.UserAppReview}
+     *
+     * @return a new list of {@link com.deprez.UserAppReview}
+     *
+     * @see com.deprez.UserAppReview
+     * @see com.deprez.UserAppReviews
+     */
+    List<UserAppReview> loadUserAppReviews() {
+        Connection connection = null;
+        List<UserAppReview> userAppReviews = new ArrayList<>();
+        try {
+            connection = DriverManager.getConnection(url);
+            String sql = "SELECT * FROM userapp_tb;";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                int userId = resultSet.getInt("userId");
+                int appId = resultSet.getInt("appId");
+                int reviewScore = resultSet.getInt("reviewScore");
+                String reviewDetail = resultSet.getString("reviewDetail");
+                userAppReviews.add(new UserAppReview(userId, appId, reviewScore, reviewDetail));
+            }
+
+            Driver.LOGGER.log(Level.FINE, "Loaded UserAppReviews successfully.");
+        } catch (SQLException e) {
+            Driver.LOGGER.log(Level.WARNING, "Failed to connect to database...", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection with database...", ex);
+            }
+        }
+        return userAppReviews;
+    }
 }

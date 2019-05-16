@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * Test Description
+ * The Store class manages the list of {@link com.deprez.User}
+ * plain java objects. It can sort the list and change anything about the list.
+ *
+ * @see com.deprez.App
  */
 public class Store {
     private List<App> apps;
