@@ -136,12 +136,14 @@ public class Store {
     }
     
     /**
-     * @param appId
+     * Gets the {@link com.deprez.App} appName given {@link com.deprez.App} identifier, returns null if not found.
      *
-     * @return
+     * @param appId the {@link com.deprez.App} to look for.
+     *
+     * @return returns appName of {@link com.deprez.App} object, returns null if not found
      */
     public String getAppName(int appId) {
-        return apps.get(appId - 1).getAppName();
+        return (appId <= apps.size()) ? apps.get(appId - 1).getAppName() : null;
     }
     
     
