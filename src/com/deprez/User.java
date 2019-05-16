@@ -16,7 +16,7 @@ public class User {
      *                 Community class.
      * @param userName the userName of the user. Unique to each user.
      */
-    public User( int userId, String userName ) {
+    public User(int userId, String userName) {
         this.userId   = userId;
         this.userName = userName;
     }
@@ -35,7 +35,7 @@ public class User {
      *
      * @param userId the new userId
      */
-    public void setUserId( int userId ) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
     
@@ -53,7 +53,7 @@ public class User {
      *
      * @param userName the new userName
      */
-    public void setUserName( String userName ) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
     
@@ -64,8 +64,8 @@ public class User {
      *
      * @return Returns the difference in userNames of two User objects
      */
-    public int compareToName( Object o ) {
-        return userName.compareTo(( (User) o ).userName);
+    public int compareToName(Object o) {
+        return userName.compareTo(((User) o).userName);
     }
     
     /**
@@ -75,8 +75,8 @@ public class User {
      *
      * @return Returns the difference in ids of two User objects
      */
-    public int compareToId( Object o ) {
-        return userId - ( (User) o ).userId;
+    public int compareToId(Object o) {
+        return userId - ((User) o).userId;
     }
     
     /**
@@ -86,8 +86,8 @@ public class User {
      *
      * @return Returns true if the userNames are the same
      */
-    public boolean equals( Object o ) {
-        return userName.equals(( (User) o ).userName);
+    public boolean equals(Object o) {
+        return userName.equals(((User) o).userName);
     }
     
     /**

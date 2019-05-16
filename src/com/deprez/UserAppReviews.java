@@ -20,7 +20,7 @@ public class UserAppReviews {
         userAppReviews = new ArrayList<>();
     }
     
-    public UserAppReviews( List<UserAppReview> userAppReviews ) {
+    public UserAppReviews(List<UserAppReview> userAppReviews) {
         this.userAppReviews = userAppReviews;
     }
     
@@ -33,7 +33,7 @@ public class UserAppReviews {
      *
      * @param userAppReviews the new {@link com.deprez.UserAppReviews#userAppReviews}
      */
-    public void setAppReviews( List<UserAppReview> userAppReviews ) {
+    public void setAppReviews(List<UserAppReview> userAppReviews) {
         this.userAppReviews = userAppReviews;
     }
     
@@ -43,7 +43,7 @@ public class UserAppReviews {
      *
      * @param userAppReview the new {@link com.deprez.UserAppReview}
      */
-    public void addAppReview( UserAppReview userAppReview ) {
+    public void addAppReview(UserAppReview userAppReview) {
         userAppReviews.add(userAppReview);
     }
     
@@ -55,7 +55,7 @@ public class UserAppReviews {
      *
      * @return matching {@link com.deprez.User} identifiers as a {@link java.util.List} of {@link java.lang.Integer}
      */
-    List<Integer> getUsersOfApp( int appId ) {
+    List<Integer> getUsersOfApp(int appId) {
         List<Integer> users = new ArrayList<>();
         for (UserAppReview appReview : userAppReviews) {
             if (appReview.getAppId() == appId) {
@@ -72,7 +72,7 @@ public class UserAppReviews {
      *
      * @return the appIds that were found within {@link com.deprez.UserAppReviews#userAppReviews}
      */
-    List<Integer> getAppsOfUser( int userId ) {
+    List<Integer> getAppsOfUser(int userId) {
         List<Integer> apps = new ArrayList<>();
         for (UserAppReview appReview : userAppReviews) {
             if (appReview.getUserId() == userId) {
@@ -88,7 +88,7 @@ public class UserAppReviews {
      * @param userId the {@link com.deprez.User} identifier.
      * @param appId  the {@link com.deprez.App} identifier.
      */
-    void addUserAppReview( int userId, int appId ) {
+    void addUserAppReview(int userId, int appId) {
         addUserAppReview(new UserAppReview(userId, appId));
     }
     
@@ -97,7 +97,7 @@ public class UserAppReviews {
      *
      * @param userAppReview the userAppReview object
      */
-    void addUserAppReview( UserAppReview userAppReview ) {
+    void addUserAppReview(UserAppReview userAppReview) {
         userAppReviews.add(userAppReview);
     }
     
@@ -109,7 +109,7 @@ public class UserAppReviews {
      *
      * @return true or false depending on whether the pair was found or not.
      */
-    boolean userHasApp( int userId, int appId ) {
+    boolean userHasApp(int userId, int appId) {
         for (UserAppReview review : userAppReviews) {
             if (review.getUserId() == userId && review.getAppId() == appId) {
                 return true;
@@ -133,7 +133,7 @@ public class UserAppReviews {
      *
      * @return returns a 2D array with all attributes for use in JTable
      */
-    String[][] toTable( Community community, Store store ) {
+    String[][] toTable(Community community, Store store) {
         String[][] table = new String[userAppReviews.size()][6];
         int i = 0;
         for (UserAppReview userAppReview : userAppReviews) {

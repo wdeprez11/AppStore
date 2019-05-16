@@ -168,7 +168,7 @@ public class Driver {
      *
      * @param args command line arguments.
      */
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         Driver driver = new Driver();
         driver.save();
     }
@@ -199,7 +199,7 @@ public class Driver {
      * @see Driver#save()
      * @see Window#dispose()
      */
-    private void quit( JFrame jFrame ) {
+    private void quit(JFrame jFrame) {
         save();
         jFrame.dispose();
         LOGGER.log(Level.INFO, Community.class.getName() + " list\n" + community.toString());
@@ -246,7 +246,7 @@ public class Driver {
          *
          * @param header the header to give to the JFrame constructor.
          */
-        LoginJFrame( String header ) {
+        LoginJFrame(String header) {
             super(header);
             
             LOGGER.log(Level.FINE, "LoginJFrame instantiated.");
@@ -282,14 +282,14 @@ public class Driver {
         private void addListeners() {
             addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowClosing( WindowEvent windowEvent ) {
+                public void windowClosing(WindowEvent windowEvent) {
                     quit(loginJFrame);
                 }
             });
     
             userJTextField.addKeyListener(new KeyAdapter() {
                 @Override
-                public void keyPressed( KeyEvent e ) {
+                public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         login();
                     }
@@ -299,6 +299,33 @@ public class Driver {
             loginJButton.addActionListener(actionEvent -> login());
     
             quitJButton.addActionListener(actionEvent -> quit(this));
+        }
+    
+        /**
+         * Adds the components to the LoginJFrame.
+         */
+        private void addComponents() {
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            this.add(userJLabel, gridBagConstraints);
+        
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 1;
+            this.add(userJTextField, gridBagConstraints);
+        
+            gridBagConstraints.weightx = 0.0;
+            gridBagConstraints.gridx   = 0;
+            gridBagConstraints.gridy   = 2;
+            this.add(loginJButton, gridBagConstraints);
+        
+            gridBagConstraints.weightx = 0.0;
+            gridBagConstraints.gridx   = 0;
+            gridBagConstraints.gridy   = 3;
+            this.add(quitJButton, gridBagConstraints);
         }
         
         /**
@@ -325,33 +352,6 @@ public class Driver {
                                                                 "non-whitespace character", "Error",
                                               JOptionPane.ERROR_MESSAGE);
             }
-        }
-        
-        /**
-         * Adds the components to the LoginJFrame.
-         */
-        private void addComponents() {
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-    
-            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-    
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
-            this.add(userJLabel, gridBagConstraints);
-    
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 1;
-            this.add(userJTextField, gridBagConstraints);
-    
-            gridBagConstraints.weightx = 0.0;
-            gridBagConstraints.gridx   = 0;
-            gridBagConstraints.gridy   = 2;
-            this.add(loginJButton, gridBagConstraints);
-    
-            gridBagConstraints.weightx = 0.0;
-            gridBagConstraints.gridx   = 0;
-            gridBagConstraints.gridy   = 3;
-            this.add(quitJButton, gridBagConstraints);
         }
     }
     
@@ -418,7 +418,7 @@ public class Driver {
          *                 <p>
          *                 TODO: Pass an actual User object
          */
-        MMJFrame( String header, String userName ) {
+        MMJFrame(String header, String userName) {
             super(header);
             
             LOGGER.log(Level.FINE, "New Main Menu instantiation.");
@@ -455,7 +455,7 @@ public class Driver {
         private void addListeners() {
             this.addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowClosing( WindowEvent windowEvent ) {
+                public void windowClosing(WindowEvent windowEvent) {
                     quit(mmJFrame);
                 }
             });
@@ -491,7 +491,7 @@ public class Driver {
                     FileReader fileReader = new FileReader(filename);
                     BufferedReader bufferedReader = new BufferedReader(fileReader);
             
-                    while (( line = bufferedReader.readLine() ) != null) {
+                    while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line).append('\n');
                     }
             
@@ -664,7 +664,7 @@ public class Driver {
          *
          * @param header the window's header
          */
-        CommunityJFrame( String header ) {
+        CommunityJFrame(String header) {
             super(header);
             
             setFrameRules();
@@ -790,7 +790,7 @@ public class Driver {
          *
          * @param header the window's header
          */
-        StoreJFrame( String header ) {
+        StoreJFrame(String header) {
             super("Store: " + header);
             
             setFrameRules();
@@ -831,7 +831,7 @@ public class Driver {
             
             appJList.addListSelectionListener(new ListSelectionListener() {
                 @Override
-                public void valueChanged( ListSelectionEvent e ) {
+                public void valueChanged(ListSelectionEvent e) {
                     // System.out.println(userJList.getSelectedIndex());
                     //`appJList.remove
                 }
@@ -842,7 +842,7 @@ public class Driver {
                 //JOptionPane.showMessageDialog(this, appNameJTextField);
                 while (true) {
                     String appName = JOptionPane.showInputDialog(this, "Input app name: ");
-                    if (appName != null && appName.matches(".*\\w.*") && !( store.hasApp(appName) >= 0 )) {
+                    if (appName != null && appName.matches(".*\\w.*") && !(store.hasApp(appName) >= 0)) {
                         store.addApp(appName);
                         break;
                     } else {

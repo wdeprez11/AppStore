@@ -51,7 +51,7 @@ public class UserAppReview {
      * @see com.deprez.User
      * @see com.deprez.App
      */
-    public UserAppReview( int userId, int appId ) {
+    public UserAppReview(int userId, int appId) {
         this.userId = userId;
         this.appId  = appId;
     }
@@ -64,7 +64,7 @@ public class UserAppReview {
      * @param appReviewScore  the score of the review
      * @param appReviewDetail the detail of the review
      */
-    public UserAppReview( int userId, int appId, int appReviewScore, String appReviewDetail ) {
+    public UserAppReview(int userId, int appId, int appReviewScore, String appReviewDetail) {
         this.userId          = userId;
         this.appId           = appId;
         this.appReviewScore  = appReviewScore;
@@ -85,7 +85,7 @@ public class UserAppReview {
      *
      * @param userId the new {@link UserAppReview#userId}
      */
-    public void setUserId( int userId ) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
     
@@ -103,7 +103,7 @@ public class UserAppReview {
      *
      * @param appId the new {@link UserAppReview#appId}
      */
-    public void setAppId( int appId ) {
+    public void setAppId(int appId) {
         this.appId = appId;
     }
     
@@ -121,7 +121,7 @@ public class UserAppReview {
      *
      * @param appReviewScore the new {@link UserAppReview#appReviewScore}
      */
-    public void setAppReviewScore( int appReviewScore ) {
+    public void setAppReviewScore(int appReviewScore) {
         this.appReviewScore = appReviewScore;
     }
     
@@ -139,7 +139,7 @@ public class UserAppReview {
      *
      * @param appReviewDetail the new {@link UserAppReview#appReviewDetail}
      */
-    public void setAppReviewDetail( String appReviewDetail ) {
+    public void setAppReviewDetail(String appReviewDetail) {
         this.appReviewDetail = appReviewDetail;
     }
     
@@ -150,9 +150,9 @@ public class UserAppReview {
      *
      * @return return the difference of two UserAppReview object's appIds
      */
-    public int compareTo( Object o ) {
+    public int compareTo(Object o) {
         UserAppReview other = (UserAppReview) o;
-        return ( appId - other.appId );
+        return (appId - other.appId);
     }
     
     /**
@@ -162,7 +162,7 @@ public class UserAppReview {
      *
      * @return return if the implicit appId, appReviewScore, and appReviewDetail and the same as the parameters.
      */
-    public boolean equals( Object o ) {
+    public boolean equals(Object o) {
         UserAppReview other = (UserAppReview) o;
         return appId == other.appId && appReviewScore == other.appReviewScore && appReviewDetail.equals(other.appReviewDetail);
     }

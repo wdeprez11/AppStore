@@ -33,7 +33,7 @@ public class Community {
      *
      * @param users an existing list of users
      */
-    public Community( List<User> users ) {
+    public Community(List<User> users) {
         this.users = users;
     }
     
@@ -47,7 +47,7 @@ public class Community {
         return users;
     }
     
-    public void setUsers( List<User> users ) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
     
@@ -56,7 +56,7 @@ public class Community {
      *
      * @param userName the userName to create a new user with.
      */
-    public void addUser( String userName ) {
+    public void addUser(String userName) {
         if (hasUser(userName) >= 0) {
             Driver.LOGGER.log(Level.FINE,
                               "User with same userName '" + userName + "' was found in " + this.getClass().getName());
@@ -72,7 +72,7 @@ public class Community {
      *
      * @return returns the index if found, otherwise returns -1.
      */
-    public int hasUser( String userName ) {
+    public int hasUser(String userName) {
         // TODO: Implement binary search after sort is completed
         sortByName();
         int i = 0;
@@ -84,51 +84,6 @@ public class Community {
         }
         return -1;
         // return (binarySearch(userName) >= 0);
-    }
-    
-    /**
-     * Searches the list with a binary search. Assumes the list is sorted by name. TODO: FIX DIS!
-     *
-     * @param userName the username that is searched for
-     *
-     * @return The index of the username, which should correspond to the userId as well. Returns <code>-1</code> if not
-     *         found.
-     */
-    private int binarySearch( String userName ) {
-        int left = 0, right = users.size() - 1, mid;
-    
-        while (1 <= right) {
-            mid = left + ( right - left ) / 2;
-        
-            if (users.get(mid).getUserName().equals(userName)) {
-                return mid;
-            } else if (users.get(mid).getUserName().compareTo(userName) > 0) {
-                right = mid - 1;
-            } else if (mid != users.size() - 1) {
-                left = mid + 1;
-            } else if (left == right) {
-                break;
-            }
-        }
-
-
-        /*
-        if (right >= 1) {
-            int mid = left + (right - left) / 2;
-
-            if (users.get(mid).getUserName().equals(userName)) {
-                return mid;
-            }
-
-            if (users.get(mid).getUserName().compareTo(userName) >= 0) { // TODO: Check this expression.
-                return binarySearch(left, mid - 1, userName);
-            }
-
-            return binarySearch(mid + 1, right, userName);
-        }
-         */
-        
-        return -1;
     }
     
     private void sortByName() {
@@ -166,6 +121,50 @@ public class Community {
          */
     }
     
+    /**
+     * Searches the list with a binary search. Assumes the list is sorted by name. TODO: FIX DIS!
+     *
+     * @param userName the username that is searched for
+     *
+     * @return The index of the username, which should correspond to the userId as well. Returns <code>-1</code> if not
+     *         found.
+     */
+    private int binarySearch(String userName) {
+        int left = 0, right = users.size() - 1, mid;
+    
+        while (1 <= right) {
+            mid = left + (right - left) / 2;
+            
+            if (users.get(mid).getUserName().equals(userName)) {
+                return mid;
+            } else if (users.get(mid).getUserName().compareTo(userName) > 0) {
+                right = mid - 1;
+            } else if (mid != users.size() - 1) {
+                left = mid + 1;
+            } else if (left == right) {
+                break;
+            }
+        }
+
+
+        /*
+        if (right >= 1) {
+            int mid = left + (right - left) / 2;
+
+            if (users.get(mid).getUserName().equals(userName)) {
+                return mid;
+            }
+
+            if (users.get(mid).getUserName().compareTo(userName) >= 0) { // TODO: Check this expression.
+                return binarySearch(left, mid - 1, userName);
+            }
+
+            return binarySearch(mid + 1, right, userName);
+        }
+         */
+        
+        return -1;
+    }
     
     /**
      * Removes a user with a matching userName from the list.
@@ -174,7 +173,7 @@ public class Community {
      *
      * @param userName the userName of the User object to remove.
      */
-    public void removeUser( String userName ) {
+    public void removeUser(String userName) {
         int i = 0;
         for (User usr : users) {
             if (usr.getUserName().equals(userName)) {
@@ -185,7 +184,7 @@ public class Community {
         }
     }
     
-    public void removeUser( User user ) {
+    public void removeUser(User user) {
         users.remove(user);
     }
     
@@ -217,26 +216,14 @@ public class Community {
         return users.size();
     }
     
-    /**
-     * Returns a User object based on userName, otherwise returns null
-     *
-     * @param userName the userName to search for
-     *
-     * @return the `User` object with a matching user
-     */
-    public User getUser( String userName ) {
-        int temp = hasUser(userName);
-        return ( temp >= 0 ) ? users.get(temp) : null;
-    }
-    
-    public void addUserApp( String userName, App app ) {
+    public void addUserApp(String userName, App app) {
         int temp = hasUser(userName);
         if (temp >= 0) {
             // TODO users.get(temp).addApp(app);
         }
     }
     
-    public void addUserAppReviewToUser( String userName, String appName, int reviewScore, String reviewDetail ) {
+    public void addUserAppReviewToUser(String userName, String appName, int reviewScore, String reviewDetail) {
         /*
         TODO
         int tmp = hasUser(userName);
@@ -247,16 +234,28 @@ public class Community {
         */
     }
     
-    public List<App> getUserAppReviews( String userName ) {
+    public List<App> getUserAppReviews(String userName) {
         // TODO
         return null;
     }
     
-    public String getUserName( int userId ) {
+    public String getUserName(int userId) {
         return users.get(userId).getUserName();
     }
     
-    public int getUserId( String userName ) {
+    public int getUserId(String userName) {
         return getUser(userName).getUserId();
+    }
+    
+    /**
+     * Returns a User object based on userName, otherwise returns null
+     *
+     * @param userName the userName to search for
+     *
+     * @return the `User` object with a matching user
+     */
+    public User getUser(String userName) {
+        int temp = hasUser(userName);
+        return (temp >= 0) ? users.get(temp) : null;
     }
 }

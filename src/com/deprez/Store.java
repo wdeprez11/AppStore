@@ -31,7 +31,7 @@ public class Store {
      *
      * @param apps the {@link java.util.List} of {@link com.deprez.App} objects
      */
-    public Store( List<App> apps ) {
+    public Store(List<App> apps) {
         this.apps = apps;
     }
     
@@ -49,7 +49,7 @@ public class Store {
      *
      * @param apps replacement {@link java.util.List} of {@link com.deprez.App} objects
      */
-    public void setApps( List<App> apps ) {
+    public void setApps(List<App> apps) {
         this.apps = apps;
     }
     
@@ -58,22 +58,13 @@ public class Store {
      *
      * @param appName the new name of the potential {@link com.deprez.App}
      */
-    public void addApp( String appName ) {
+    public void addApp(String appName) {
         if (hasApp(appName) >= 0) {
             Driver.LOGGER.log(Level.FINE,
                               "App with the same appName '" + "' already exists in " + this.getClass().getName());
         } else {
             apps.add(new App(apps.size() + 1, appName));
         }
-    }
-    
-    /**
-     * Sorts {@link com.deprez.Store#apps} by name
-     *
-     * @see java.util.Collections#sort(List, Comparator)
-     */
-    public void sort() {
-        Collections.sort(apps, App::compareToName);
     }
     
     /**
@@ -84,7 +75,7 @@ public class Store {
      *
      * @return Returns the {@link com.deprez.App} identifier if found, otherwise returns false
      */
-    public int hasApp( String appName ) {
+    public int hasApp(String appName) {
         int i = 0;
         for (App app : apps) {
             if (app.getAppName().equals(appName)) {
@@ -93,6 +84,15 @@ public class Store {
             i++;
         }
         return -1;
+    }
+    
+    /**
+     * Sorts {@link com.deprez.Store#apps} by name
+     *
+     * @see java.util.Collections#sort(List, Comparator)
+     */
+    public void sort() {
+        Collections.sort(apps, App::compareToName);
     }
     
     /**
@@ -130,9 +130,9 @@ public class Store {
      *
      * @return {@link com.deprez.App} object that matched the identifier, returns null if not found
      */
-    public App getAppId( String appName ) {
+    public App getAppId(String appName) {
         int tmp = hasApp(appName);
-        return ( tmp >= 0 ) ? apps.get(tmp) : null;
+        return (tmp >= 0) ? apps.get(tmp) : null;
     }
     
     /**
@@ -140,7 +140,7 @@ public class Store {
      *
      * @return
      */
-    public String getAppName( int appId ) {
+    public String getAppName(int appId) {
         return apps.get(appId - 1).getAppName();
     }
     

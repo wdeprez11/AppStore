@@ -31,7 +31,7 @@ public class Database {
      *
      * @param url The url used for connecting to the SQLite database (E.g. "jdbc:sqlite:MyDatabase.db")
      */
-    public Database( String url ) {
+    public Database(String url) {
         this.url = url;
     }
     
@@ -59,11 +59,49 @@ public class Database {
     }
     
     /**
+     * Drops the old user_tb and replaces it with the list of {@link com.deprez.User}
+     *
+     * @param users the list of {@link com.deprez.User}
+     *
+     * @see Database#dropTable(String)
+     * @see Database#createUserTable()
+     * @see com.deprez.User
+     * @see com.deprez.Community
+     */
+    void saveUsers(List<User> users) {
+        dropTable("user_tb");
+        createUserTable();
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+            
+            for (User user : users) {
+                String sql = "INSERT INTO user_tb (userName) values ('" + user.getUserName() + "');";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
+            }
+            
+            Driver.LOGGER.log(Level.FINE, "Users saved.");
+            
+        } catch (SQLException e) {
+            Driver.LOGGER.log(Level.SEVERE, "Failed to save users table!", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Driver.LOGGER.log(Level.WARNING, "Failed to close connection to database...", ex);
+            }
+        }
+    }
+    
+    /**
      * Drops a table from the database.
      *
      * @param tb_name the table to drop from the database
      */
-    void dropTable( String tb_name ) {
+    void dropTable(String tb_name) {
         String sql = "DROP TABLE " + tb_name;
         try {
             Connection connection = DriverManager.getConnection(url);
@@ -99,93 +137,6 @@ public class Database {
     }
     
     /**
-     * Creates the app_tb through SQLite
-     *
-     * @see Database#connect()
-     * @see Database#saveApps(List)
-     * @see Database#loadApps()
-     * @see java.sql
-     */
-    void createAppTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS app_tb(" +
-                     "appId INTEGER PRIMARY KEY AUTOINCREMENT," +
-                     "appName VARCHAR(64) NOT NULL, " +
-                     "creatorId INTEGER);";
-        try {
-            Connection connection = DriverManager.getConnection(url);
-            Statement statement = connection.createStatement();
-            statement.execute(sql);
-            Driver.LOGGER.log(Level.FINE, "createAppTable done.");
-        } catch (SQLException e) {
-            Driver.LOGGER.log(Level.WARNING, "Failed to create app table...", e);
-        }
-    }
-    
-    /**
-     * TODO: Check SQLite api to see about linking appId and userId to user_tb and app_tb Creates the userapp_tb through
-     * SQLite
-     *
-     * @see Database#connect()
-     * @see Database#saveUserAppReviews(List)
-     * @see Database#loadUserAppReviews()
-     * @see java.sql
-     */
-    void createUserAppTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS userapp_tb(" +
-                     "appId INTEGER," +
-                     "userId INTEGER," +
-                     "reviewScore INTEGER," +
-                     "reviewDetail VARCHAR(2000));";
-        try {
-            Connection connection = DriverManager.getConnection(url);
-            Statement statement = connection.createStatement();
-            statement.execute(sql);
-            Driver.LOGGER.log(Level.FINE, "createUserAppTable done.");
-        } catch (SQLException e) {
-            Driver.LOGGER.log(Level.WARNING, "Failed to create user app table...", e);
-        }
-    }
-    
-    
-    /**
-     * Drops the old user_tb and replaces it with the list of {@link com.deprez.User}
-     *
-     * @param users the list of {@link com.deprez.User}
-     *
-     * @see Database#dropTable(String)
-     * @see Database#createUserTable()
-     * @see com.deprez.User
-     * @see com.deprez.Community
-     */
-    void saveUsers( List<User> users ) {
-        dropTable("user_tb");
-        createUserTable();
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(url);
-    
-            for (User user : users) {
-                String sql = "INSERT INTO user_tb (userName) values ('" + user.getUserName() + "');";
-                Statement statement = connection.createStatement();
-                statement.execute(sql);
-            }
-    
-            Driver.LOGGER.log(Level.FINE, "Users saved.");
-    
-        } catch (SQLException e) {
-            Driver.LOGGER.log(Level.SEVERE, "Failed to save users table!", e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                Driver.LOGGER.log(Level.WARNING, "Failed to close connection to database...", ex);
-            }
-        }
-    }
-    
-    /**
      * Drops the old app_tb and replaces it with the list of {@link com.deprez.App}
      *
      * @param apps the list of {@link com.deprez.App}
@@ -195,7 +146,7 @@ public class Database {
      * @see com.deprez.App
      * @see com.deprez.Store
      */
-    void saveApps( List<App> apps ) {
+    void saveApps(List<App> apps) {
         dropTable("app_tb");
         createAppTable();
         Connection connection = null;
@@ -223,6 +174,29 @@ public class Database {
     }
     
     /**
+     * Creates the app_tb through SQLite
+     *
+     * @see Database#connect()
+     * @see Database#saveApps(List)
+     * @see Database#loadApps()
+     * @see java.sql
+     */
+    void createAppTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS app_tb(" +
+                     "appId INTEGER PRIMARY KEY AUTOINCREMENT," +
+                     "appName VARCHAR(64) NOT NULL, " +
+                     "creatorId INTEGER);";
+        try {
+            Connection connection = DriverManager.getConnection(url);
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+            Driver.LOGGER.log(Level.FINE, "createAppTable done.");
+        } catch (SQLException e) {
+            Driver.LOGGER.log(Level.WARNING, "Failed to create app table...", e);
+        }
+    }
+    
+    /**
      * Drops the old userapp_tb and replaces it with the list of {@link com.deprez.UserAppReview}
      *
      * @param userAppReviews the list of {@link com.deprez.UserAppReview}
@@ -232,7 +206,7 @@ public class Database {
      * @see com.deprez.UserAppReview
      * @see com.deprez.UserAppReviews
      */
-    void saveUserAppReviews( List<UserAppReview> userAppReviews ) {
+    void saveUserAppReviews(List<UserAppReview> userAppReviews) {
         dropTable("userapp_tb");
         createUserAppTable();
         Connection connection = null;
@@ -259,6 +233,31 @@ public class Database {
             } catch (SQLException ex) {
                 Driver.LOGGER.log(Level.WARNING, "Failed to close connection to database...", ex);
             }
+        }
+    }
+    
+    /**
+     * TODO: Check SQLite api to see about linking appId and userId to user_tb and app_tb Creates the userapp_tb through
+     * SQLite
+     *
+     * @see Database#connect()
+     * @see Database#saveUserAppReviews(List)
+     * @see Database#loadUserAppReviews()
+     * @see java.sql
+     */
+    void createUserAppTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS userapp_tb(" +
+                     "appId INTEGER," +
+                     "userId INTEGER," +
+                     "reviewScore INTEGER," +
+                     "reviewDetail VARCHAR(2000));";
+        try {
+            Connection connection = DriverManager.getConnection(url);
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+            Driver.LOGGER.log(Level.FINE, "createUserAppTable done.");
+        } catch (SQLException e) {
+            Driver.LOGGER.log(Level.WARNING, "Failed to create user app table...", e);
         }
     }
     

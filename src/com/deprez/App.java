@@ -15,7 +15,7 @@ public class App {
      * @param appId   the appId of the app
      * @param appName the name of the app
      */
-    public App( int appId, String appName ) {
+    public App(int appId, String appName) {
         this.appId   = appId;
         this.appName = appName;
     }
@@ -34,7 +34,7 @@ public class App {
      *
      * @param appId the new app id
      */
-    public void setAppId( int appId ) {
+    public void setAppId(int appId) {
         this.appId = appId;
     }
     
@@ -52,7 +52,7 @@ public class App {
      *
      * @param appName the new app name
      */
-    public void setAppName( String appName ) {
+    public void setAppName(String appName) {
         this.appName = appName;
     }
     
@@ -65,8 +65,8 @@ public class App {
      *
      * @see java.lang.Integer#compareTo(Integer)
      */
-    public int compareToId( Object o ) {
-        return appId - ( (App) o ).appId;
+    public int compareToId(Object o) {
+        return appId - ((App) o).appId;
     }
     
     /**
@@ -78,8 +78,8 @@ public class App {
      *
      * @see java.lang.String#compareTo(String)
      */
-    public int compareToName( Object o ) {
-        return appName.compareTo(( (App) o ).appName);
+    public int compareToName(Object o) {
+        return appName.compareTo(((App) o).appName);
     }
     
     /**
@@ -89,7 +89,7 @@ public class App {
      *
      * @return returns if the appId is the same as the parameter and the appName is the same.
      */
-    public boolean equals( Object o ) {
+    public boolean equals(Object o) {
         App other = (App) o;
         return appName.equals(other.appName);
     }
