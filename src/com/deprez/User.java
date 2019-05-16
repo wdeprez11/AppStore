@@ -1,9 +1,5 @@
 package com.deprez;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Test Description
  */
@@ -65,10 +61,14 @@ public class User {
      */
     @Override
     public String toString() {
+        return userName;
+        /*
         return "User{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 '}';
+
+         */
     }
 
     /**

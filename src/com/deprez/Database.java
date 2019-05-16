@@ -208,28 +208,22 @@ public class Database {
         }
     }
 
-    public void saveUserAppReviews(List<User> users) {
-        /*
+    public void saveUserAppReviews(List<UserAppReview> userAppReviews) {
         dropTable("userapp_tb");
         createUserAppTable();
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url);
 
-            // TODO: refactor this for new UserAppReviews setup
-            for (User user : users) {
-                for (UserAppReview appReview : user.getUserApps()) {
-                    String sql = "INSERT INTO userapp_tb(userId, appId, reviewScore, reviewDetail) values ("
-                            + user.getUserId() + ","
-                            + appReview.getAppId() + ","
-                            + appReview.getAppReviewScore() + ",'"
-                            + appReview.getAppReviewDetail() + "');";
-                    Statement statement = connection.createStatement();
-                    statement.execute(sql);
-
-                }
+            for (UserAppReview userAppReview : userAppReviews) {
+                String sql = "INSERT INTO userapp_tb(userId, appId, reviewScore, reviewDetail) values ("
+                        + userAppReview.getUserId() + ","
+                        + userAppReview.getAppId() + ","
+                        + userAppReview.getAppReviewScore() + ",'"
+                        + userAppReview.getAppReviewDetail() + "');";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
             }
-
             Driver.LOGGER.log(Level.FINE, "App reviews saved.");
         } catch (SQLException e) {
             Driver.LOGGER.log(Level.WARNING, "Failed to save user app reviews table!", e);
@@ -242,7 +236,6 @@ public class Database {
                 Driver.LOGGER.log(Level.WARNING, "Failed to close connection to database...", ex);
             }
         }
-        */
     }
 
     public List<App> loadApps() {
@@ -276,8 +269,6 @@ public class Database {
     }
 
     public List<UserAppReview> loadUserAppReviews() {
-        // TODO: refactor for new setup
-        /*
         Connection connection = null;
         List<UserAppReview> userAppReviews = new ArrayList<>();
         try {
@@ -293,6 +284,8 @@ public class Database {
                 String reviewDetail = resultSet.getString("reviewDetail");
                 userAppReviews.add(new UserAppReview(userId, appId, reviewScore, reviewDetail));
             }
+
+            Driver.LOGGER.log(Level.FINE, "Loaded UserAppReviews successfully.");
         } catch (SQLException e) {
             Driver.LOGGER.log(Level.WARNING, "Failed to connect to database...", e);
         } finally {
@@ -305,8 +298,6 @@ public class Database {
             }
         }
         return userAppReviews;
-         */
-        return new ArrayList<UserAppReview>();
     }
 
     public List<User> loadUsers() {

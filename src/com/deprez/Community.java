@@ -164,6 +164,10 @@ public class Community {
         }
     }
 
+    public void removeUser(User user) {
+        users.remove(user);
+    }
+
     /**
      * Returns the list of users as a String.
      *

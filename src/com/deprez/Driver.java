@@ -75,8 +75,8 @@ public class Driver {
         database.connect();
         community = new Community(database.loadUsers());
         store = new Store(database.loadApps());
+        userAppReviews = new UserAppReviews(database.loadUserAppReviews());
         //userAppReviews = new UserAppReviews(database.loadUserAppReviews());
-        userAppReviews = new UserAppReviews();
         setupLogger();
         loginJFrame = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
@@ -123,7 +123,7 @@ public class Driver {
     private void save() {
         database.saveUsers(community.getUsers());
         database.saveApps(store.getApps());
-        database.saveUserAppReviews(community.getUsers());
+        database.saveUserAppReviews(userAppReviews.getUserAppReviews());
     }
 
     /**
@@ -136,6 +136,7 @@ public class Driver {
         jFrame.dispose();
         LOGGER.log(Level.INFO, Community.class.getName() + " list\n" + community.toString());
         LOGGER.log(Level.INFO, Store.class.getName() + " list\n" + store.toString());
+        LOGGER.log(Level.INFO, UserAppReviews.class.getName() + " list\n" + userAppReviews.toString());
         LOGGER.log(Level.INFO, "\nDONE\nDONE\nDONE\n");
         System.exit(0);
     }
@@ -273,6 +274,7 @@ public class Driver {
         JLabel usernameJLabel;
         JButton communityJButton;
         JButton storeJButton;
+        JButton showAllJButton;
         JButton helpJButton;
         JButton logJButton;
         JButton backJButton;
@@ -287,6 +289,7 @@ public class Driver {
             usernameJLabel = new JLabel("Welcome " + userName);
             communityJButton = new JButton("Community");
             storeJButton = new JButton("Store");
+            showAllJButton = new JButton("Show all");
             helpJButton = new JButton("Help");
             logJButton = new JButton("Log");
             backJButton = new JButton("Logout");
@@ -394,51 +397,19 @@ public class Driver {
 
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 3;
-            this.add(helpJButton, gridBagConstraints);
+            this.add(showAllJButton, gridBagConstraints);
 
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 4;
-            this.add(logJButton, gridBagConstraints);
+            this.add(helpJButton, gridBagConstraints);
 
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 5;
+            this.add(logJButton, gridBagConstraints);
+
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 6;
             this.add(backJButton, gridBagConstraints);
-        }
-    }
-
-    private class ProfileJFrame extends JFrame {
-        JLabel usernameJLabel;
-        JButton closeJButton;
-
-        ProfileJFrame(String header) {
-            super("Profile: " + header);
-
-            setFrameRules();
-
-            // instantiate class members
-            usernameJLabel = new JLabel(header);
-            closeJButton = new JButton("close");
-
-            addListeners();
-
-            addComponents();
-        }
-
-        private void setFrameRules() {
-            this.setSize(1024, 768);
-            this.setLayout(new GridBagLayout());
-            this.setLocationRelativeTo(null);
-            this.setResizable(false);
-            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        }
-
-        private void addListeners() {
-
-        }
-
-        private void addComponents() {
-            this.add(usernameJLabel);
-            this.add(closeJButton);
         }
     }
 
@@ -449,8 +420,13 @@ public class Driver {
         JLabel jLabel;
         JButton backJButton;
         // JComboBox<User> userJComboBox;
-        JList userJList;
+        //JList userJList;
+        JList<User> userJList;
+        DefaultListModel<User> defaultListModel;
         JList appJList;
+        JSplitPane jSplitPane;
+        JButton deleteUserJButton;
+        JTextArea userJTextArea;
 
         CommunityJFrame(String header) {
             super(header);
@@ -460,8 +436,29 @@ public class Driver {
             jLabel = new JLabel("Community");
             backJButton = new JButton("BACK");
             // userJComboBox = new JComboBox<>();
-            userJList = new JList(community.getUsers().stream().map(user -> user.getUserName()).collect(Collectors.toList()).toArray());
-            appJList = new JList(new Object[]{new App(1, "Hello, World!")});
+            //userJList = new JList(community.getUsers().stream().map(user -> user.getUserName()).collect(Collectors.toList()).toArray());
+            userJList = new JList<>();//community.getUsers()
+            defaultListModel = new DefaultListModel<>();
+            userJList.setModel(defaultListModel);
+            community.getUsers().forEach(user -> defaultListModel.addElement(user));
+            appJList = new JList();
+
+            jSplitPane = new JSplitPane();
+            jSplitPane.setLeftComponent(new JScrollPane(userJList));
+
+            JPanel jPanel = new JPanel();
+            jPanel.setLayout(new GridBagLayout());
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            userJTextArea = new JTextArea("");
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 1;
+            jPanel.add(userJTextArea, gridBagConstraints);
+            deleteUserJButton = new JButton("Delete user");
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 2;
+            jPanel.add(deleteUserJButton, gridBagConstraints);
+            jSplitPane.setRightComponent(new JScrollPane(jPanel));
 
             /*
             for (User user : community.getUsers()) {
@@ -476,7 +473,8 @@ public class Driver {
 
 
         private void setFrameRules() {
-            this.setSize(1024, 768);
+            // this.setSize(1024, 768);
+            this.setSize(600, 400);
             this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
             this.setResizable(false);
@@ -515,6 +513,13 @@ public class Driver {
 
                 }
             });
+
+            userJList.getSelectionModel().addListSelectionListener(e -> {
+                User user = userJList.getSelectedValue();
+                userJTextArea.setText("UserId: " + user.getUserId() + "\nUsername: " + user.getUserName());
+                deleteUserJButton.setText("Delete user: " + user.getUserName());
+                deleteUserJButton.addActionListener(actionEvent -> community.removeUser(userJList.getSelectedValue()));
+            });
         }
 
         private void addComponents() {
@@ -531,17 +536,23 @@ public class Driver {
             gridBagConstraints.gridy = 2;
             this.add(userJComboBox, gridBagConstraints);
             */
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 2;
+            this.add(jSplitPane, gridBagConstraints);
 
+            /*
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 3;
             this.add(userJList, gridBagConstraints);
 
+
             gridBagConstraints.gridx = 1;
             gridBagConstraints.gridy = 3;
             this.add(appJList, gridBagConstraints);
+             */
 
             gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 4;
+            gridBagConstraints.gridy = 3;
             gridBagConstraints.anchor = GridBagConstraints.PAGE_END;
             this.add(backJButton, gridBagConstraints);
 
@@ -583,7 +594,8 @@ public class Driver {
         }
 
         private void setFrameRules() {
-            this.setSize(1024, 768);
+            // this.setSize(1024, 768);
+            this.setSize(600, 400);
             this.setLayout(new GridBagLayout());
             this.setLocationRelativeTo(null);
             this.setResizable(false);
