@@ -6,7 +6,7 @@ package com.deprez;
  * @see com.deprez.Community
  */
 public class User {
-    private int userId;
+    private int    userId;
     private String userName;
     
     /**
@@ -17,7 +17,7 @@ public class User {
      * @param userName the userName of the user. Unique to each user.
      */
     public User( int userId, String userName ) {
-        this.userId = userId;
+        this.userId   = userId;
         this.userName = userName;
     }
     

@@ -57,8 +57,9 @@ public class Community {
      * @param userName the userName to create a new user with.
      */
     public void addUser( String userName ) {
-        if ( hasUser(userName) >= 0 ) {
-            Driver.LOGGER.log(Level.FINE, "User with same userName '" + userName + "' was found in " + this.getClass().getName());
+        if (hasUser(userName) >= 0) {
+            Driver.LOGGER.log(Level.FINE,
+                              "User with same userName '" + userName + "' was found in " + this.getClass().getName());
         } else {
             users.add(new User(users.size() + 1, userName));
         }
@@ -75,8 +76,8 @@ public class Community {
         // TODO: Implement binary search after sort is completed
         sortByName();
         int i = 0;
-        for ( User user : users ) {
-            if ( user.getUserName().equals(userName) ) {
+        for (User user : users) {
+            if (user.getUserName().equals(userName)) {
                 return i;
             }
             i++;
@@ -95,17 +96,17 @@ public class Community {
      */
     private int binarySearch( String userName ) {
         int left = 0, right = users.size() - 1, mid;
-        
-        while ( 1 <= right ) {
+    
+        while (1 <= right) {
             mid = left + ( right - left ) / 2;
-            
-            if ( users.get(mid).getUserName().equals(userName) ) {
+        
+            if (users.get(mid).getUserName().equals(userName)) {
                 return mid;
-            } else if ( users.get(mid).getUserName().compareTo(userName) > 0 ) {
+            } else if (users.get(mid).getUserName().compareTo(userName) > 0) {
                 right = mid - 1;
-            } else if ( mid != users.size() - 1 ) {
+            } else if (mid != users.size() - 1) {
                 left = mid + 1;
-            } else if ( left == right ) {
+            } else if (left == right) {
                 break;
             }
         }
@@ -138,7 +139,8 @@ public class Community {
 
             int midpoint = users.size() / 2;
             List<User> left = new ArrayList<>(users.subList(0, midpoint));
-            List<User> right = new ArrayList<>(users.subList((users.size() % 2 == 0) ? midpoint : midpoint + 1, users.size()));
+            List<User> right = new ArrayList<>(users.subList((users.size() % 2 == 0) ? midpoint : midpoint + 1, users
+            .size()));
 
             // List<User> result = Stream.concat(left.stream(), right.stream()).collect(Collectors.toList());
             List<User> result = new ArrayList<>(left.size() + right.size());
@@ -174,8 +176,8 @@ public class Community {
      */
     public void removeUser( String userName ) {
         int i = 0;
-        for ( User usr : users ) {
-            if ( usr.getUserName().equals(userName) ) {
+        for (User usr : users) {
+            if (usr.getUserName().equals(userName)) {
                 users.remove(i);
                 break;
             }
@@ -195,8 +197,8 @@ public class Community {
     @Override
     public String toString() {
         return "Community{" +
-                "users=" + users +
-                '}';
+               "users=" + users +
+               '}';
     }
     
     /**
@@ -229,7 +231,7 @@ public class Community {
     
     public void addUserApp( String userName, App app ) {
         int temp = hasUser(userName);
-        if ( temp >= 0 ) {
+        if (temp >= 0) {
             // TODO users.get(temp).addApp(app);
         }
     }

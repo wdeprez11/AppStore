@@ -126,10 +126,10 @@ public class Driver {
         setupLogger();
         database = new Database("jdbc:sqlite:appstore.db");
         database.connect();
-        community = new Community(database.loadUsers());
-        store = new Store(database.loadApps());
+        community      = new Community(database.loadUsers());
+        store          = new Store(database.loadApps());
         userAppReviews = new UserAppReviews(database.loadUserAppReviews());
-        loginJFrame = new LoginJFrame("Login");
+        loginJFrame    = new LoginJFrame("Login");
         loginJFrame.setVisible(true);
         storeJFrame = new StoreJFrame("Store");
     }
@@ -156,7 +156,7 @@ public class Driver {
             FileHandler fileHandler = new FileHandler("appstore.log", true);
             fileHandler.setFormatter(new SimpleFormatter());
             LOGGER.addHandler(fileHandler);
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Failed to create log file", e);
         }
     
@@ -252,11 +252,11 @@ public class Driver {
             LOGGER.log(Level.FINE, "LoginJFrame instantiated.");
             
             setFrameRules();
-            
-            userJLabel = new JLabel("Username");
+    
+            userJLabel     = new JLabel("Username");
             userJTextField = new JTextField("", 30);
-            loginJButton = new JButton("Login");
-            quitJButton = new JButton("Quit");
+            loginJButton   = new JButton("Login");
+            quitJButton    = new JButton("Quit");
             
             userJTextField.setToolTipText("Enter Username");
             
@@ -290,7 +290,7 @@ public class Driver {
             userJTextField.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed( KeyEvent e ) {
-                    if ( e.getKeyCode() == KeyEvent.VK_ENTER ) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         login();
                     }
                 }
@@ -312,16 +312,18 @@ public class Driver {
          * @see com.deprez.Driver.StoreJFrame
          */
         private void login() {
-            if ( userJTextField.getText().trim().matches(".*\\w.*") ) {
+            if (userJTextField.getText().trim().matches(".*\\w.*")) {
                 loginJFrame.setVisible(false);
                 community.addUser(userJTextField.getText());
-                currentUser = userJTextField.getText();
-                mmJFrame = new MMJFrame("Main Menu: " + currentUser, currentUser);
+                currentUser     = userJTextField.getText();
+                mmJFrame        = new MMJFrame("Main Menu: " + currentUser, currentUser);
                 communityJFrame = new CommunityJFrame("Community: " + currentUser);
-                storeJFrame = new StoreJFrame("Store: " + currentUser);
+                storeJFrame     = new StoreJFrame("Store: " + currentUser);
                 mmJFrame.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(LoginJFrame.this, "Please input a username that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(LoginJFrame.this, "Please input a username that contains a " +
+                                                                "non-whitespace character", "Error",
+                                              JOptionPane.ERROR_MESSAGE);
             }
         }
         
@@ -342,13 +344,13 @@ public class Driver {
             this.add(userJTextField, gridBagConstraints);
     
             gridBagConstraints.weightx = 0.0;
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 2;
+            gridBagConstraints.gridx   = 0;
+            gridBagConstraints.gridy   = 2;
             this.add(loginJButton, gridBagConstraints);
     
             gridBagConstraints.weightx = 0.0;
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 3;
+            gridBagConstraints.gridx   = 0;
+            gridBagConstraints.gridy   = 3;
             this.add(quitJButton, gridBagConstraints);
         }
     }
@@ -422,14 +424,14 @@ public class Driver {
             LOGGER.log(Level.FINE, "New Main Menu instantiation.");
             
             setFrameRules();
-            
-            usernameJLabel = new JLabel("Welcome " + userName);
+    
+            usernameJLabel   = new JLabel("Welcome " + userName);
             communityJButton = new JButton("Community");
-            storeJButton = new JButton("Store");
-            showAllJButton = new JButton("Show all");
-            helpJButton = new JButton("Help");
-            logJButton = new JButton("Log");
-            backJButton = new JButton("Logout");
+            storeJButton     = new JButton("Store");
+            showAllJButton   = new JButton("Show all");
+            helpJButton      = new JButton("Help");
+            logJButton       = new JButton("Log");
+            backJButton      = new JButton("Logout");
             
             addListeners();
             
@@ -470,10 +472,14 @@ public class Driver {
     
     
             helpJButton.addActionListener(actionEvent -> {
-                JOptionPane.showMessageDialog(this, "This program will implement a database of Users, Apps, and Reviews to make up a social app store.\n " +
-                        "It tracks a user’s owned apps, existing apps, and reviews of that app.\n" +
-                        "This creates a useful store and essentially it’s own digital marketplace where anyone can create their own applications.\n" +
-                        "My list of apps will be contained within a store object, while my users are contained within my community object.");
+                JOptionPane.showMessageDialog(this, "This program will implement a database of Users, Apps, and " +
+                                                    "Reviews to make up a social app store.\n " +
+                                                    "It tracks a user’s owned apps, existing apps, and reviews of " +
+                                                    "that app.\n" +
+                                                    "This creates a useful store and essentially it’s own digital " +
+                                                    "marketplace where anyone can create their own applications.\n" +
+                                                    "My list of apps will be contained within a store object, while " +
+                                                    "my users are contained within my community object.");
             });
     
             logJButton.addActionListener(actionEvent -> {
@@ -485,12 +491,12 @@ public class Driver {
                     FileReader fileReader = new FileReader(filename);
                     BufferedReader bufferedReader = new BufferedReader(fileReader);
             
-                    while ( ( line = bufferedReader.readLine() ) != null ) {
-                        stringBuilder.append(line + '\n');
+                    while (( line = bufferedReader.readLine() ) != null) {
+                        stringBuilder.append(line).append('\n');
                     }
             
                     bufferedReader.close();
-                } catch ( IOException ex ) {
+                } catch (IOException ex) {
                     LOGGER.log(Level.FINE, "", ex);
                 }
                 JTextArea tempJTextField = new JTextArea(25, 80);
@@ -518,8 +524,8 @@ public class Driver {
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 0;
         
-                for ( String[] arr : userAppReviews.toTable(community, store) ) {
-                    for ( String str : arr ) {
+                for (String[] arr : userAppReviews.toTable(community, store)) {
+                    for (String str : arr) {
                         System.out.print(str + ", ");
                     }
                     System.out.println();
@@ -545,8 +551,9 @@ public class Driver {
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 1;
         
-                // TODO: showall.add() second table for Users that have no app, if a user creates an app they own the app, so each app has a user, but every user does not have an app.
-        
+                // TODO: showall.add() second table for Users that have no app, if a user creates an app they own the
+                //  app, so each app has a user, but every user does not have an app.
+                
                 JOptionPane.showMessageDialog(this, showall);
             });
         }
@@ -561,8 +568,8 @@ public class Driver {
             //gridBagConstraints.weightx = 1.0;
     
             gridBagConstraints.anchor = GridBagConstraints.CENTER;
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
+            gridBagConstraints.gridx  = 0;
+            gridBagConstraints.gridy  = 0;
             this.add(usernameJLabel, gridBagConstraints);
     
             gridBagConstraints.gridx = 0;
@@ -623,13 +630,15 @@ public class Driver {
         DefaultListModel<User> defaultListModel;
         
         /**
-         * The list of apps for the selected {@link com.deprez.User} from {@link com.deprez.Driver.CommunityJFrame#userJList}
+         * The list of apps for the selected {@link com.deprez.User} from
+         * {@link com.deprez.Driver.CommunityJFrame#userJList}
          */
         JList appJList;
         
         /**
          * The split pane including {@link com.deprez.Driver.CommunityJFrame#userJList}, {@link
-         * com.deprez.Driver.CommunityJFrame#deleteUserJButton}, and {@link com.deprez.Driver.CommunityJFrame#userJTextArea}
+         * com.deprez.Driver.CommunityJFrame#deleteUserJButton}, and
+         * {@link com.deprez.Driver.CommunityJFrame#userJTextArea}
          */
         JSplitPane jSplitPane;
         
@@ -659,10 +668,10 @@ public class Driver {
             super(header);
             
             setFrameRules();
-            
-            communityJLabel = new JLabel("Community: " + header);
-            backJButton = new JButton("BACK");
-            userJList = new JList<>();
+    
+            communityJLabel  = new JLabel("Community: " + header);
+            backJButton      = new JButton("BACK");
+            userJList        = new JList<>();
             defaultListModel = new DefaultListModel<>();
             userJList.setModel(defaultListModel);
             community.getUsers().forEach(user -> defaultListModel.addElement(user));
@@ -674,12 +683,12 @@ public class Driver {
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            userJTextArea = new JTextArea("");
-            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            userJTextArea            = new JTextArea("");
+            gridBagConstraints.fill  = GridBagConstraints.HORIZONTAL;
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
             jPanel.add(userJTextArea, gridBagConstraints);
-            deleteUserJButton = new JButton("Delete user");
+            deleteUserJButton        = new JButton("Delete user");
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 2;
             jPanel.add(deleteUserJButton, gridBagConstraints);
@@ -711,9 +720,10 @@ public class Driver {
             });
     
             userJList.addListSelectionListener(e -> {
-                Object[] users = userAppReviews.getAppsOfUser(community.getUserId(userJList.getSelectedValue().toString())).toArray();
+                Object[] users =
+                        userAppReviews.getAppsOfUser(community.getUserId(userJList.getSelectedValue().toString())).toArray();
                 String[] appNames = new String[users.length];
-                for ( int i = 0; i < appNames.length; i++ ) {
+                for (int i = 0; i < appNames.length; i++) {
                     appNames[i] = store.getAppName(i);
                 }
             });
@@ -742,8 +752,8 @@ public class Driver {
             gridBagConstraints.gridy = 2;
             this.add(jSplitPane, gridBagConstraints);
     
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 3;
+            gridBagConstraints.gridx  = 0;
+            gridBagConstraints.gridy  = 3;
             gridBagConstraints.anchor = GridBagConstraints.PAGE_END;
             this.add(backJButton, gridBagConstraints);
     
@@ -769,11 +779,11 @@ public class Driver {
          * @see com.deprez.Driver.MMJFrame
          */
         JButton backJButton;
-        
+    
         JComboBox<App> appJComboBox;
-        JButton createAppJButton;
-        JButton addAppJButton;
-        JList appJList;
+        JButton        createAppJButton;
+        JButton        addAppJButton;
+        JList          appJList;
         
         /**
          * Creates an object of {@link com.deprez.Driver.StoreJFrame}
@@ -784,15 +794,16 @@ public class Driver {
             super("Store: " + header);
             
             setFrameRules();
-            
-            storeJLabel = new JLabel("Store: " + currentUser);
-            backJButton = new JButton("BACK");
+    
+            storeJLabel  = new JLabel("Store: " + currentUser);
+            backJButton  = new JButton("BACK");
             appJComboBox = new JComboBox<>();
-            for ( App app : store.getApps() ) {
+            for (App app : store.getApps()) {
                 appJComboBox.addItem(app);
             }
-            
-            appJList = new JList(store.getApps().stream().map(app -> app.getAppName()).collect(Collectors.toList()).toArray());
+    
+            appJList =
+                    new JList(store.getApps().stream().map(app -> app.getAppName()).collect(Collectors.toList()).toArray());
             
             createAppJButton = new JButton("New Application");
             
@@ -829,13 +840,14 @@ public class Driver {
             createAppJButton.addActionListener(actionEvent -> {
                 JTextField appNameJTextField = new JTextField("", 30);
                 //JOptionPane.showMessageDialog(this, appNameJTextField);
-                while ( true ) {
+                while (true) {
                     String appName = JOptionPane.showInputDialog(this, "Input app name: ");
-                    if ( appName != null && appName.matches(".*\\w.*") && !( store.hasApp(appName) >= 0 ) ) {
+                    if (appName != null && appName.matches(".*\\w.*") && !( store.hasApp(appName) >= 0 )) {
                         store.addApp(appName);
                         break;
                     } else {
-                        JOptionPane.showMessageDialog(this, "Please input an app name that contains a non-whitespace character", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Please input an app name that contains a non-whitespace " +
+                                                            "character", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 
@@ -847,14 +859,19 @@ public class Driver {
                 int userId = community.getUser(currentUser).getUserId() - 1;
                 int appId = store.getAppId(appJList.getSelectedValue().toString()).getAppId();
                 // System.out.println("Adding (" + userId + "," + appId + ")");
-                
-                if ( userAppReviews.userHasApp(userId, appId) ) {
-                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' wasn't able to be added to: '" + currentUser + "',\n" + currentUser + " already owns " + appJList.getSelectedValue(), "App failed to add", JOptionPane.ERROR_MESSAGE);
-                    LOGGER.log(Level.WARNING, "Failed to add app : '" + store.getApps().get(appId - 1).toString() + "' to " + currentUser + ",\n" + currentUser + " already owns the app.");
+    
+                if (userAppReviews.userHasApp(userId, appId)) {
+                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' " +
+                                                        "wasn't able to be added to: '" + currentUser + "',\n" + currentUser + " already owns " + appJList.getSelectedValue(), "App failed to add", JOptionPane.ERROR_MESSAGE);
+                    LOGGER.log(Level.WARNING, "Failed to add app : '" + store.getApps().get(appId - 1).toString() +
+                                              "' to " + currentUser + ",\n" + currentUser + " already owns the app.");
                 } else {
                     userAppReviews.addUserAppReview(userId, appId);
-                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' was successfully added to: '" + currentUser + "'", "App Added", JOptionPane.INFORMATION_MESSAGE);
-                    LOGGER.log(Level.INFO, "App '" + store.getApps().get(appId - 1).toString() + "' added to " + currentUser + ".");
+                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' was " +
+                                                        "successfully added to: '" + currentUser + "'", "App Added",
+                                                  JOptionPane.INFORMATION_MESSAGE);
+                    LOGGER.log(Level.INFO,
+                               "App '" + store.getApps().get(appId - 1).toString() + "' added to " + currentUser + ".");
                 }
             });
         }
@@ -868,8 +885,8 @@ public class Driver {
             gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
     
             gridBagConstraints.anchor = GridBagConstraints.CENTER;
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
+            gridBagConstraints.gridx  = 0;
+            gridBagConstraints.gridy  = 0;
             this.add(storeJLabel, gridBagConstraints);
     
             gridBagConstraints.gridx = 0;

@@ -59,8 +59,9 @@ public class Store {
      * @param appName the new name of the potential {@link com.deprez.App}
      */
     public void addApp( String appName ) {
-        if ( hasApp(appName) >= 0 ) {
-            Driver.LOGGER.log(Level.FINE, "App with the same appName '" + "' already exists in " + this.getClass().getName());
+        if (hasApp(appName) >= 0) {
+            Driver.LOGGER.log(Level.FINE,
+                              "App with the same appName '" + "' already exists in " + this.getClass().getName());
         } else {
             apps.add(new App(apps.size() + 1, appName));
         }
@@ -85,8 +86,8 @@ public class Store {
      */
     public int hasApp( String appName ) {
         int i = 0;
-        for ( App app : apps ) {
-            if ( app.getAppName().equals(appName) ) {
+        for (App app : apps) {
+            if (app.getAppName().equals(appName)) {
                 return i;
             }
             i++;
@@ -104,8 +105,8 @@ public class Store {
     @Override
     public String toString() {
         return "Store{" +
-                "apps=" + apps +
-                '}';
+               "apps=" + apps +
+               '}';
     }
     
     /**

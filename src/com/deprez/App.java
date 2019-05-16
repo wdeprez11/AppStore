@@ -6,7 +6,7 @@ package com.deprez;
  * @see com.deprez.Community
  */
 public class App {
-    private int appId;
+    private int    appId;
     private String appName;
     
     /**
@@ -16,7 +16,7 @@ public class App {
      * @param appName the name of the app
      */
     public App( int appId, String appName ) {
-        this.appId = appId;
+        this.appId   = appId;
         this.appName = appName;
     }
     
@@ -102,9 +102,9 @@ public class App {
     @Override
     public String toString() {
         return "App{" +
-                "appId=" + appId +
-                ", appName='" + appName + '\'' +
-                '}';
+               "appId=" + appId +
+               ", appName='" + appName + '\'' +
+               '}';
     }
     
     // TODO: merge sort

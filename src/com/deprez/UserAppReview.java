@@ -53,7 +53,7 @@ public class UserAppReview {
      */
     public UserAppReview( int userId, int appId ) {
         this.userId = userId;
-        this.appId = appId;
+        this.appId  = appId;
     }
     
     /**
@@ -65,9 +65,9 @@ public class UserAppReview {
      * @param appReviewDetail the detail of the review
      */
     public UserAppReview( int userId, int appId, int appReviewScore, String appReviewDetail ) {
-        this.userId = userId;
-        this.appId = appId;
-        this.appReviewScore = appReviewScore;
+        this.userId          = userId;
+        this.appId           = appId;
+        this.appReviewScore  = appReviewScore;
         this.appReviewDetail = appReviewDetail;
     }
     
@@ -175,11 +175,11 @@ public class UserAppReview {
     @Override
     public String toString() {
         return "UserAppReview{" +
-                "userId=" + userId +
-                ", appId=" + appId +
-                ", appReviewScore=" + appReviewScore +
-                ", appReviewDetail='" + appReviewDetail + '\'' +
-                '}';
+               "userId=" + userId +
+               ", appId=" + appId +
+               ", appReviewScore=" + appReviewScore +
+               ", appReviewDetail='" + appReviewDetail + '\'' +
+               '}';
     }
     
 }

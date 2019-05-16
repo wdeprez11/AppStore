@@ -57,8 +57,8 @@ public class UserAppReviews {
      */
     List<Integer> getUsersOfApp( int appId ) {
         List<Integer> users = new ArrayList<>();
-        for ( UserAppReview appReview : userAppReviews ) {
-            if ( appReview.getAppId() == appId ) {
+        for (UserAppReview appReview : userAppReviews) {
+            if (appReview.getAppId() == appId) {
                 users.add(appReview.getUserId());
             }
         }
@@ -74,8 +74,8 @@ public class UserAppReviews {
      */
     List<Integer> getAppsOfUser( int userId ) {
         List<Integer> apps = new ArrayList<>();
-        for ( UserAppReview appReview : userAppReviews ) {
-            if ( appReview.getUserId() == userId ) {
+        for (UserAppReview appReview : userAppReviews) {
+            if (appReview.getUserId() == userId) {
                 apps.add(appReview.getAppId());
             }
         }
@@ -110,8 +110,8 @@ public class UserAppReviews {
      * @return true or false depending on whether the pair was found or not.
      */
     boolean userHasApp( int userId, int appId ) {
-        for ( UserAppReview review : userAppReviews ) {
-            if ( review.getUserId() == userId && review.getAppId() == appId ) {
+        for (UserAppReview review : userAppReviews) {
+            if (review.getUserId() == userId && review.getAppId() == appId) {
                 return true;
             }
         }
@@ -121,8 +121,8 @@ public class UserAppReviews {
     @Override
     public String toString() {
         return "UserAppReviews{" +
-                "appReviews=" + userAppReviews +
-                '}';
+               "appReviews=" + userAppReviews +
+               '}';
     }
     
     /**
@@ -136,7 +136,7 @@ public class UserAppReviews {
     String[][] toTable( Community community, Store store ) {
         String[][] table = new String[userAppReviews.size()][6];
         int i = 0;
-        for ( UserAppReview userAppReview : userAppReviews ) {
+        for (UserAppReview userAppReview : userAppReviews) {
             int userId = userAppReview.getUserId();
             int appId = userAppReview.getAppId();
             table[i][0] = Integer.toString(userId);
