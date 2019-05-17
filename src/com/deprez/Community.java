@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
+import static java.util.Collections.swap;
+
 /**
  * The Community class manages the list of {@link com.deprez.User} plain java objects. It can sort the list and change
  * anything about the list.
@@ -17,7 +19,6 @@ public class Community {
      * The {@link java.util.List} attribute used to manage the list.
      */
     private List<User> users;
-    // TODO: Javadoc
     // TODO: Fast Search
     // TODO: Sort (Merge)
     
@@ -47,6 +48,11 @@ public class Community {
         return users;
     }
     
+    /**
+     * Sets the {@link java.util.List} of the {@link com.deprez.Community#users}
+     *
+     * @param users replacement {@link java.util.List} of {@link com.deprez.User} objects
+     */
     public void setUsers(List<User> users) {
         this.users = users;
     }
@@ -88,80 +94,133 @@ public class Community {
     
     private void sortByName() {
         Collections.sort(users, User::compareToName);
-
-        /*
-        if (!(users.size() <= 1)) {
-
-            int midpoint = users.size() / 2;
-            List<User> left = new ArrayList<>(users.subList(0, midpoint));
-            List<User> right = new ArrayList<>(users.subList((users.size() % 2 == 0) ? midpoint : midpoint + 1, users
-            .size()));
-
-            // List<User> result = Stream.concat(left.stream(), right.stream()).collect(Collectors.toList());
-            List<User> result = new ArrayList<>(left.size() + right.size());
-
-            int leftPtr = 0, rightPtr = 0, resultPtr = 0;
-
-            while (leftPtr < left.size() || rightPtr < right.size()) {
-                if (leftPtr < left.size() && rightPtr < right.size()) {
-                    if (left.get(leftPtr).compareToName(right.get(rightPtr)) < 0) {
-                        result.add(resultPtr++, left.get(leftPtr++));
-                    } else {
-                        result.add(resultPtr++, right.get(rightPtr++));
-                    }
-                } else if (leftPtr < left.size()) {
-                    result.add(resultPtr++, left.get(leftPtr++));
-                } else if (rightPtr < right.size()) {
-                    result.add(resultPtr++, right.get(rightPtr++));
-                }
-            }
-
-            users = result;
-        }
-         */
     }
     
     /**
-     * Searches the list with a binary search. Assumes the list is sorted by name. TODO: FIX DIS!
+     * Sorts the list alphabetically Calls {@link com.deprez.Community#quickSort(List, int, int)}
      *
-     * @param userName the username that is searched for
-     *
-     * @return The index of the username, which should correspond to the userId as well. Returns <code>-1</code> if not
-     *         found.
+     * @see Community#quickSort(List, int, int)
+     * @see java.util.Collection
+     * @see java.util.Collections
      */
-    private int binarySearch(String userName) {
-        int left = 0, right = users.size() - 1, mid;
+    public void quickSort() {
+        quickSort(users, 0, users.size());
+    }
     
-        while (1 <= right) {
-            mid = left + (right - left) / 2;
+    /**
+     * Sorts the list alphabetically
+     *
+     * @param userList the userList reference
+     * @param leftPtr  the pointer to the left side of the list
+     * @param rightPtr the point to the right side of the list
+     *
+     * @see Community#quickSort()
+     * @see Community#partition(List, int, int, User)
+     * @see Community#nameBinarySearch(String)
+     * @see java.util.Collection
+     * @see java.util.Collections
+     */
+    private void quickSort(List<User> userList, int leftPtr, int rightPtr) {
+        if (leftPtr >= rightPtr) {
+            return;
+        }
+        
+        User pivot = userList.get((leftPtr + rightPtr) / 2);
+        int index = partition(userList, leftPtr, rightPtr, pivot);
+        quickSort(userList, leftPtr, index - 1);
+        quickSort(userList, index, rightPtr);
+    }
+    
+    /**
+     * Partitions the {@link java.util.List} of {@link com.deprez.User} objects to divide and conquer the list
+     *
+     * @param userList the {@link com.deprez.Community#users} reference
+     * @param leftPtr  the pointer to the left side of the partition
+     * @param rightPtr the pointer to the right side of the partition
+     * @param pivot    the pivot point, in which the left and right list items positions are swapped
+     *
+     * @return returns the leftPtr position as the new pivot point
+     *
+     * @see Community#quickSort()
+     * @see Community#quickSort(List, int, int)
+     * @see Community#nameBinarySearch(String)
+     * @see java.util.Collection
+     * @see java.util.Collections
+     */
+    private int partition(List<User> userList, int leftPtr, int rightPtr, User pivot) {
+        while (leftPtr <= rightPtr) {
+            while (userList.get(leftPtr).compareToName(pivot) > 0) {
+                leftPtr++;
+            }
             
-            if (users.get(mid).getUserName().equals(userName)) {
-                return mid;
-            } else if (users.get(mid).getUserName().compareTo(userName) > 0) {
-                right = mid - 1;
-            } else if (mid != users.size() - 1) {
-                left = mid + 1;
-            } else if (left == right) {
-                break;
+            while (userList.get(rightPtr).compareToName(pivot) < 0) {
+                rightPtr--;
+            }
+            
+            if (leftPtr <= rightPtr) {
+                swap(userList, leftPtr, rightPtr);
+                leftPtr++;
+                rightPtr++;
             }
         }
-
-
-        /*
-        if (right >= 1) {
-            int mid = left + (right - left) / 2;
-
-            if (users.get(mid).getUserName().equals(userName)) {
+        
+        return leftPtr;
+    }
+    
+    /**
+     * Returns the index of the userName, assumes the list is sorted by {@link com.deprez.User} userName
+     *
+     * @param userName the userName to search for
+     *
+     * @return the index of the userName, returns -1 if not found.
+     *
+     * @see Community#quickSort()
+     * @see Community#quickSort(List, int, int)
+     * @see Community#partition(List, int, int, User)
+     * @see java.util.Collection
+     * @see java.util.Collections
+     */
+    private int nameBinarySearch(String userName) {
+        int leftPtr = 0, rightPtr = users.size() - 1, mid;
+        
+        while (leftPtr <= rightPtr) {
+            mid = (leftPtr + rightPtr) / 2;
+            
+            String midUserName = users.get(mid).getUserName();
+            if (userName.compareTo(midUserName) < 0) {
+                rightPtr = mid - 1;
+            } else if (userName.compareTo(midUserName) > 0) {
+                leftPtr = mid + 1;
+            } else {
                 return mid;
             }
-
-            if (users.get(mid).getUserName().compareTo(userName) >= 0) { // TODO: Check this expression.
-                return binarySearch(left, mid - 1, userName);
-            }
-
-            return binarySearch(mid + 1, right, userName);
         }
-         */
+        
+        return -1;
+    }
+    
+    /**
+     * Returns the index of the userId, assumes the list is sorted by {@link com.deprez.User} userId
+     *
+     * @param userId the userId to search for
+     *
+     * @return the index of the userId, returns -1 if not found
+     */
+    private int idBinarySearch(int userId) {
+        int leftPtr = 0, rightPtr = users.size() - 1, mid;
+        
+        while (leftPtr <= rightPtr) {
+            mid = (leftPtr + rightPtr) / 2;
+            
+            int midUserId = users.get(mid).getUserId();
+            if (userId < midUserId) {
+                rightPtr = mid - 1;
+            } else if (userId > midUserId) {
+                leftPtr = mid + 1;
+            } else {
+                return mid;
+            }
+        }
         
         return -1;
     }

@@ -118,6 +118,15 @@ public class UserAppReviews {
         return false;
     }
     
+    UserAppReview getUserAppReview(int userId, int appId) {
+        for (UserAppReview userAppReview : userAppReviews) {
+            if (userAppReview.getUserId() == userId && userAppReview.getAppId() == appId) {
+                return userAppReview;
+            }
+        }
+        return null;
+    }
+    
     @Override
     public String toString() {
         return "UserAppReviews{" +

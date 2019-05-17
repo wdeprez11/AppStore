@@ -311,6 +311,7 @@ public class Driver {
     
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
+            userJLabel.setHorizontalAlignment(JLabel.CENTER);
             this.add(userJLabel, gridBagConstraints);
     
             gridBagConstraints.gridx = 0;
@@ -596,12 +597,12 @@ public class Driver {
         private void addComponents() {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
     
-            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-            //gridBagConstraints.weightx = 1.0;
-    
+            gridBagConstraints.fill   = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.insets = new Insets(3, 3, 3, 3);
             gridBagConstraints.anchor = GridBagConstraints.CENTER;
             gridBagConstraints.gridx  = 0;
             gridBagConstraints.gridy  = 0;
+            usernameJLabel.setHorizontalAlignment(JLabel.CENTER);
             this.add(usernameJLabel, gridBagConstraints);
     
             gridBagConstraints.gridx = 0;
@@ -671,13 +672,8 @@ public class Driver {
          * The list model for {@link com.deprez.Driver.CommunityJFrame#appJList}
          */
         DefaultListModel<App> defaultAppListModel;
-        
-        /**
-         * The split pane including {@link com.deprez.Driver.CommunityJFrame#userJList}, {@link
-         * com.deprez.Driver.CommunityJFrame#deleteUserJButton}, and
-         * {@link com.deprez.Driver.CommunityJFrame#userJTextArea}
-         */
-        JSplitPane jSplitPane;
+    
+        JButton moreInfoJButton;
         
         /**
          * The button to delete a user from {@link com.deprez.Driver.CommunityJFrame#userJList} and {@link
@@ -689,14 +685,6 @@ public class Driver {
         JButton deleteUserJButton;
         
         /**
-         * Displays the information about the user selected in {@link com.deprez.Driver.CommunityJFrame#userJList}
-         *
-         * @see com.deprez.User
-         * @see com.deprez.Community
-         */
-        JTextArea userJTextArea;
-        
-        /**
          * Creates a CommunityJFrame object.
          *
          * @param header the window's header
@@ -706,36 +694,19 @@ public class Driver {
             
             setFrameRules();
     
-            communityJLabel = new JLabel("Community: " + header);
-            backJButton     = new JButton("BACK");
-            userJList       = new JList<>();
-    
+            communityJLabel      = new JLabel("Community: " + header);
+            backJButton          = new JButton("BACK");
+            userJList            = new JList<>();
+            appJList             = new JList<>();
             defaultUserListModel = new DefaultListModel<>();
+            defaultAppListModel  = new DefaultListModel<>();
+            moreInfoJButton      = new JButton("More Info");
+            deleteUserJButton    = new JButton("Delete User");
             userJList.setModel(defaultUserListModel);
-            community.getUsers().forEach(user -> defaultUserListModel.addElement(user));
-    
-            appJList            = new JList<>();
-            defaultAppListModel = new DefaultListModel<>();
             appJList.setModel(defaultAppListModel);
             
-            JPanel jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-    
-            userJTextArea            = new JTextArea("");
-            gridBagConstraints.fill  = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 1;
-            jPanel.add(userJTextArea, gridBagConstraints);
-    
-            deleteUserJButton        = new JButton("Delete user");
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 2;
-            jPanel.add(deleteUserJButton, gridBagConstraints);
-    
-            jSplitPane = new JSplitPane();
-            jSplitPane.setLeftComponent(new JScrollPane(userJList));
-            jSplitPane.setRightComponent(new JScrollPane(jPanel));
+            community.getUsers().forEach(user -> defaultUserListModel.addElement(user));
+            defaultAppListModel.addElement(new App(0, "null app"));
             
             addListeners();
             
@@ -786,13 +757,6 @@ public class Driver {
             });
     
             userJList.getSelectionModel().addListSelectionListener(e -> {
-                User user = userJList.getSelectedValue();
-                userJTextArea.setText("UserId: " + user.getUserId() + "\nUsername: " + user.getUserName());
-                deleteUserJButton.setText("Delete user: " + user.getUserName());
-                deleteUserJButton.addActionListener(actionEvent -> community.removeUser(userJList.getSelectedValue()));
-            });
-    
-            userJList.getSelectionModel().addListSelectionListener(e -> {
                 defaultAppListModel.clear();
                 java.util.List<Integer> appIds = userAppReviews.getAppsOfUser(userJList.getSelectedValue().getUserId());
                 appIds.forEach(appId -> defaultAppListModel.addElement(store.getApp(appId)));
@@ -805,6 +769,41 @@ public class Driver {
                 //deleteUserJButton.addActionListener(actionEvent -> community.removeUser(userJList.getSelectedValue
                 // ()));
             });
+    
+            moreInfoJButton.addActionListener(actionEvent -> {
+                JPanel temp = new JPanel();
+                temp.setLayout(new GridBagLayout());
+                GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        
+                JLabel userJLabel = new JLabel("User: " + userJList.getSelectedValue().getUserName());
+                JLabel appJLabel = new JLabel("App: " + appJList.getSelectedValue().getAppName());
+        
+                gridBagConstraints.fill      = GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor    = GridBagConstraints.CENTER;
+                gridBagConstraints.gridx     = 0;
+                gridBagConstraints.gridy     = 0;
+                gridBagConstraints.insets    = new Insets(3, 3, 3, 3);
+                gridBagConstraints.gridwidth = 2;
+        
+                temp.add(userJLabel, gridBagConstraints);
+        
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 1;
+                temp.add(appJLabel, gridBagConstraints);
+        
+                JPanel reviewJPanel = new JPanel();
+                UserAppReview potentialReview =
+                        userAppReviews.getUserAppReview(userJList.getSelectedValue().getUserId(),
+                                                        appJList.getSelectedValue().getAppId());
+                if (potentialReview.getAppReviewScore() == 0 || potentialReview.getAppReviewDetail().equals("")) {
+                    reviewJPanel.add(new JLabel("review missing"));
+                } else {
+                    reviewJPanel.add(new JLabel("Score: " + potentialReview.getAppReviewScore()));
+                    reviewJPanel.add(new JTextArea("Detail: " + potentialReview.getAppReviewDetail()));
+                }
+                JOptionPane.showMessageDialog(this, reviewJPanel, "Review", JOptionPane.PLAIN_MESSAGE);
+            });
+            
         }
         
         /**
@@ -813,34 +812,40 @@ public class Driver {
         private void addComponents() {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
     
-            gridBagConstraints.gridheight = 1;
-            gridBagConstraints.insets     = new Insets(3, 3, 3, 3);
-            gridBagConstraints.anchor     = GridBagConstraints.LINE_START;
-            
-            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-    
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 1;
+            gridBagConstraints.fill      = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.anchor    = GridBagConstraints.CENTER;
+            gridBagConstraints.gridx     = 0;
+            gridBagConstraints.gridy     = 0;
+            gridBagConstraints.insets    = new Insets(3, 3, 3, 3);
+            gridBagConstraints.gridwidth = 2;
+            communityJLabel.setHorizontalAlignment(JLabel.CENTER);
             this.add(communityJLabel, gridBagConstraints);
-
-//            gridBagConstraints.gridx = 0;
-//            gridBagConstraints.gridy = 2;
-//            this.add(jSplitPane, gridBagConstraints);
-            
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 2;
     
-            JPanel jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            jPanel.add(new JScrollPane(userJList), gridBagConstraints1);
-            gridBagConstraints1.gridx = 1;
-            jPanel.add(new JScrollPane(appJList), gridBagConstraints1);
-            this.add(jPanel, gridBagConstraints);
-            
-            
+            gridBagConstraints.gridx     = 0;
+            gridBagConstraints.gridy     = 1;
+            gridBagConstraints.gridwidth = 1;
+            userJList.setVisibleRowCount(10);
+            userJList.setPreferredSize(new Dimension(200, 200));
+            this.add(new JScrollPane(userJList), gridBagConstraints);
+    
+            gridBagConstraints.gridx     = 1;
+            gridBagConstraints.gridy     = 1;
+            gridBagConstraints.gridwidth = 1;
+            appJList.setVisibleRowCount(10);
+            appJList.setPreferredSize(new Dimension(200, 200));
+            this.add(new JScrollPane(appJList), gridBagConstraints);
+    
+            gridBagConstraints.gridx     = 0;
+            gridBagConstraints.gridy     = 2;
+            gridBagConstraints.gridwidth = 2;
+            this.add(moreInfoJButton, gridBagConstraints);
+    
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 3;
+            this.add(deleteUserJButton, gridBagConstraints);
+    
             gridBagConstraints.gridx  = 0;
-            gridBagConstraints.gridy  = 3;
+            gridBagConstraints.gridy  = 4;
             gridBagConstraints.anchor = GridBagConstraints.PAGE_END;
             this.add(backJButton, gridBagConstraints);
         }
@@ -866,7 +871,6 @@ public class Driver {
          */
         JButton backJButton;
     
-        JComboBox<App>   appJComboBox;
         JButton          createAppJButton;
         JButton          addAppJButton;
         JList<App>       appJList;
@@ -882,15 +886,10 @@ public class Driver {
             
             setFrameRules();
     
-            storeJLabel  = new JLabel("Store: " + currentUser);
-            backJButton  = new JButton("BACK");
-            appJComboBox = new JComboBox<>();
-            for (App app : store.getApps()) {
-                appJComboBox.addItem(app);
-            }
+            storeJLabel = new JLabel("Store: " + currentUser);
+            backJButton = new JButton("Back");
     
-            appJList = new JList<>(); //store.getApps().stream().map(app -> app.getAppName()).collect
-            // (Collectors.toList()).toArray()
+            appJList            = new JList<>();
             defaultAppListModel = new DefaultListModel<>();
             appJList.setModel(defaultAppListModel);
             store.getApps().forEach(app -> defaultAppListModel.addElement(app));
@@ -946,7 +945,8 @@ public class Driver {
                         store.addApp(appName);
                         break;
                     } else if (store.hasApp(appName) >= 0) {
-                        JOptionPane.showMessageDialog(this, "Please input a unique app name. '" + appName + "' was already found with identifier: " + store.getAppId(appName));
+                        JOptionPane.showMessageDialog(this, "Please input a unique app name. '" + appName + "' was " +
+                                                            "already found with identifier: " + store.getAppId(appName));
                     } else {
                         JOptionPane.showMessageDialog(this, "Please input an app name that contains a non-whitespace " +
                                                             "character", "Error", JOptionPane.ERROR_MESSAGE);
@@ -990,27 +990,32 @@ public class Driver {
         private void addComponents() {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
     
-            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-    
-            gridBagConstraints.anchor = GridBagConstraints.CENTER;
-            gridBagConstraints.gridx  = 0;
-            gridBagConstraints.gridy  = 0;
+            gridBagConstraints.fill      = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.anchor    = GridBagConstraints.CENTER;
+            gridBagConstraints.gridx     = 0;
+            gridBagConstraints.gridy     = 0;
+            gridBagConstraints.insets    = new Insets(3, 3, 3, 3);
+            gridBagConstraints.gridwidth = 2;
+            storeJLabel.setHorizontalAlignment(JLabel.CENTER);
             this.add(storeJLabel, gridBagConstraints);
     
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
-            this.add(backJButton, gridBagConstraints);
+            this.add(new JScrollPane(appJList), gridBagConstraints);
     
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 2;
-            this.add(appJList, gridBagConstraints);
-    
-            gridBagConstraints.gridx = 1;
+            gridBagConstraints.gridx     = 0;
+            gridBagConstraints.gridy     = 2;
+            gridBagConstraints.gridwidth = 1;
             this.add(addAppJButton, gridBagConstraints);
     
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 3;
+            gridBagConstraints.gridx = 1;
+            gridBagConstraints.gridy = 2;
             this.add(createAppJButton, gridBagConstraints);
+    
+            gridBagConstraints.gridwidth = 2;
+            gridBagConstraints.gridx     = 0;
+            gridBagConstraints.gridy     = 3;
+            this.add(backJButton, gridBagConstraints);
         }
     }
     
