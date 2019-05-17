@@ -258,4 +258,17 @@ public class Community {
         int temp = hasUser(userName);
         return (temp >= 0) ? users.get(temp) : null;
     }
+    
+    public String[][] toTable() {
+        String[][] table = new String[users.size()][2];
+        
+        int i = 0;
+        for (User user : users) {
+            table[i][0] = Integer.toString(user.getUserId());
+            table[i][1] = user.getUserName();
+            i++;
+        }
+        
+        return table;
+    }
 }

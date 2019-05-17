@@ -344,7 +344,7 @@ public class Driver {
                 community.addUser(userJTextField.getText());
                 currentUser     = userJTextField.getText();
                 mmJFrame        = new MMJFrame("Main Menu: " + currentUser, currentUser);
-                communityJFrame = new CommunityJFrame("Community: " + currentUser);
+                communityJFrame = new CommunityJFrame(currentUser);
                 storeJFrame     = new StoreJFrame("Store: " + currentUser);
                 mmJFrame.setVisible(true);
             } else {
@@ -523,15 +523,8 @@ public class Driver {
         
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 0;
-        
-                for (String[] arr : userAppReviews.toTable(community, store)) {
-                    for (String str : arr) {
-                        System.out.print(str + ", ");
-                    }
-                    System.out.println();
-                }
-        
-                JTable jTable = new JTable(
+    
+                JTable userAppJTable = new JTable(
                         userAppReviews.toTable(community, store)
                         ,
                         new String[]{
@@ -543,16 +536,40 @@ public class Driver {
                                 "reviewDetail"
                         }
                 );
-        
-                JScrollPane jScrollPane = new JScrollPane(jTable);
-        
-                showall.add(jScrollPane);
-        
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 1;
-        
-                // TODO: showall.add() second table for Users that have no app, if a user creates an app they own the
-                //  app, so each app has a user, but every user does not have an app.
+    
+                JTable userJTable = new JTable(
+                        community.toTable()
+                        ,
+                        new String[]{
+                                "userId",
+                                "userName",
+                                }
+                );
+    
+                JTable appJTable = new JTable(
+                        store.toTable()
+                        ,
+                        new String[]{
+                                "appId",
+                                "appName"
+                        }
+                );
+    
+                JScrollPane userAppJScrollPane = new JScrollPane(userAppJTable);
+    
+                showall.add(userAppJScrollPane, gridBagConstraints);
+    
+                gridBagConstraints.gridx = 1;
+    
+                JScrollPane userJScrollPane = new JScrollPane(userJTable);
+    
+                showall.add(userJScrollPane, gridBagConstraints);
+    
+                gridBagConstraints.gridx = 2;
+    
+                JScrollPane appsJScrollPane = new JScrollPane(appJTable);
+    
+                showall.add(appsJScrollPane, gridBagConstraints);
                 
                 JOptionPane.showMessageDialog(this, showall);
             });
@@ -720,12 +737,19 @@ public class Driver {
             });
     
             userJList.addListSelectionListener(e -> {
-                Object[] users =
-                        userAppReviews.getAppsOfUser(community.getUserId(userJList.getSelectedValue().toString())).toArray();
-                String[] appNames = new String[users.length];
-                for (int i = 0; i < appNames.length; i++) {
-                    appNames[i] = store.getAppName(i);
+                java.util.List<Integer> userApps =
+                        userAppReviews.getAppsOfUser(community.getUserId(userJList.getSelectedValue().toString()));
+                java.util.List<String> appNames =
+                        userApps.stream().map(appId -> store.getAppName(appId)).collect(Collectors.toList());
+                for (String str : appNames) {
+                    System.out.println(str);
                 }
+                /*
+                for (int i = 0; i < appNames.length; i++) {
+                    // appNames[i] = store.getAppName(i);
+                    System.out.println(userApps[i]);
+                }
+                 */
             });
     
             userJList.getSelectionModel().addListSelectionListener(e -> {
