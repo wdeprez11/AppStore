@@ -110,6 +110,4 @@ public class App {
         */
     }
     
-    // TODO: merge sort
-    // TODO: search
 }

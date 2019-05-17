@@ -127,6 +127,16 @@ public class UserAppReviews {
         return null;
     }
     
+    public void removeUserAppReview(int userId, int appId) {
+        for (int i = 0; i < userAppReviews.size(); i++) {
+            UserAppReview userAppReview = userAppReviews.get(i);
+            if (userAppReview.getUserId() == userId && userAppReview.getAppId() == appId) {
+                userAppReviews.remove(userAppReview);
+                break;
+            }
+        }
+    }
+    
     @Override
     public String toString() {
         return "UserAppReviews{" +

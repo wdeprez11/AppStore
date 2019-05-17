@@ -147,7 +147,7 @@ public class Store {
      * @return returns appName of {@link com.deprez.App} object, returns null if not found
      */
     public String getAppName(int appId) {
-        System.out.println("appId: " + appId + ", apps.size(): " + apps.size());
+        //System.out.println("appId: " + appId + ", apps.size(): " + apps.size());
         //return (appId < apps.size()) ? apps.get(appId - 1).getAppName() : null;
     
         for (App app : apps) {
