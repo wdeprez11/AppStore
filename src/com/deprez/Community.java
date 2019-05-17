@@ -240,7 +240,13 @@ public class Community {
     }
     
     public String getUserName(int userId) {
-        return users.get(userId).getUserName();
+        for (User user : users) {
+            if (user.getUserId() == userId) {
+                return user.getUserName();
+            }
+        }
+        return "USER NOT FOUND";
+        //return users.get(userId).getUserName();
     }
     
     public int getUserId(String userName) {
@@ -253,13 +259,23 @@ public class Community {
      * @param userName the userName to search for
      *
      * @return the `User` object with a matching user
+     *         <p>
+     *         TODO: fix this doc
      */
     public User getUser(String userName) {
-        int temp = hasUser(userName);
-        return (temp >= 0) ? users.get(temp) : null;
+        /*int temp = hasUser(userName);
+        return (temp >= 0) ? users.get(temp) : null;*/
+    
+        for (User user : users) {
+            if (user.getUserName().equals(userName)) {
+                return user;
+            }
+        }
+        return null;
     }
     
     public String[][] toTable() {
+        Collections.sort(users, User::compareToId);
         String[][] table = new String[users.size()][2];
         
         int i = 0;

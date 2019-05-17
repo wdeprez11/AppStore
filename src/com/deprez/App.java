@@ -101,10 +101,13 @@ public class App {
      */
     @Override
     public String toString() {
+        return appName;
+        /*
         return "App{" +
                "appId=" + appId +
                ", appName='" + appName + '\'' +
                '}';
+        */
     }
     
     // TODO: merge sort

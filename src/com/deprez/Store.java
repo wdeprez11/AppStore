@@ -128,11 +128,15 @@ public class Store {
      *
      * @param appName the appName to search for
      *
-     * @return {@link com.deprez.App} object that matched the identifier, returns null if not found
+     * @return {@link com.deprez.App} object that matched the identifier, returns null if not found TODO: fix this doc
      */
-    public App getAppId(String appName) {
-        int tmp = hasApp(appName);
-        return (tmp >= 0) ? apps.get(tmp) : null;
+    public int getAppId(String appName) {
+        for (App app : apps) {
+            if (app.getAppName().equals(appName)) {
+                return app.getAppId();
+            }
+        }
+        return -1;
     }
     
     /**
@@ -142,12 +146,20 @@ public class Store {
      *
      * @return returns appName of {@link com.deprez.App} object, returns null if not found
      */
-    String getAppName(int appId) {
+    public String getAppName(int appId) {
         System.out.println("appId: " + appId + ", apps.size(): " + apps.size());
-        return (appId < apps.size()) ? apps.get(appId - 1).getAppName() : null;
+        //return (appId < apps.size()) ? apps.get(appId - 1).getAppName() : null;
+    
+        for (App app : apps) {
+            if (app.getAppId() == appId) {
+                return app.getAppName();
+            }
+        }
+        return "APP NOT FOUND";
     }
     
     public String[][] toTable() {
+        Collections.sort(apps, App::compareToId);
         String[][] table = new String[apps.size()][2];
         
         int i = 0;
@@ -158,6 +170,15 @@ public class Store {
         }
         
         return table;
+    }
+    
+    public App getApp(int appId) {
+        for (App app : apps) {
+            if (app.getAppId() == appId) {
+                return app;
+            }
+        }
+        return null;
     }
     
     

@@ -306,22 +306,22 @@ public class Driver {
          */
         private void addComponents() {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        
+    
             gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-        
+    
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
             this.add(userJLabel, gridBagConstraints);
-        
+    
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
             this.add(userJTextField, gridBagConstraints);
-        
+    
             gridBagConstraints.weightx = 0.0;
             gridBagConstraints.gridx   = 0;
             gridBagConstraints.gridy   = 2;
             this.add(loginJButton, gridBagConstraints);
-        
+    
             gridBagConstraints.weightx = 0.0;
             gridBagConstraints.gridx   = 0;
             gridBagConstraints.gridy   = 3;
@@ -523,7 +523,7 @@ public class Driver {
         
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 0;
-    
+        
                 JTable userAppJTable = new JTable(
                         userAppReviews.toTable(community, store)
                         ,
@@ -536,7 +536,7 @@ public class Driver {
                                 "reviewDetail"
                         }
                 );
-    
+        
                 JTable userJTable = new JTable(
                         community.toTable()
                         ,
@@ -545,7 +545,7 @@ public class Driver {
                                 "userName",
                                 }
                 );
-    
+        
                 JTable appJTable = new JTable(
                         store.toTable()
                         ,
@@ -554,24 +554,39 @@ public class Driver {
                                 "appName"
                         }
                 );
-    
+        
+                gridBagConstraints.insets = new Insets(3, 3, 3, 3);
+                JLabel userAppJLabel = new JLabel("userapp_tb");
+                userAppJLabel.setHorizontalAlignment(JLabel.CENTER);
                 JScrollPane userAppJScrollPane = new JScrollPane(userAppJTable);
-    
+        
+                showall.add(userAppJLabel, gridBagConstraints);
+                gridBagConstraints.gridy = 1;
                 showall.add(userAppJScrollPane, gridBagConstraints);
-    
+        
                 gridBagConstraints.gridx = 1;
-    
+        
+                JLabel userJLabel = new JLabel("user_tb");
+                userJLabel.setHorizontalAlignment(JLabel.CENTER);
                 JScrollPane userJScrollPane = new JScrollPane(userJTable);
-    
+        
+                gridBagConstraints.gridy = 0;
+                showall.add(userJLabel, gridBagConstraints);
+                gridBagConstraints.gridy = 1;
                 showall.add(userJScrollPane, gridBagConstraints);
-    
+        
                 gridBagConstraints.gridx = 2;
-    
+        
+                JLabel appJLabel = new JLabel("app_tb");
+                appJLabel.setHorizontalAlignment(JLabel.CENTER);
                 JScrollPane appsJScrollPane = new JScrollPane(appJTable);
-    
+        
+                gridBagConstraints.gridy = 0;
+                showall.add(appJLabel, gridBagConstraints);
+                gridBagConstraints.gridy = 1;
                 showall.add(appsJScrollPane, gridBagConstraints);
-                
-                JOptionPane.showMessageDialog(this, showall);
+        
+                JOptionPane.showMessageDialog(this, showall, "SHOW ALL INFO", JOptionPane.INFORMATION_MESSAGE);
             });
         }
         
@@ -644,13 +659,18 @@ public class Driver {
         /**
          * The list model for {@link com.deprez.Driver.CommunityJFrame#userJList}
          */
-        DefaultListModel<User> defaultListModel;
+        DefaultListModel<User> defaultUserListModel;
         
         /**
          * The list of apps for the selected {@link com.deprez.User} from
          * {@link com.deprez.Driver.CommunityJFrame#userJList}
          */
-        JList appJList;
+        JList<App> appJList;
+    
+        /**
+         * The list model for {@link com.deprez.Driver.CommunityJFrame#appJList}
+         */
+        DefaultListModel<App> defaultAppListModel;
         
         /**
          * The split pane including {@link com.deprez.Driver.CommunityJFrame#userJList}, {@link
@@ -686,29 +706,35 @@ public class Driver {
             
             setFrameRules();
     
-            communityJLabel  = new JLabel("Community: " + header);
-            backJButton      = new JButton("BACK");
-            userJList        = new JList<>();
-            defaultListModel = new DefaultListModel<>();
-            userJList.setModel(defaultListModel);
-            community.getUsers().forEach(user -> defaultListModel.addElement(user));
-            appJList = new JList();
-            
-            jSplitPane = new JSplitPane();
-            jSplitPane.setLeftComponent(new JScrollPane(userJList));
+            communityJLabel = new JLabel("Community: " + header);
+            backJButton     = new JButton("BACK");
+            userJList       = new JList<>();
+    
+            defaultUserListModel = new DefaultListModel<>();
+            userJList.setModel(defaultUserListModel);
+            community.getUsers().forEach(user -> defaultUserListModel.addElement(user));
+    
+            appJList            = new JList<>();
+            defaultAppListModel = new DefaultListModel<>();
+            appJList.setModel(defaultAppListModel);
             
             JPanel jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
+    
             userJTextArea            = new JTextArea("");
             gridBagConstraints.fill  = GridBagConstraints.HORIZONTAL;
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
             jPanel.add(userJTextArea, gridBagConstraints);
+    
             deleteUserJButton        = new JButton("Delete user");
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 2;
             jPanel.add(deleteUserJButton, gridBagConstraints);
+    
+            jSplitPane = new JSplitPane();
+            jSplitPane.setLeftComponent(new JScrollPane(userJList));
             jSplitPane.setRightComponent(new JScrollPane(jPanel));
             
             addListeners();
@@ -731,6 +757,13 @@ public class Driver {
          * Adds listeners to components of {@link com.deprez.Driver.CommunityJFrame}
          */
         private void addListeners() {
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent windowEvent) {
+                    quit(communityJFrame);
+                }
+            });
+            
             backJButton.addActionListener(actionEvent -> {
                 this.setVisible(false);
                 mmJFrame.setVisible(true);
@@ -758,6 +791,20 @@ public class Driver {
                 deleteUserJButton.setText("Delete user: " + user.getUserName());
                 deleteUserJButton.addActionListener(actionEvent -> community.removeUser(userJList.getSelectedValue()));
             });
+    
+            userJList.getSelectionModel().addListSelectionListener(e -> {
+                defaultAppListModel.clear();
+                java.util.List<Integer> appIds = userAppReviews.getAppsOfUser(userJList.getSelectedValue().getUserId());
+                appIds.forEach(appId -> defaultAppListModel.addElement(store.getApp(appId)));
+                /*for (Integer appId : appIds) {
+                    System.out.println("->>>>" + appId);
+                }*/
+                //User user = userJList.getSelectedValue();
+                //userJTextArea.setText("UserId: " + user.getUserId() + "\nUsername: " + user.getUserName());
+                //deleteUserJButton.setText("Delete user: " + user.getUserName());
+                //deleteUserJButton.addActionListener(actionEvent -> community.removeUser(userJList.getSelectedValue
+                // ()));
+            });
         }
         
         /**
@@ -766,21 +813,36 @@ public class Driver {
         private void addComponents() {
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
     
+            gridBagConstraints.gridheight = 1;
+            gridBagConstraints.insets     = new Insets(3, 3, 3, 3);
+            gridBagConstraints.anchor     = GridBagConstraints.LINE_START;
+            
             gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
     
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
             this.add(communityJLabel, gridBagConstraints);
-    
+
+//            gridBagConstraints.gridx = 0;
+//            gridBagConstraints.gridy = 2;
+//            this.add(jSplitPane, gridBagConstraints);
+            
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 2;
-            this.add(jSplitPane, gridBagConstraints);
     
+            JPanel jPanel = new JPanel();
+            jPanel.setLayout(new GridBagLayout());
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            jPanel.add(new JScrollPane(userJList), gridBagConstraints1);
+            gridBagConstraints1.gridx = 1;
+            jPanel.add(new JScrollPane(appJList), gridBagConstraints1);
+            this.add(jPanel, gridBagConstraints);
+            
+            
             gridBagConstraints.gridx  = 0;
             gridBagConstraints.gridy  = 3;
             gridBagConstraints.anchor = GridBagConstraints.PAGE_END;
             this.add(backJButton, gridBagConstraints);
-    
         }
     }
     
@@ -804,10 +866,11 @@ public class Driver {
          */
         JButton backJButton;
     
-        JComboBox<App> appJComboBox;
-        JButton        createAppJButton;
-        JButton        addAppJButton;
-        JList          appJList;
+        JComboBox<App>   appJComboBox;
+        JButton          createAppJButton;
+        JButton          addAppJButton;
+        JList<App>       appJList;
+        DefaultListModel defaultAppListModel;
         
         /**
          * Creates an object of {@link com.deprez.Driver.StoreJFrame}
@@ -826,8 +889,11 @@ public class Driver {
                 appJComboBox.addItem(app);
             }
     
-            appJList =
-                    new JList(store.getApps().stream().map(app -> app.getAppName()).collect(Collectors.toList()).toArray());
+            appJList = new JList<>(); //store.getApps().stream().map(app -> app.getAppName()).collect
+            // (Collectors.toList()).toArray()
+            defaultAppListModel = new DefaultListModel<>();
+            appJList.setModel(defaultAppListModel);
+            store.getApps().forEach(app -> defaultAppListModel.addElement(app));
             
             createAppJButton = new JButton("New Application");
             
@@ -847,6 +913,13 @@ public class Driver {
         }
         
         private void addListeners() {
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent windowEvent) {
+                    quit(storeJFrame);
+                }
+            });
+            
             backJButton.addActionListener(actionEvent -> {
                 this.setVisible(false);
                 mmJFrame.setVisible(true);
@@ -863,39 +936,50 @@ public class Driver {
             
             createAppJButton.addActionListener(actionEvent -> {
                 JTextField appNameJTextField = new JTextField("", 30);
+    
                 //JOptionPane.showMessageDialog(this, appNameJTextField);
                 while (true) {
                     String appName = JOptionPane.showInputDialog(this, "Input app name: ");
-                    if (appName != null && appName.matches(".*\\w.*") && !(store.hasApp(appName) >= 0)) {
+                    if (appName == null) {
+                        break;
+                    } else if (appName.matches(".*\\w.*") && !(store.hasApp(appName) >= 0)) {
                         store.addApp(appName);
                         break;
+                    } else if (store.hasApp(appName) >= 0) {
+                        JOptionPane.showMessageDialog(this, "Please input a unique app name. '" + appName + "' was already found with identifier: " + store.getAppId(appName));
                     } else {
                         JOptionPane.showMessageDialog(this, "Please input an app name that contains a non-whitespace " +
                                                             "character", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                
+    
+                defaultAppListModel.clear();
+                store.getApps().forEach(app -> defaultAppListModel.addElement(app));
             });
             
             addAppJButton.addActionListener(actionEvent -> {
                 /* community.getUser(currentUser).addUserApp(appJList.getSelectedValue());
                 System.out.println(appJList.getSelectedValue()); */
-                int userId = community.getUser(currentUser).getUserId() - 1;
-                int appId = store.getAppId(appJList.getSelectedValue().toString()).getAppId();
-                // System.out.println("Adding (" + userId + "," + appId + ")");
     
+                //STORE - add app to this current user account
+                int userId = community.getUser(currentUser).getUserId();
+                int appId = store.getAppId(appJList.getSelectedValue().toString());
+                System.out.println("Adding (" + userId + ":" + community.getUserName(userId) + "," + appId + ":" + store.getAppName(appId) + ")");
+                System.out.println(appJList.getSelectedValue().toString());
+                
+                
                 if (userAppReviews.userHasApp(userId, appId)) {
-                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' " +
+                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId).toString() + "' " +
                                                         "wasn't able to be added to: '" + currentUser + "',\n" + currentUser + " already owns " + appJList.getSelectedValue(), "App failed to add", JOptionPane.ERROR_MESSAGE);
-                    LOGGER.log(Level.WARNING, "Failed to add app : '" + store.getApps().get(appId - 1).toString() +
+                    LOGGER.log(Level.WARNING, "Failed to add app : '" + store.getApps().get(appId).toString() +
                                               "' to " + currentUser + ",\n" + currentUser + " already owns the app.");
                 } else {
                     userAppReviews.addUserAppReview(userId, appId);
-                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId - 1).toString() + "' was " +
+                    JOptionPane.showMessageDialog(this, "App '" + store.getApps().get(appId).toString() + "' was " +
                                                         "successfully added to: '" + currentUser + "'", "App Added",
                                                   JOptionPane.INFORMATION_MESSAGE);
                     LOGGER.log(Level.INFO,
-                               "App '" + store.getApps().get(appId - 1).toString() + "' added to " + currentUser + ".");
+                               "App '" + store.getApps().get(appId).toString() + "' added to " + currentUser + ".");
                 }
             });
         }
