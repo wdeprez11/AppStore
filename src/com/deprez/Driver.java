@@ -704,6 +704,8 @@ public class Driver {
          * The app {@link javax.swing.JLabel}
          */
         JLabel appJLabel;
+    
+        java.util.List<Integer> appIds;
         
         /**
          * Creates a CommunityJFrame object.
@@ -781,7 +783,9 @@ public class Driver {
     
             userJList.getSelectionModel().addListSelectionListener(e -> {
                 defaultAppListModel.clear();
-                java.util.List<Integer> appIds = userAppReviews.getAppsOfUser(userJList.getSelectedValue().getUserId());
+                //java.util.List<Integer> appIds = userAppReviews.getAppsOfUser(userJList.getSelectedValue()
+                // .getUserId());
+                appIds = userAppReviews.getAppsOfUser(userJList.getSelectedValue().getUserId());
                 appListJLabel.setText("Apps: " + userJList.getSelectedValue().getUserName());
                 appIds.forEach(appId -> defaultAppListModel.addElement(store.getApp(appId)));
                 if (!(appIds.size() > 0)) {
