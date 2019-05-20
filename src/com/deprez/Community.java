@@ -79,7 +79,7 @@ public class Community {
      * @return returns the index if found, otherwise returns -1.
      */
     public int hasUser(String userName) {
-        // TODO: Implement binary search after sort is completed
+        // TODO: convert to stream
         sortByName();
         int i = 0;
         for (User user : users) {
@@ -233,6 +233,11 @@ public class Community {
      * @param userName the userName of the User object to remove.
      */
     public void removeUser(String userName) {
+        User usr = users.stream().filter(user -> user.getUserName().equals(userName)).findFirst().orElse(null);
+        if (!(usr == null)) {
+            users.remove(usr);
+        }
+                /*
         int i = 0;
         for (User usr : users) {
             if (usr.getUserName().equals(userName)) {
@@ -241,6 +246,7 @@ public class Community {
             }
             i++;
         }
+                 */
     }
     
     public void removeUser(User user) {
@@ -275,37 +281,18 @@ public class Community {
         return users.size();
     }
     
-    public void addUserApp(String userName, App app) {
-        int temp = hasUser(userName);
-        if (temp >= 0) {
-            // TODO users.get(temp).addApp(app);
-        }
-    }
-    
-    public void addUserAppReviewToUser(String userName, String appName, int reviewScore, String reviewDetail) {
-        /*
-        TODO
-        int tmp = hasUser(userName);
-        if (tmp  >= 0) {
-            // TODO
-            users.get(tmp).addUserAppReview(userName, appName, reviewScore, reviewDetail);
-        }
-        */
-    }
-    
-    public List<App> getUserAppReviews(String userName) {
-        // TODO
-        return null;
-    }
-    
     public String getUserName(int userId) {
-        for (User user : users) {
+        /*for (User user : users) {
             if (user.getUserId() == userId) {
                 return user.getUserName();
             }
         }
-        return "USER NOT FOUND";
-        //return users.get(userId).getUserName();
+        return "USER NOT FOUND";*/
+        User temp = users.stream()
+                         .filter(user -> user.getUserId() == userId)
+                         .findFirst()
+                         .orElse(new User(0, "USER NOT FOUND"));
+        return temp.getUserName();
     }
     
     public int getUserId(String userName) {
@@ -322,15 +309,11 @@ public class Community {
      *         TODO: fix this doc
      */
     public User getUser(String userName) {
-        /*int temp = hasUser(userName);
-        return (temp >= 0) ? users.get(temp) : null;*/
-    
-        for (User user : users) {
-            if (user.getUserName().equals(userName)) {
-                return user;
-            }
-        }
-        return null;
+        return users.stream()
+                    .sorted(User::compareToName)
+                    .filter(user -> user.getUserName().equals(userName))
+                    .findFirst()
+                    .orElse(null);
     }
     
     public String[][] toTable() {
